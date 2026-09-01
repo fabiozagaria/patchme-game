@@ -108,7 +108,10 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     }
     const cleaned = cleanPatch(candidate);
     const saved: Patch = { ...cleaned, updatedAt: new Date().toISOString() };
-    savePatch(saved);
+    if (!savePatch(saved)) {
+      toast.error("Salvataggio non riuscito: memoria del dispositivo non disponibile");
+      return;
+    }
     setPatch(saved);
     setDirty(false);
     toast.success(status === "published" ? "Patch pubblicata" : "Bozza salvata");
@@ -119,6 +122,7 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     if (dirty) setConfirmExit(true);
     else navigate({ to: "/" });
   };
+
 
   return (
     <div className="min-h-screen bg-background pb-32">
