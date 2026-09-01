@@ -8,9 +8,10 @@ interface AppStore {
   canPersist: boolean;
   settings: AppSettings;
   patches: Patch[];
-  saveSettings: (next: AppSettings) => void;
-  savePatch: (patch: Patch) => void;
-  deletePatch: (id: string) => void;
+  /** Restituiscono false se la persistenza locale fallisce. */
+  saveSettings: (next: AppSettings) => boolean;
+  savePatch: (patch: Patch) => boolean;
+  deletePatch: (id: string) => boolean;
 }
 
 const AppStoreContext = createContext<AppStore | null>(null);
@@ -29,17 +30,32 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const saveSettings = useCallback((next: AppSettings) => {
-    setSettings(next);
-    settingsRepository.save(next);
+    const ok = settingsRepository.save(next);
+    if (ok) setSettings(next);
+    else setCanPersist(false);
+    return ok;
   }, []);
 
   const savePatch = useCallback((patch: Patch) => {
-    setPatches(patchRepository.upsert(patch));
+    const ok = patchRepository.upsert(patch);
+    if (!ok.persisted) {
+      setCanPersist(false);
+      return false;
+    }
+    setPatches(ok.patches);
+    return true;
   }, []);
 
   const deletePatch = useCallback((id: string) => {
-    setPatches(patchRepository.remove(id));
+    const result = patchRepository.remove(id);
+    if (!result.persisted) {
+      setCanPersist(false);
+      return false;
+    }
+    setPatches(result.patches);
+    return true;
   }, []);
+
 
   const value = useMemo<AppStore>(
     () => ({ ready, canPersist, settings, patches, saveSettings, savePatch, deletePatch }),
