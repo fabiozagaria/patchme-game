@@ -1,6 +1,19 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  BookOpen,
+  Check,
+  Copy,
+  ExternalLink,
+  Github,
+  Monitor,
+  Moon,
+  Palette,
+  Share2,
+  Sparkles,
+  Sun,
+} from "lucide-react";
 import { APP_CONFIG } from "@/config/app-config";
 import { ACCENTS, type AppSettings, type ThemeMode, type VersionFormat } from "@/lib/patch-model";
 import { validateDisplayName } from "@/lib/validation";
@@ -9,6 +22,8 @@ import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { UpdateNotice } from "@/components/UpdateNotice";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -31,10 +46,10 @@ const VERSION_OPTIONS: { value: VersionFormat; label: string; hint: string }[] =
   { value: "manual", label: "Manuale", hint: "libera" },
 ];
 
-const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
-  { value: "dark", label: "Scuro" },
-  { value: "light", label: "Chiaro" },
-  { value: "system", label: "Sistema" },
+const THEME_OPTIONS: { value: ThemeMode; label: string; icon: typeof Sun }[] = [
+  { value: "system", label: "Sistema", icon: Monitor },
+  { value: "light", label: "Chiaro", icon: Sun },
+  { value: "dark", label: "Scuro", icon: Moon },
 ];
 
 function SettingsPage() {
@@ -42,6 +57,7 @@ function SettingsPage() {
   const { ready, settings, saveSettings } = useAppStore();
   const [draft, setDraft] = useState<AppSettings | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
+  const [newsOpen, setNewsOpen] = useState(false);
 
   if (!ready) return <div className="min-h-screen bg-background" />;
   const current = draft ?? settings;
@@ -66,6 +82,31 @@ function SettingsPage() {
     }
     setDraft(null);
     toast.success("Impostazioni salvate");
+  };
+
+  const shareApp = async () => {
+    const url = window.location.origin;
+    const shareData = {
+      title: APP_CONFIG.name,
+      text: `${APP_CONFIG.name} — ${APP_CONFIG.tagline}`,
+      url,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link di PatchMe copiato");
+    } catch {
+      toast.error("Non riesco a copiare il link su questo dispositivo");
+    }
   };
 
   return (
@@ -108,56 +149,38 @@ function SettingsPage() {
           </div>
         </fieldset>
 
-        <section className="surface-card space-y-3 p-4">
-          <div>
-            <h2 className="font-semibold text-foreground">Guida e aggiornamenti</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Rivedi l'introduzione oppure consulta le novità della versione {APP_CONFIG.version}.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (saveSettings({ ...current, productTourSeen: false })) navigate({ to: "/" });
-              }}
-              className="tap-safe"
-            >
-              Come funziona
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => toast.info(APP_CONFIG.changelog.items.join(" · "))}
-              className="tap-safe"
-            >
-              Novità
-            </Button>
-          </div>
-        </section>
-
         <fieldset className="surface-card p-4">
-          <legend className="px-1 text-sm font-semibold">Tema</legend>
+          <legend className="flex items-center gap-2 px-1 text-sm font-semibold">
+            <Palette className="size-4 text-brand" aria-hidden="true" /> Aspetto
+          </legend>
           <div className="mt-2 grid grid-cols-3 gap-2">
-            {THEME_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                aria-pressed={current.theme === opt.value}
-                onClick={() => update({ theme: opt.value })}
-                className={`tap-safe rounded-lg border px-2 text-sm ${
-                  current.theme === opt.value
-                    ? "border-brand bg-surface-2 text-foreground"
-                    : "border-border text-muted-foreground"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
+            {THEME_OPTIONS.map((opt) => {
+              const Icon = opt.icon;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  aria-pressed={current.theme === opt.value}
+                  onClick={() => update({ theme: opt.value })}
+                  className={`tap-safe relative flex flex-col items-center gap-2 rounded-xl border px-2 py-3 text-sm ${
+                    current.theme === opt.value
+                      ? "border-brand bg-brand/10 text-foreground"
+                      : "border-border text-muted-foreground"
+                  }`}
+                >
+                  <Icon className="size-5" aria-hidden="true" />
+                  {opt.label}
+                  {current.theme === opt.value ? (
+                    <Check
+                      className="absolute right-2 top-2 size-3 text-brand"
+                      aria-hidden="true"
+                    />
+                  ) : null}
+                </button>
+              );
+            })}
           </div>
-        </fieldset>
-
-        <fieldset className="surface-card p-4">
-          <legend className="px-1 text-sm font-semibold">Colore principale</legend>
+          <p className="mt-5 text-xs font-medium text-muted-foreground">Colore principale</p>
           <div className="mt-3 flex flex-wrap gap-3">
             {ACCENTS.map((accent) => (
               <button
@@ -177,8 +200,88 @@ function SettingsPage() {
           </div>
         </fieldset>
 
+        <section className="surface-card overflow-hidden">
+          <div className="border-b border-border px-4 py-3">
+            <h2 className="font-semibold text-foreground">Esperienza</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              if (saveSettings({ ...current, productTourSeen: false })) navigate({ to: "/" });
+            }}
+            className="tap-safe flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left"
+          >
+            <BookOpen className="size-5 text-brand" aria-hidden="true" />
+            <span className="flex-1 text-sm font-medium">Come funziona</span>
+            <span className="text-xs text-muted-foreground">Ripeti l'introduzione</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setNewsOpen(true)}
+            className="tap-safe flex w-full items-center gap-3 px-4 py-3 text-left"
+          >
+            <Sparkles className="size-5 text-brand" aria-hidden="true" />
+            <span className="flex-1 text-sm font-medium">Novità</span>
+            <Badge variant="secondary">0.2.0</Badge>
+          </button>
+        </section>
+
+        <section className="surface-card overflow-hidden">
+          <div className="border-b border-border px-4 py-3">
+            <h2 className="font-semibold text-foreground">Condivisione</h2>
+          </div>
+          <button
+            type="button"
+            onClick={shareApp}
+            className="tap-safe flex w-full items-center gap-3 px-4 py-3 text-left"
+          >
+            {typeof navigator !== "undefined" && navigator.share ? (
+              <Share2 className="size-5 text-brand" aria-hidden="true" />
+            ) : (
+              <Copy className="size-5 text-brand" aria-hidden="true" />
+            )}
+            <span className="flex-1 text-sm font-medium">Condividi PatchMe</span>
+            <span className="text-xs text-muted-foreground">Invita un amico</span>
+          </button>
+        </section>
+
+        <section className="surface-card overflow-hidden">
+          <div className="border-b border-border px-4 py-3">
+            <h2 className="font-semibold text-foreground">Informazioni</h2>
+          </div>
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <span className="text-sm font-medium">Versione corrente</span>
+            <Badge variant="secondary">
+              v{APP_CONFIG.version} {APP_CONFIG.releaseChannel}
+            </Badge>
+          </div>
+          <a
+            href={APP_CONFIG.links.github}
+            target="_blank"
+            rel="noreferrer"
+            className="tap-safe flex items-center gap-3 border-b border-border px-4 py-3"
+          >
+            <Github className="size-5 text-brand" aria-hidden="true" />
+            <span className="flex-1 text-sm font-medium">GitHub</span>
+            <ExternalLink className="size-4 text-muted-foreground" aria-hidden="true" />
+          </a>
+          <a
+            href={APP_CONFIG.links.portfolio}
+            target="_blank"
+            rel="noreferrer"
+            className="tap-safe flex items-center gap-3 px-4 py-3"
+          >
+            <span className="flex size-5 items-center justify-center font-black text-brand">
+              FZ
+            </span>
+            <span className="flex-1 text-sm font-medium">Portfolio</span>
+            <ExternalLink className="size-4 text-muted-foreground" aria-hidden="true" />
+          </a>
+        </section>
+
         <p className="text-center text-xs text-muted-foreground">
-          {APP_CONFIG.name} · fabiozagariadev · dati salvati solo su questo dispositivo
+          Creato da <span className="font-semibold text-foreground">fabiozagariadev</span>
+          <br />I dati restano solo su questo dispositivo
         </p>
       </main>
 
@@ -192,6 +295,8 @@ function SettingsPage() {
           </Button>
         </div>
       </div>
+
+      <UpdateNotice open={newsOpen} onClose={() => setNewsOpen(false)} />
     </div>
   );
 }
