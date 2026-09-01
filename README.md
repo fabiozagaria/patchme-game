@@ -5,7 +5,7 @@
 
   **La tua vita è un gioco. Ogni settimana riceve una patch.**
 
-  [![Status](https://img.shields.io/badge/status-0.2.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+  [![Status](https://img.shields.io/badge/status-0.2.1%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
   [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
   [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
   [![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
@@ -50,7 +50,7 @@ Il simbolo `+` rappresenta miglioramenti e nuove funzionalità, mentre i pixel d
 
 ## Stato del progetto
 
-PatchMe è attualmente in **0.2.0 Alpha**.
+PatchMe è attualmente in **0.2.1 Alpha**.
 
 Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono ancora cambiare. In questa fase il progetto viene testato con un gruppo ristretto di persone e sviluppato a partire dal loro utilizzo reale.
 
