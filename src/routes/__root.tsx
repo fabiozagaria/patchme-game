@@ -15,11 +15,13 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppStoreProvider, useAppStore } from "@/state/app-store";
 import { ThemeController } from "@/components/ThemeController";
 import { IntroSignature, shouldShowIntro } from "@/components/IntroSignature";
+import { PatchyMascot } from "@/components/PatchyMascot";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
+        <PatchyMascot className="mx-auto size-40 object-contain" />
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Pagina non trovata</h2>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -84,7 +86,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#141414" },
       { name: "author", content: "fabiozagariadev" },
       { property: "og:type", content: "website" },
+      {
+        property: "og:image",
+        content: "https://patchme-fabiozagariadev.vercel.app/assets/icon-512.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:image",
+        content: "https://patchme-fabiozagariadev.vercel.app/assets/icon-512.png",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -97,6 +107,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
   shellComponent: RootShell,

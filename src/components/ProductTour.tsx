@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Gamepad2, Share2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PatchyMascot } from "@/components/PatchyMascot";
 
 const STEPS = [
   {
@@ -35,12 +36,16 @@ export function ProductTour({ onDone }: { onDone: () => void }) {
         Salta
       </button>
       <div className="flex flex-1 flex-col items-center justify-center text-center">
-        <div className="mb-7 flex size-20 items-center justify-center rounded-2xl border border-brand/30 bg-brand/10 text-brand">
-          <Icon className="size-10" aria-hidden="true" />
+        <div className="relative mb-5">
+          <PatchyMascot className="size-40 object-contain drop-shadow-[0_12px_30px_rgba(183,255,60,0.16)]" />
+          <span className="absolute bottom-1 right-1 flex size-11 items-center justify-center rounded-xl border border-brand/30 bg-background text-brand shadow-lg">
+            <Icon className="size-5" aria-hidden="true" />
+          </span>
         </div>
         <p className="display text-xs font-extrabold uppercase tracking-[0.3em] text-brand">
           PatchMe
         </p>
+        <p className="mt-2 text-xs font-semibold text-muted-foreground">Ti presento Patchy</p>
         <h1 className="mt-3 text-3xl font-extrabold uppercase leading-tight text-foreground">
           {current.title}
         </h1>
