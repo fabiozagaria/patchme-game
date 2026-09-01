@@ -1,15 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
-import {
-  downloadBlob,
-  renderNodeToPng,
-  safeFileName,
-  shareBlob,
-} from "@/lib/share-image";
+import { downloadBlob, renderNodeToPng, safeFileName, shareBlob } from "@/lib/share-image";
 
 interface ExportTarget {
   version: string;
   title: string;
+  shareText?: string;
 }
 
 /**
@@ -48,8 +44,10 @@ export function useCardExport(target: ExportTarget) {
     setBusy("share");
     try {
       const blob = await capture();
-      const outcome = await shareBlob(blob, fileName, target.title);
+      const outcome = await shareBlob(blob, fileName, target.title, target.shareText ?? "");
       if (outcome === "shared") toast.success("Condivisione avviata");
+      else if (outcome === "downloaded-and-copied")
+        toast.success("Immagine scaricata e messaggio copiato");
       else if (outcome === "downloaded")
         toast.success("Condivisione non disponibile: immagine scaricata");
     } catch {
@@ -57,7 +55,7 @@ export function useCardExport(target: ExportTarget) {
     } finally {
       setBusy(null);
     }
-  }, [busy, capture, fileName, target.title]);
+  }, [busy, capture, fileName, target.shareText, target.title]);
 
   return { nodeRef, busy, saveImage, shareImage };
 }
