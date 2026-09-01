@@ -13,6 +13,7 @@ import {
   Share2,
   Sparkles,
   Sun,
+  Send,
 } from "lucide-react";
 import { APP_CONFIG } from "@/config/app-config";
 import { ACCENTS, type AppSettings, type ThemeMode, type VersionFormat } from "@/lib/patch-model";
@@ -255,6 +256,16 @@ function SettingsPage() {
               v{APP_CONFIG.version} {APP_CONFIG.releaseChannel}
             </Badge>
           </div>
+          <a
+            href={APP_CONFIG.links.telegram}
+            target="_blank"
+            rel="noreferrer"
+            className="tap-safe flex items-center gap-3 border-b border-border px-4 py-3"
+          >
+            <Send className="size-5 text-brand" aria-hidden="true" />
+            <span className="flex-1 text-sm font-medium">Aggiornamenti Telegram</span>
+            <ExternalLink className="size-4 text-muted-foreground" aria-hidden="true" />
+          </a>
           <a
             href={APP_CONFIG.links.github}
             target="_blank"
