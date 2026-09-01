@@ -364,15 +364,20 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={confirmExit} onOpenChange={setConfirmExit}>
+      <AlertDialog
+        open={blocker.status === "blocked"}
+        onOpenChange={(open) => {
+          if (!open) blocker.reset?.();
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Uscire senza salvare?</AlertDialogTitle>
             <AlertDialogDescription>{TEXTS.unsavedConfirm}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Resta qui</AlertDialogCancel>
-            <AlertDialogAction onClick={() => navigate({ to: "/" })}>Esci</AlertDialogAction>
+            <AlertDialogCancel onClick={() => blocker.reset?.()}>Resta qui</AlertDialogCancel>
+            <AlertDialogAction onClick={() => blocker.proceed?.()}>Esci</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
