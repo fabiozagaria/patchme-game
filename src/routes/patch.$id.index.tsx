@@ -20,7 +20,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-
 export const Route = createFileRoute("/patch/$id/")({
   head: () => ({
     meta: [
@@ -60,7 +59,7 @@ function PatchDetailPage() {
         className="pointer-events-none fixed left-[-10000px] top-0"
         style={{ width: EXPORT_WIDTH }}
       >
-        <PatchPreviewCard ref={nodeRef} patch={patch} displayName={settings.displayName} />
+        <PatchPreviewCard ref={nodeRef} patch={patch} displayName={settings.displayName} sharing />
       </div>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
@@ -114,7 +113,6 @@ function PatchDetailPage() {
           </div>
         </div>
       </div>
-
 
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent>
