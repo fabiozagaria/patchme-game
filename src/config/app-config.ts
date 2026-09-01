@@ -20,7 +20,7 @@ export const APP_CONFIG = {
     ],
   },
   links: {
-    github: "https://github.com/fabiozagaria",
+    github: "https://github.com/fabiozagaria/patchme-game",
     portfolio: "https://fabio-zagaria-portfolio.vercel.app",
     telegram: "https://t.me/patchmegame",
   },
