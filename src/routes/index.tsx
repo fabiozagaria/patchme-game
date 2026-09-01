@@ -1,24 +1,185 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { Plus, Settings, Trash2, Pencil } from "lucide-react";
+import { toast } from "sonner";
+import { APP_CONFIG, TEXTS } from "@/config/app-config";
+import { cleanPatch, type Patch } from "@/lib/patch-model";
+import { formatDate } from "@/lib/versioning";
+import { useAppStore } from "@/state/app-store";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "PatchMe — Le patch notes della tua settimana" },
+      {
+        name: "description",
+        content:
+          "PatchMe trasforma i cambiamenti della tua settimana in patch notes personali, in stile aggiornamento di gioco. Tutto sul tuo dispositivo.",
+      },
+      { property: "og:title", content: "PatchMe — Le patch notes della tua settimana" },
+      {
+        property: "og:description",
+        content: "Crea, salva e condividi le patch notes personali della tua settimana.",
+      },
+    ],
+  }),
+  component: ArchivePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function ArchivePage() {
+  const { ready, settings, patches, saveSettings, deletePatch, canPersist } = useAppStore();
+  const navigate = useNavigate();
+  const [pendingDelete, setPendingDelete] = useState<Patch | null>(null);
+
+  if (!ready) return <div className="min-h-screen bg-background" />;
+
+  if (!settings.onboarded) {
+    return <OnboardingWizard onComplete={saveSettings} />;
+  }
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background pb-28">
+      <header className="mx-auto flex max-w-3xl items-start justify-between gap-3 px-4 pb-2 pt-8">
+        <div className="min-w-0">
+          <p className="display text-xs font-extrabold uppercase tracking-[0.3em] text-brand">
+            {APP_CONFIG.name}
+          </p>
+          <h1 className="mt-1 truncate text-2xl font-extrabold uppercase text-foreground">
+            Ciao {settings.displayName || "tu"}
+          </h1>
+          <p className="text-sm text-muted-foreground">{APP_CONFIG.tagline}</p>
+        </div>
+        <Link
+          to="/settings"
+          aria-label="Impostazioni"
+          className="tap-safe flex w-11 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground"
+        >
+          <Settings className="size-5" />
+        </Link>
+      </header>
+
+      {!canPersist && (
+        <p className="mx-auto mt-3 max-w-3xl px-4 text-xs text-destructive">
+          Archiviazione locale non disponibile: le patch non verranno salvate.
+        </p>
+      )}
+
+      <main className="mx-auto max-w-3xl px-4 py-4">
+        {patches.length === 0 ? (
+          <div className="surface-card mt-6 p-8 text-center">
+            <h2 className="text-lg font-semibold text-foreground">{TEXTS.emptyArchiveTitle}</h2>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+              {TEXTS.emptyArchiveBody}
+            </p>
+          </div>
+        ) : (
+          <ul className="space-y-3">
+            {patches.map((patch) => {
+              const clean = cleanPatch(patch);
+              const summary = clean.sections
+                .map((s) => `${s.title || "Sezione"}: ${s.items.length}`)
+                .join(" · ");
+              return (
+                <li key={patch.id} className="surface-card p-4">
+                  <Link
+                    to="/patch/$id"
+                    params={{ id: patch.id }}
+                    className="block focus-visible:outline-none"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <h2 className="min-w-0 flex-1 truncate text-base font-semibold text-foreground">
+                        {patch.title}
+                      </h2>
+                      <span
+                        className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-semibold ${
+                          patch.status === "published"
+                            ? "bg-brand text-brand-foreground"
+                            : "border border-border text-muted-foreground"
+                        }`}
+                      >
+                        {patch.status === "published" ? "Pubblicata" : "Bozza"}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {patch.version} · {formatDate(patch.date)}
+                    </p>
+                    <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                      {summary || "Nessun contenuto"}
+                    </p>
+                  </Link>
+                  <div className="mt-3 flex justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="tap-safe"
+                      onClick={() => navigate({ to: "/patch/$id/edit", params: { id: patch.id } })}
+                    >
+                      <Pencil className="mr-1 size-4" /> Modifica
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="tap-safe text-muted-foreground hover:text-destructive"
+                      onClick={() => setPendingDelete(patch)}
+                    >
+                      <Trash2 className="mr-1 size-4" /> Elimina
+                    </Button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </main>
+
+      <div className="fixed inset-x-0 bottom-0 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-3xl">
+          <Button
+            onClick={() => navigate({ to: "/patch/new" })}
+            className="tap-safe h-12 w-full bg-brand text-base font-bold text-brand-foreground shadow-lg hover:bg-brand/90"
+          >
+            <Plus className="mr-1 size-5" /> Nuova patch
+          </Button>
+        </div>
+      </div>
+
+      <AlertDialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminare “{pendingDelete?.title}”?</AlertDialogTitle>
+            <AlertDialogDescription>{TEXTS.deleteConfirm}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annulla</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingDelete) {
+                  deletePatch(pendingDelete.id);
+                  toast.success("Patch eliminata");
+                }
+                setPendingDelete(null);
+              }}
+            >
+              Elimina
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -10,33 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PatchNewRouteImport } from './routes/patch.new'
+import { Route as PatchIdIndexRouteImport } from './routes/patch.$id.index'
+import { Route as PatchIdEditRouteImport } from './routes/patch.$id.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatchNewRoute = PatchNewRouteImport.update({
+  id: '/patch/new',
+  path: '/patch/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatchIdIndexRoute = PatchIdIndexRouteImport.update({
+  id: '/patch/$id/',
+  path: '/patch/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatchIdEditRoute = PatchIdEditRouteImport.update({
+  id: '/patch/$id/edit',
+  path: '/patch/$id/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
+  '/patch/new': typeof PatchNewRoute
+  '/patch/$id/edit': typeof PatchIdEditRoute
+  '/patch/$id/': typeof PatchIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
+  '/patch/new': typeof PatchNewRoute
+  '/patch/$id/edit': typeof PatchIdEditRoute
+  '/patch/$id': typeof PatchIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
+  '/patch/new': typeof PatchNewRoute
+  '/patch/$id/edit': typeof PatchIdEditRoute
+  '/patch/$id/': typeof PatchIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/settings' | '/patch/new' | '/patch/$id/edit' | '/patch/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/settings' | '/patch/new' | '/patch/$id/edit' | '/patch/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/settings'
+    | '/patch/new'
+    | '/patch/$id/edit'
+    | '/patch/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SettingsRoute: typeof SettingsRoute
+  PatchNewRoute: typeof PatchNewRoute
+  PatchIdEditRoute: typeof PatchIdEditRoute
+  PatchIdIndexRoute: typeof PatchIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +95,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patch/new': {
+      id: '/patch/new'
+      path: '/patch/new'
+      fullPath: '/patch/new'
+      preLoaderRoute: typeof PatchNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patch/$id/': {
+      id: '/patch/$id/'
+      path: '/patch/$id'
+      fullPath: '/patch/$id/'
+      preLoaderRoute: typeof PatchIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patch/$id/edit': {
+      id: '/patch/$id/edit'
+      path: '/patch/$id/edit'
+      fullPath: '/patch/$id/edit'
+      preLoaderRoute: typeof PatchIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SettingsRoute: SettingsRoute,
+  PatchNewRoute: PatchNewRoute,
+  PatchIdEditRoute: PatchIdEditRoute,
+  PatchIdIndexRoute: PatchIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
