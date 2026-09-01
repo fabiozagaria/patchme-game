@@ -2,7 +2,7 @@ import { APP_CONFIG } from "@/config/app-config";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Send, Sparkles } from "lucide-react";
 
 export function UpdateNotice({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
@@ -31,9 +31,17 @@ export function UpdateNotice({ open, onClose }: { open: boolean; onClose: () => 
             </li>
           ))}
         </ul>
-        <Button onClick={onClose} className="tap-safe bg-brand text-brand-foreground">
-          Ho capito
-        </Button>
+        <div className="grid gap-2">
+          <Button asChild variant="outline" className="tap-safe">
+            <a href={APP_CONFIG.links.telegram} target="_blank" rel="noreferrer">
+              <Send className="mr-2 size-4" aria-hidden="true" />
+              Segui gli aggiornamenti
+            </a>
+          </Button>
+          <Button onClick={onClose} className="tap-safe bg-brand text-brand-foreground">
+            Ho capito
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
