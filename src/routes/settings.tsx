@@ -257,6 +257,16 @@ function SettingsPage() {
               v{APP_CONFIG.version} {APP_CONFIG.releaseChannel}
             </Badge>
           </div>
+          <div className="flex items-start gap-3 border-b border-border px-4 py-3">
+            <Sparkles className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden="true" />
+            <div>
+              <p className="text-sm font-medium text-foreground">Sviluppato con assistenza AI</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                L&apos;AI ha supportato progettazione, codice, contenuti e immagini di Patchy. Idea,
+                direzione, test e decisioni finali sono curati da Fabio Zagaria.
+              </p>
+            </div>
+          </div>
           <a
             href={APP_CONFIG.links.telegram}
             target="_blank"
@@ -294,9 +304,10 @@ function SettingsPage() {
         <div className="flex flex-col items-center text-center text-xs text-muted-foreground">
           <PatchyMascot className="size-24 object-contain" decorative />
           <p>
-            Patchy è la mascotte ufficiale di PatchMe
+            Patchy è la mascotte ufficiale di PatchMe ed è stata generata con AI
             <br />
-            Creato da <span className="font-semibold text-foreground">fabiozagariadev</span>
+            Creato e curato da{" "}
+            <span className="font-semibold text-foreground">fabiozagariadev</span>
             <br />I dati restano solo su questo dispositivo
           </p>
         </div>
