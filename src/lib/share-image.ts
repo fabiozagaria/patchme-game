@@ -9,7 +9,7 @@ import { toBlob } from "html-to-image";
 export const EXPORT_WIDTH = 420;
 export const EXPORT_SCALE = 2;
 
-export type ShareOutcome = "shared" | "downloaded" | "cancelled";
+export type ShareOutcome = "shared" | "downloaded" | "downloaded-and-copied" | "cancelled";
 
 export function safeFileName(version: string, fallback = "patch"): string {
   const base = (version || fallback)
@@ -67,22 +67,44 @@ function isAbortError(error: unknown): boolean {
     : error instanceof Error && error.name === "AbortError";
 }
 
-export async function shareBlob(blob: Blob, fileName: string, title: string): Promise<ShareOutcome> {
+async function copyShareText(text: string): Promise<boolean> {
+  try {
+    if (!navigator.clipboard?.writeText) return false;
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function downloadWithTextFallback(
+  blob: Blob,
+  fileName: string,
+  text: string,
+): Promise<ShareOutcome> {
+  downloadBlob(blob, fileName);
+  return (await copyShareText(text)) ? "downloaded-and-copied" : "downloaded";
+}
+
+export async function shareBlob(
+  blob: Blob,
+  fileName: string,
+  title: string,
+  text = "",
+): Promise<ShareOutcome> {
   const file = new File([blob], fileName, { type: "image/png" });
   const nav = typeof navigator !== "undefined" ? navigator : undefined;
   const canShareFiles = Boolean(nav?.canShare?.({ files: [file] }) && nav.share);
 
   if (canShareFiles && nav) {
     try {
-      await nav.share({ files: [file], title });
+      await nav.share({ files: [file], title, text });
       return "shared";
     } catch (error) {
       if (isAbortError(error)) return "cancelled";
-      downloadBlob(blob, fileName);
-      return "downloaded";
+      return downloadWithTextFallback(blob, fileName, text);
     }
   }
 
-  downloadBlob(blob, fileName);
-  return "downloaded";
+  return downloadWithTextFallback(blob, fileName, text);
 }
