@@ -308,20 +308,26 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
       </main>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setPreviewOpen(true)}
-            className="tap-safe flex-1"
-          >
-            Anteprima
-          </Button>
-          <Button variant="secondary" onClick={() => persist("draft")} className="tap-safe flex-1">
-            Salva bozza
-          </Button>
+        <div className="mx-auto flex max-w-3xl flex-col gap-2 sm:flex-row">
+          <div className="flex gap-2 sm:flex-1">
+            <Button
+              variant="outline"
+              onClick={() => setPreviewOpen(true)}
+              className="tap-safe h-11 flex-1"
+            >
+              Anteprima
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => persist("draft")}
+              className="tap-safe h-11 flex-1"
+            >
+              Salva bozza
+            </Button>
+          </div>
           <Button
             onClick={() => persist("published")}
-            className="tap-safe flex-1 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
+            className="tap-safe h-12 w-full bg-brand font-semibold text-brand-foreground hover:bg-brand/90 sm:h-11 sm:w-auto sm:flex-1"
           >
             Pubblica
           </Button>
