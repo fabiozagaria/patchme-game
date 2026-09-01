@@ -1,9 +1,11 @@
 import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { Download, Loader2, Pencil, Share2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { TEXTS } from "@/config/app-config";
 import { useAppStore } from "@/state/app-store";
+import { useCardExport } from "@/hooks/use-card-export";
+import { EXPORT_WIDTH } from "@/lib/share-image";
 import { AppHeader } from "@/components/AppHeader";
 import { PatchPreviewCard } from "@/components/PatchPreviewCard";
 import { Button } from "@/components/ui/button";
@@ -17,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+
 
 export const Route = createFileRoute("/patch/$id/")({
   head: () => ({
