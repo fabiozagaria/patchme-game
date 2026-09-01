@@ -38,9 +38,13 @@ function PatchDetailPage() {
   const { ready, patches, settings, deletePatch } = useAppStore();
   const [confirm, setConfirm] = useState(false);
   const patch = patches.find((p) => p.id === id);
+  const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const { nodeRef, busy, saveImage, shareImage } = useCardExport({
     version: patch?.version ?? "",
     title: patch?.title ?? "PatchMe",
+    shareText: patch
+      ? `La mia patch ${patch.version}: ${patch.title}\n\nCrea la tua su PatchMe: ${appUrl}`
+      : `Crea la tua patch su PatchMe: ${appUrl}`,
   });
 
   if (!ready) return <div className="min-h-screen bg-background" />;
