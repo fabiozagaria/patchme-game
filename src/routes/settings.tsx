@@ -230,7 +230,7 @@ function SettingsPage() {
           >
             <Sparkles className="size-5 text-brand" aria-hidden="true" />
             <span className="flex-1 text-sm font-medium">Novità</span>
-            <Badge variant="secondary">0.2.0</Badge>
+            <Badge variant="secondary">{APP_CONFIG.version}</Badge>
           </button>
         </section>
 
