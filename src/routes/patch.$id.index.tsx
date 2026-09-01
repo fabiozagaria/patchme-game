@@ -126,7 +126,10 @@ function PatchDetailPage() {
             <AlertDialogCancel>Annulla</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                deletePatch(patch.id);
+                if (!deletePatch(patch.id)) {
+                  toast.error("Impossibile eliminare: memoria del dispositivo non disponibile");
+                  return;
+                }
                 toast.success("Patch eliminata");
                 navigate({ to: "/" });
               }}
