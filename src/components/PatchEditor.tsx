@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useBlocker, useNavigate } from "@tanstack/react-router";
-import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { APP_CONFIG, SECTION_PRESETS, presetFor, TEXTS, type SectionCategory } from "@/config/app-config";
+import {
+  APP_CONFIG,
+  SECTION_PRESETS,
+  presetFor,
+  TEXTS,
+  type SectionCategory,
+} from "@/config/app-config";
 import {
   createId,
   createSection,
@@ -62,7 +68,6 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     setPatch((prev) => ({ ...prev, ...next }));
     setDirty(true);
   };
-
 
   const usedCategories = useMemo(
     () => new Set(patch.sections.map((s) => s.category)),
@@ -141,8 +146,6 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
   const requestExit = () => {
     void navigate({ to: "/" });
   };
-
-
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -229,6 +232,32 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
                     {section.title}
                   </h2>
                 )}
+                <button
+                  type="button"
+                  aria-label={
+                    section.shareVisible
+                      ? "Escludi sezione dalla condivisione"
+                      : "Includi sezione nella condivisione"
+                  }
+                  aria-pressed={section.shareVisible}
+                  title={section.shareVisible ? "Visibile nell'immagine" : "Privata"}
+                  onClick={() =>
+                    update({
+                      sections: patch.sections.map((item) =>
+                        item.id === section.id
+                          ? { ...item, shareVisible: !item.shareVisible }
+                          : item,
+                      ),
+                    })
+                  }
+                  className={`tap-safe flex w-9 items-center justify-center rounded-md ${section.shareVisible ? "text-brand" : "text-muted-foreground"}`}
+                >
+                  {section.shareVisible ? (
+                    <Eye className="size-4" />
+                  ) : (
+                    <EyeOff className="size-4" />
+                  )}
+                </button>
                 <button
                   type="button"
                   aria-label="Sposta sezione su"
@@ -366,7 +395,7 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
           <DialogHeader>
             <DialogTitle>Anteprima</DialogTitle>
           </DialogHeader>
-          <PatchPreviewCard patch={patch} displayName={settings.displayName} />
+          <PatchPreviewCard patch={patch} displayName={settings.displayName} sharing />
         </DialogContent>
       </Dialog>
 
