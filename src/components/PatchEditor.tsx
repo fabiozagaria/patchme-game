@@ -133,14 +133,15 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     }
     setPatch(saved);
     setDirty(false);
+    bypassGuard.current = true;
     toast.success(status === "published" ? "Patch pubblicata" : "Bozza salvata");
     navigate({ to: "/patch/$id", params: { id: saved.id } });
   };
 
   const requestExit = () => {
-    if (dirty) setConfirmExit(true);
-    else navigate({ to: "/" });
+    void navigate({ to: "/" });
   };
+
 
 
   return (
