@@ -54,7 +54,15 @@ function SettingsPage() {
       toast.error("Controlla i campi evidenziati");
       return;
     }
-    saveSettings({ ...current, displayName: current.displayName.trim(), onboarded: true });
+    const ok = saveSettings({
+      ...current,
+      displayName: current.displayName.trim(),
+      onboarded: true,
+    });
+    if (!ok) {
+      toast.error("Salvataggio non riuscito: memoria del dispositivo non disponibile");
+      return;
+    }
     setDraft(null);
     toast.success("Impostazioni salvate");
   };

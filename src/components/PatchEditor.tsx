@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useBlocker, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { APP_CONFIG, SECTION_PRESETS, presetFor, TEXTS, type SectionCategory } from "@/config/app-config";
@@ -36,14 +36,33 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
   const [patch, setPatch] = useState<Patch>(initialPatch);
   const [errors, setErrors] = useState<PatchErrors>({});
   const [dirty, setDirty] = useState(isNew);
-  const [confirmExit, setConfirmExit] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [picker, setPicker] = useState(false);
+  const bypassGuard = useRef(false);
+
+  // Protezione modifiche non salvate: refresh / chiusura scheda.
+  useEffect(() => {
+    if (!dirty) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
+  // Protezione navigazione interna (router + back/forward del browser).
+  const blocker = useBlocker({
+    shouldBlockFn: () => dirty && !bypassGuard.current,
+    enableBeforeUnload: false,
+    withResolver: true,
+  });
 
   const update = (next: Partial<Patch>) => {
     setPatch((prev) => ({ ...prev, ...next }));
     setDirty(true);
   };
+
 
   const usedCategories = useMemo(
     () => new Set(patch.sections.map((s) => s.category)),
@@ -108,17 +127,22 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     }
     const cleaned = cleanPatch(candidate);
     const saved: Patch = { ...cleaned, updatedAt: new Date().toISOString() };
-    savePatch(saved);
+    if (!savePatch(saved)) {
+      toast.error("Salvataggio non riuscito: memoria del dispositivo non disponibile");
+      return;
+    }
     setPatch(saved);
     setDirty(false);
+    bypassGuard.current = true;
     toast.success(status === "published" ? "Patch pubblicata" : "Bozza salvata");
     navigate({ to: "/patch/$id", params: { id: saved.id } });
   };
 
   const requestExit = () => {
-    if (dirty) setConfirmExit(true);
-    else navigate({ to: "/" });
+    void navigate({ to: "/" });
   };
+
+
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -284,20 +308,26 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
       </main>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setPreviewOpen(true)}
-            className="tap-safe flex-1"
-          >
-            Anteprima
-          </Button>
-          <Button variant="secondary" onClick={() => persist("draft")} className="tap-safe flex-1">
-            Salva bozza
-          </Button>
+        <div className="mx-auto flex max-w-3xl flex-col gap-2 sm:flex-row">
+          <div className="flex gap-2 sm:flex-1">
+            <Button
+              variant="outline"
+              onClick={() => setPreviewOpen(true)}
+              className="tap-safe h-11 flex-1"
+            >
+              Anteprima
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => persist("draft")}
+              className="tap-safe h-11 flex-1"
+            >
+              Salva bozza
+            </Button>
+          </div>
           <Button
             onClick={() => persist("published")}
-            className="tap-safe flex-1 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
+            className="tap-safe h-12 w-full bg-brand font-semibold text-brand-foreground hover:bg-brand/90 sm:h-11 sm:w-auto sm:flex-1"
           >
             Pubblica
           </Button>
@@ -340,15 +370,20 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={confirmExit} onOpenChange={setConfirmExit}>
+      <AlertDialog
+        open={blocker.status === "blocked"}
+        onOpenChange={(open) => {
+          if (!open) blocker.reset?.();
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Uscire senza salvare?</AlertDialogTitle>
             <AlertDialogDescription>{TEXTS.unsavedConfirm}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Resta qui</AlertDialogCancel>
-            <AlertDialogAction onClick={() => navigate({ to: "/" })}>Esci</AlertDialogAction>
+            <AlertDialogCancel onClick={() => blocker.reset?.()}>Resta qui</AlertDialogCancel>
+            <AlertDialogAction onClick={() => blocker.proceed?.()}>Esci</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

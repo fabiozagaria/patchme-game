@@ -169,8 +169,11 @@ function ArchivePage() {
             <AlertDialogAction
               onClick={() => {
                 if (pendingDelete) {
-                  deletePatch(pendingDelete.id);
-                  toast.success("Patch eliminata");
+                  if (deletePatch(pendingDelete.id)) toast.success("Patch eliminata");
+                  else
+                    toast.error(
+                      "Eliminazione non riuscita: memoria del dispositivo non disponibile",
+                    );
                 }
                 setPendingDelete(null);
               }}
