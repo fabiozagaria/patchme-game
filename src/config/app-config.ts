@@ -7,14 +7,21 @@
 export const APP_CONFIG = {
   name: "PatchMe",
   tagline: "Le patch notes della tua settimana",
-  version: "1.1.0",
+  version: "0.2.0",
+  releaseChannel: "Alpha",
   changelog: {
-    title: "La prima esperienza è più chiara e la condivisione più privata.",
+    date: "1 settembre 2026",
+    title: "PatchMe entra ufficialmente in Alpha.",
     items: [
-      "Introduzione rapida al gioco",
-      "Creazione guidata della prima patch",
-      "Sezioni escluse dalla condivisione",
+      "Tema chiaro, scuro o sincronizzato con il dispositivo",
+      "Impostazioni e sezione Novità riorganizzate",
+      "Firma, versione e collegamenti ufficiali sempre accessibili",
+      "Condivisione rapida di PatchMe con amici e tester",
     ],
+  },
+  links: {
+    github: "https://github.com/fabiozagaria",
+    portfolio: "https://fabio-zagaria-portfolio.vercel.app",
   },
   signature: {
     enabled: true,
