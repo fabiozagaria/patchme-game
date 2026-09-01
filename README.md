@@ -6,6 +6,7 @@
   **La tua vita è un gioco. Ogni settimana riceve una patch.**
 
   [![Status](https://img.shields.io/badge/status-0.2.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+  [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
   [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
   [![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
 
@@ -82,6 +83,14 @@ Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono
 
 La versione Alpha non invia le patch a un server. Impostazioni e contenuti restano nel `localStorage` del dispositivo, salvo quando l'utente decide volontariamente di esportare o condividere un'immagine.
 
+## Uso dell'intelligenza artificiale
+
+PatchMe è un progetto sviluppato con il supporto di strumenti di intelligenza artificiale.
+
+L'AI è stata utilizzata per assistere la progettazione, la generazione e revisione del codice, la scrittura di alcuni contenuti e la creazione delle immagini di Patchy. Idea, direzione del prodotto, scelte funzionali, test e decisioni finali sono curati da [Fabio Zagaria](https://github.com/fabiozagaria).
+
+Il codice generato o suggerito viene verificato tramite build, lint e test manuali prima della pubblicazione.
+
 ## Stack tecnico
 
 - React 19 e TypeScript;
@@ -101,8 +110,8 @@ Requisiti:
 - npm.
 
 ```bash
-git clone https://github.com/fabiozagaria/patchme-fabiozagariadev.git
-cd patchme-fabiozagariadev
+git clone https://github.com/fabiozagaria/patchme-game.git
+cd patchme-game
 npm install
 npm run dev
 ```
