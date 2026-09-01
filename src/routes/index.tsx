@@ -7,6 +7,9 @@ import { cleanPatch, type Patch } from "@/lib/patch-model";
 import { formatDate } from "@/lib/versioning";
 import { useAppStore } from "@/state/app-store";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
+import { ProductTour } from "@/components/ProductTour";
+import { UpdateNotice } from "@/components/UpdateNotice";
+import { GuidedPatchWizard, type GuidedAnswer } from "@/components/GuidedPatchWizard";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -42,12 +45,23 @@ function ArchivePage() {
   const { ready, settings, patches, saveSettings, deletePatch, canPersist } = useAppStore();
   const navigate = useNavigate();
   const [pendingDelete, setPendingDelete] = useState<Patch | null>(null);
+  const [createChoice, setCreateChoice] = useState(false);
+  const [guided, setGuided] = useState(false);
 
   if (!ready) return <div className="min-h-screen bg-background" />;
+
+  if (!settings.productTourSeen) {
+    return <ProductTour onDone={() => saveSettings({ ...settings, productTourSeen: true })} />;
+  }
 
   if (!settings.onboarded) {
     return <OnboardingWizard onComplete={saveSettings} />;
   }
+
+  const finishGuided = (answers: GuidedAnswer[]) => {
+    window.sessionStorage.setItem("patchme.guided.answers", JSON.stringify(answers));
+    navigate({ to: "/patch/new" });
+  };
 
   return (
     <div className="min-h-screen bg-background pb-28">
@@ -147,7 +161,7 @@ function ArchivePage() {
       <div className="fixed inset-x-0 bottom-0 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto max-w-3xl">
           <Button
-            onClick={() => navigate({ to: "/patch/new" })}
+            onClick={() => setCreateChoice(true)}
             className="tap-safe h-12 w-full bg-brand text-base font-bold text-brand-foreground shadow-lg hover:bg-brand/90"
           >
             <Plus className="mr-1 size-5" /> Nuova patch
@@ -183,6 +197,39 @@ function ArchivePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {guided && <GuidedPatchWizard onCancel={() => setGuided(false)} onComplete={finishGuided} />}
+      <AlertDialog open={createChoice} onOpenChange={setCreateChoice}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Come vuoi creare la patch?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Puoi rispondere a cinque domande oppure partire dall'editor vuoto.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="grid gap-2">
+            <Button
+              onClick={() => {
+                setCreateChoice(false);
+                setGuided(true);
+              }}
+              className="tap-safe bg-brand text-brand-foreground"
+            >
+              Creazione guidata
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate({ to: "/patch/new" })}
+              className="tap-safe"
+            >
+              Crea liberamente
+            </Button>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+      <UpdateNotice
+        open={settings.lastSeenVersion !== APP_CONFIG.version}
+        onClose={() => saveSettings({ ...settings, lastSeenVersion: APP_CONFIG.version })}
+      />
     </div>
   );
 }

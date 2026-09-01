@@ -7,6 +7,15 @@
 export const APP_CONFIG = {
   name: "PatchMe",
   tagline: "Le patch notes della tua settimana",
+  version: "1.1.0",
+  changelog: {
+    title: "La prima esperienza è più chiara e la condivisione più privata.",
+    items: [
+      "Introduzione rapida al gioco",
+      "Creazione guidata della prima patch",
+      "Sezioni escluse dalla condivisione",
+    ],
+  },
   signature: {
     enabled: true,
     lines: ["fabio", "zagaria", "dev"] as const,
@@ -26,13 +35,7 @@ export const APP_CONFIG = {
 } as const;
 
 export type SectionCategory =
-  | "news"
-  | "improvements"
-  | "fixes"
-  | "known"
-  | "removed"
-  | "next"
-  | "custom";
+  "news" | "improvements" | "fixes" | "known" | "removed" | "next" | "custom";
 
 export interface SectionPreset {
   category: SectionCategory;
@@ -51,14 +54,24 @@ export const SECTION_PRESETS: readonly SectionPreset[] = [
     token: "cat-improvements",
   },
   { category: "fixes", label: "Correzioni", hint: "Cosa hai sistemato", token: "cat-fixes" },
-  { category: "known", label: "Bug conosciuti", hint: "Cosa resta da risolvere", token: "cat-known" },
+  {
+    category: "known",
+    label: "Bug conosciuti",
+    hint: "Cosa resta da risolvere",
+    token: "cat-known",
+  },
   {
     category: "removed",
     label: "Funzionalità rimosse",
     hint: "Cosa hai smesso di fare",
     token: "cat-removed",
   },
-  { category: "next", label: "Prossimo aggiornamento", hint: "Cosa arriva dopo", token: "cat-next" },
+  {
+    category: "next",
+    label: "Prossimo aggiornamento",
+    hint: "Cosa arriva dopo",
+    token: "cat-next",
+  },
   {
     category: "custom",
     label: "Sezione personalizzata",

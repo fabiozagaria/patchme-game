@@ -25,6 +25,7 @@ export const patchSectionSchema = z.object({
   category: sectionCategorySchema,
   title: z.string(),
   items: z.array(patchItemSchema),
+  shareVisible: z.boolean().default(true),
 });
 
 export const patchSchema = z.object({
@@ -44,6 +45,8 @@ export const settingsSchema = z.object({
   theme: z.enum(["dark", "light", "system"]),
   accent: z.string(),
   onboarded: z.boolean(),
+  productTourSeen: z.boolean().default(false),
+  lastSeenVersion: z.string().default(""),
 });
 
 export type PatchItem = z.infer<typeof patchItemSchema>;
@@ -65,6 +68,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   theme: "dark",
   accent: "oklch(0.84 0.19 128)",
   onboarded: false,
+  productTourSeen: false,
+  lastSeenVersion: "",
 };
 
 export function createId(): string {
@@ -73,7 +78,13 @@ export function createId(): string {
 }
 
 export function createSection(category: SectionCategory, title: string): PatchSection {
-  return { id: createId(), category, title, items: [{ id: createId(), text: "" }] };
+  return {
+    id: createId(),
+    category,
+    title,
+    items: [{ id: createId(), text: "" }],
+    shareVisible: true,
+  };
 }
 
 export function sectionHasContent(section: PatchSection): boolean {

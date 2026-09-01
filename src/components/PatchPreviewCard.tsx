@@ -6,6 +6,7 @@ import { formatDate } from "@/lib/versioning";
 interface PatchPreviewCardProps {
   patch: Patch;
   displayName: string;
+  sharing?: boolean;
 }
 
 /**
@@ -13,8 +14,11 @@ interface PatchPreviewCardProps {
  * futura esportazione immagine (nessuna dipendenza aggiuntiva per ora).
  */
 export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps>(
-  function PatchPreviewCard({ patch, displayName }, ref) {
+  function PatchPreviewCard({ patch, displayName, sharing = false }, ref) {
     const clean = cleanPatch(patch);
+    const visibleSections = sharing
+      ? clean.sections.filter((section) => section.shareVisible)
+      : clean.sections;
 
     return (
       <div
@@ -39,12 +43,12 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
         <p className="mt-1 text-xs text-muted-foreground">{formatDate(clean.date)}</p>
 
         <div className="mt-5 space-y-5">
-          {clean.sections.length === 0 && (
+          {visibleSections.length === 0 && (
             <p className="text-sm text-muted-foreground">
               Nessuna sezione compilata: aggiungi almeno un elemento.
             </p>
           )}
-          {clean.sections.map((section) => {
+          {visibleSections.map((section) => {
             const preset = presetFor(section.category);
             return (
               <section key={section.id}>

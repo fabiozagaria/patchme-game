@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { APP_CONFIG } from "@/config/app-config";
@@ -38,6 +38,7 @@ const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
 ];
 
 function SettingsPage() {
+  const navigate = useNavigate();
   const { ready, settings, saveSettings } = useAppStore();
   const [draft, setDraft] = useState<AppSettings | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -107,6 +108,33 @@ function SettingsPage() {
           </div>
         </fieldset>
 
+        <section className="surface-card space-y-3 p-4">
+          <div>
+            <h2 className="font-semibold text-foreground">Guida e aggiornamenti</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Rivedi l'introduzione oppure consulta le novità della versione {APP_CONFIG.version}.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (saveSettings({ ...current, productTourSeen: false })) navigate({ to: "/" });
+              }}
+              className="tap-safe"
+            >
+              Come funziona
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => toast.info(APP_CONFIG.changelog.items.join(" · "))}
+              className="tap-safe"
+            >
+              Novità
+            </Button>
+          </div>
+        </section>
+
         <fieldset className="surface-card p-4">
           <legend className="px-1 text-sm font-semibold">Tema</legend>
           <div className="mt-2 grid grid-cols-3 gap-2">
@@ -139,7 +167,9 @@ function SettingsPage() {
                 aria-pressed={current.accent === accent.value}
                 onClick={() => update({ accent: accent.value })}
                 className={`size-11 rounded-full border-2 ${
-                  current.accent === accent.value ? "border-foreground scale-105" : "border-transparent"
+                  current.accent === accent.value
+                    ? "border-foreground scale-105"
+                    : "border-transparent"
                 }`}
                 style={{ backgroundColor: accent.value }}
               />
