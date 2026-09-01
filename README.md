@@ -1,119 +1,142 @@
-# Patch Notes Studio
+<div align="center">
+  <img src="public/assets/patchy-mascot.png" alt="Patchy, la mascotte di PatchMe" width="220" />
 
-Crea una web app mobile-first chiamata PatchMe.
+  # PatchMe
 
-OBIETTIVO
-PatchMe trasforma i cambiamenti della settimana in patch notes personali ispirate agli aggiornamenti dei videogiochi. Deve essere realmente usabile da smartphone e predisposta a diventare un'app Android tramite Capacitor.
+  **La tua vita è un gioco. Ogni settimana riceve una patch.**
 
-INTRO OBBLIGATORIA
-All'avvio mostra per circa 1,2 secondi:
-fabio
-zagaria
-dev
-su tre righe, compatta, centrata, robusta, con animazione originale e d'impatto, adatta a tema chiaro/scuro. Non copiare logo, font, suoni o animazioni di Supercell. Mostrala solo al caricamento iniziale, non durante la navigazione.
+  [![Status](https://img.shields.io/badge/status-0.2.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+  [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
+  [![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
 
-PRIMO AVVIO
-Nessun dato demo permanente. Se è il primo avvio mostra una configurazione vuota con:
-- nome visualizzato;
-- formato versione: anno/settimana (es. v26.36), sequenziale (v1.0), manuale;
-- tema chiaro, scuro o sistema;
-- colore principale.
-Tutto deve essere modificabile nelle impostazioni.
-In questa versione salva configurazione e patch localmente sul dispositivo. Non aggiungere autenticazione, Supabase o backend.
+  [Prova PatchMe](https://patchme-fabiozagariadev.vercel.app) · [Aggiornamenti Telegram](https://t.me/patchmegame)
+</div>
 
-HOME / ARCHIVIO
-- saluto discreto;
-- pulsante evidente “Nuova patch”;
-- elenco patch dalla più recente;
-- stato vuoto curato;
-- ogni scheda mostra titolo, versione, data, stato bozza/pubblicata e riepilogo;
-- apertura, modifica ed eliminazione con conferma;
-- accesso alle impostazioni.
-Non creare patch di esempio.
+## Cos'è PatchMe
 
-MODELLO PATCH
-Ogni patch contiene id univoco, titolo, versione, data, stato bozza/pubblicata, sezioni ordinate, createdAt e updatedAt.
-Sezioni predefinite:
-- Novità
-- Miglioramenti
-- Correzioni
-- Bug conosciuti
-- Funzionalità rimosse
-- Prossimo aggiornamento
-- Sezione personalizzata
+PatchMe trasforma i cambiamenti della settimana in patch notes personali ispirate agli aggiornamenti dei videogiochi.
 
-EDITOR
-Permetti di:
-- aggiungere/rimuovere/riordinare sezioni;
-- aggiungere, modificare ed eliminare più elementi testuali in ogni sezione;
-- creare sezioni personalizzate;
-- salvare come bozza;
-- pubblicare;
-- aprire l’anteprima;
-- uscire con conferma se ci sono modifiche non salvate.
-Non salvare elementi completamente vuoti.
+Puoi raccontare novità, miglioramenti, problemi risolti, bug ancora aperti e ciò che vuoi aggiungere nella tua prossima versione. Alla fine ottieni una scheda grafica pronta da salvare e condividere.
 
-VALIDAZIONE
-Titolo e versione obbligatori. Una patch pubblicata deve contenere almeno una sezione con un elemento valido. Errori vicino ai campi, messaggi brevi dopo salvataggio/errore. L'app non deve rompersi con local storage assente o dati non validi.
+Il progetto è mobile-first, non richiede registrazione e conserva i dati direttamente nel browser.
 
-ANTEPRIMA
-Crea una scheda grafica condivisibile con nome, titolo, versione, data, sole sezioni non vuote e piccolo marchio PatchMe. Predisponi il componente per una futura esportazione immagine, senza aggiungere ora dipendenze instabili.
+## Funzionalità
 
-DESIGN
-Interfaccia videoludica moderna, originale ed elegante:
-- tema scuro predefinito;
-- fondo grafite quasi nero;
-- superfici leggermente più chiare;
-- bianco caldo;
-- verde acido controllato come accento;
-- colori accessibili per categorie;
-- bordi sottili, ombre leggere, angoli moderati;
-- animazioni rapide.
-Evita cyberpunk eccessivo, neon inutili, immagini stock, emoji usate come icone, testo minuscolo e copie di giochi esistenti.
-Garantisci contrasto, focus visibile, label e touch target comodi.
+- tour introduttivo e configurazione iniziale;
+- creazione libera oppure guidata tramite cinque domande;
+- patch in stato bozza o pubblicata;
+- sezioni predefinite, personalizzabili e riordinabili;
+- elementi testuali multipli per ogni sezione;
+- visibilità separata delle sezioni nelle immagini condivise;
+- anteprima ed esportazione della patch come immagine;
+- archivio locale con modifica ed eliminazione;
+- temi chiaro, scuro e sincronizzato con il dispositivo;
+- colori principali personalizzabili;
+- condivisione nativa dell'app con fallback copia-link;
+- sezione Novità e collegamento al canale Telegram;
+- PWA installabile con icone dedicate;
+- interfaccia responsive e ottimizzata per smartphone.
 
-ARCHITETTURA
-TypeScript tipizzato, evita any. Separa componenti, modelli, stato, validazione, configurazione, temi, logica versioni e persistenza. Centralizza nome PatchMe, firma fabio/zagaria/dev, colori, durata intro, categorie e testi. Usa un servizio/repository dedicato per la persistenza locale invece di accedere a localStorage ovunque.
+## Patchy
 
-RESPONSIVE
-Mobile-first per Android: verifica 360px, 390px, tablet e desktop. Navigazione semplice e sicura nelle aree del telefono.
+Patchy è la mascotte ufficiale di PatchMe: una piccola creatura digitale nata da un aggiornamento.
 
-NON AGGIUNGERE
-Autenticazione, Supabase, social, follower, commenti, pubblicità, abbonamenti, IA, notifiche, classifiche o dati demo.
+Il simbolo `+` rappresenta miglioramenti e nuove funzionalità, mentre i pixel dell'antenna reagiscono ai diversi momenti dell'app.
 
-CRITERI DI ACCETTAZIONE
-Il flusso deve funzionare interamente:
-1. intro;
-2. configurazione vuota;
-3. archivio vuoto;
-4. creazione patch con titolo/versione/sezione/elemento;
-5. salvataggio bozza;
-6. persistenza dopo riapertura;
-7. modifica;
-8. pubblicazione;
-9. anteprima;
-10. eliminazione con conferma.
-Implementa e verifica questo flusso prima di aggiungere qualunque altra funzione.
+| Classico | Pensieroso | Festeggia | Bug trovato |
+| --- | --- | --- | --- |
+| ![Patchy classico](public/assets/patchy-mascot.png) | ![Patchy pensieroso](public/assets/patchy-thinking.png) | ![Patchy festeggia](public/assets/patchy-celebrate.png) | ![Patchy buggato](public/assets/patchy-bug.png) |
 
-This project was built with [Lovable](https://lovable.dev).
+## Stato del progetto
 
-**Live app**: https://patchme-fabiozagariadev.lovable.app
+PatchMe è attualmente in **0.2.0 Alpha**.
 
-## Build with Lovable
+Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono ancora cambiare. In questa fase il progetto viene testato con un gruppo ristretto di persone e sviluppato a partire dal loro utilizzo reale.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/66393695-78bf-4732-83ed-7ac9f5464f8d).
+### Limiti attuali
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+- i dati sono salvati soltanto nel browser utilizzato;
+- cancellando i dati del sito si perdono impostazioni e patch;
+- non esistono ancora account o sincronizzazione tra dispositivi;
+- i link pubblici alle singole patch non sono ancora disponibili.
 
-## Development
+## Roadmap
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+### Prossimi aggiornamenti
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+- condivisione di immagine e link in un'unica azione;
+- pagine pubbliche per le patch;
+- scheda personaggio con classe, livello e statistiche;
+- achievement e recap periodici;
+- nuove pose ed espressioni di Patchy.
+
+### Più avanti
+
+- autenticazione e recupero dell'account;
+- database e sincronizzazione tra dispositivi;
+- profili, lore personale e personaggi collegati;
+- reazioni tematiche e patch di gruppo;
+- applicazione Android.
+
+## Privacy
+
+La versione Alpha non invia le patch a un server. Impostazioni e contenuti restano nel `localStorage` del dispositivo, salvo quando l'utente decide volontariamente di esportare o condividere un'immagine.
+
+## Stack tecnico
+
+- React 19 e TypeScript;
+- TanStack Start e TanStack Router;
+- Vite;
+- Tailwind CSS;
+- Radix UI;
+- Zod;
+- `html-to-image`;
+- Vercel per il deploy.
+
+## Avvio locale
+
+Requisiti:
+
+- Node.js;
+- npm.
+
+```bash
+git clone https://github.com/fabiozagaria/patchme-fabiozagariadev.git
+cd patchme-fabiozagariadev
+npm install
 npm run dev
 ```
+
+Comandi disponibili:
+
+```bash
+npm run dev      # server di sviluppo
+npm run build    # build di produzione
+npm run preview  # anteprima della build
+npm run lint     # controllo del codice
+npm run format   # formattazione
+```
+
+## Struttura principale
+
+```text
+src/
+├── components/   Componenti dell'interfaccia e Patchy
+├── config/       Configurazione centrale dell'app
+├── lib/          Modelli, validazione, persistenza ed esportazione
+├── routes/       Pagine TanStack Router
+└── state/        Stato globale dell'app
+
+public/
+└── assets/       Mascotte, pose e icone installabili
+```
+
+## Feedback
+
+PatchMe cresce attraverso utilizzo reale e feedback concreti. Se trovi un bug o hai un'idea, puoi segnalarla tramite GitHub oppure seguire gli aggiornamenti su [@patchmegame](https://t.me/patchmegame).
+
+---
+
+<div align="center">
+  Creato da <a href="https://github.com/fabiozagaria">fabiozagariadev</a> con l'aiuto di Patchy 💚
+</div>
