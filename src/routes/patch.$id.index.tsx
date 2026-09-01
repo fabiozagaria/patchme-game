@@ -38,36 +38,83 @@ function PatchDetailPage() {
   const navigate = useNavigate();
   const { ready, patches, settings, deletePatch } = useAppStore();
   const [confirm, setConfirm] = useState(false);
+  const patch = patches.find((p) => p.id === id);
+  const { nodeRef, busy, saveImage, shareImage } = useCardExport({
+    version: patch?.version ?? "",
+    title: patch?.title ?? "PatchMe",
+  });
 
   if (!ready) return <div className="min-h-screen bg-background" />;
-
-  const patch = patches.find((p) => p.id === id);
   if (!patch) return <Navigate to="/" />;
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background pb-40">
       <AppHeader title={patch.title} subtitle={`${patch.version}`} backTo="/" />
       <main className="mx-auto max-w-md px-4 py-5">
         <PatchPreviewCard patch={patch} displayName={settings.displayName} />
       </main>
 
+      {/* Nodo dedicato alla cattura: larghezza logica fissa, fuori schermo. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed left-[-10000px] top-0"
+        style={{ width: EXPORT_WIDTH }}
+      >
+        <PatchPreviewCard ref={nodeRef} patch={patch} displayName={settings.displayName} />
+      </div>
+
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
-        <div className="mx-auto flex max-w-md gap-2">
-          <Button
-            variant="outline"
-            className="tap-safe flex-1 text-muted-foreground hover:text-destructive"
-            onClick={() => setConfirm(true)}
-          >
-            <Trash2 className="mr-1 size-4" /> Elimina
-          </Button>
-          <Button
-            className="tap-safe flex-1 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
-            onClick={() => navigate({ to: "/patch/$id/edit", params: { id: patch.id } })}
-          >
-            <Pencil className="mr-1 size-4" /> Modifica
-          </Button>
+        <div className="mx-auto flex max-w-md flex-col gap-2">
+          <div className="flex gap-2">
+            <Button
+              variant="secondary"
+              disabled={busy !== null}
+              aria-label="Salva immagine PNG della patch"
+              aria-busy={busy === "save"}
+              className="tap-safe h-11 flex-1"
+              onClick={() => void saveImage()}
+            >
+              {busy === "save" ? (
+                <Loader2 className="mr-1 size-4 animate-spin" />
+              ) : (
+                <Download className="mr-1 size-4" />
+              )}
+              Salva immagine
+            </Button>
+            <Button
+              variant="secondary"
+              disabled={busy !== null}
+              aria-label="Condividi immagine PNG della patch"
+              aria-busy={busy === "share"}
+              className="tap-safe h-11 flex-1"
+              onClick={() => void shareImage()}
+            >
+              {busy === "share" ? (
+                <Loader2 className="mr-1 size-4 animate-spin" />
+              ) : (
+                <Share2 className="mr-1 size-4" />
+              )}
+              Condividi
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="tap-safe h-11 flex-1 text-muted-foreground hover:text-destructive"
+              onClick={() => setConfirm(true)}
+            >
+              <Trash2 className="mr-1 size-4" /> Elimina
+            </Button>
+            <Button
+              className="tap-safe h-11 flex-1 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
+              onClick={() => navigate({ to: "/patch/$id/edit", params: { id: patch.id } })}
+            >
+              <Pencil className="mr-1 size-4" /> Modifica
+            </Button>
+          </div>
         </div>
       </div>
+
 
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent>
