@@ -10,6 +10,7 @@ import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { ProductTour } from "@/components/ProductTour";
 import { UpdateNotice } from "@/components/UpdateNotice";
 import { GuidedPatchWizard, type GuidedAnswer } from "@/components/GuidedPatchWizard";
+import { PatchyMascot } from "@/components/PatchyMascot";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -93,6 +94,7 @@ function ArchivePage() {
       <main className="mx-auto max-w-3xl px-4 py-4">
         {patches.length === 0 ? (
           <div className="surface-card mt-6 p-8 text-center">
+            <PatchyMascot className="mx-auto mb-2 size-40 object-contain" />
             <h2 className="text-lg font-semibold text-foreground">{TEXTS.emptyArchiveTitle}</h2>
             <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
               {TEXTS.emptyArchiveBody}

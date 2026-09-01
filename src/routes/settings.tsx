@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { UpdateNotice } from "@/components/UpdateNotice";
+import { PatchyMascot } from "@/components/PatchyMascot";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -290,10 +291,15 @@ function SettingsPage() {
           </a>
         </section>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Creato da <span className="font-semibold text-foreground">fabiozagariadev</span>
-          <br />I dati restano solo su questo dispositivo
-        </p>
+        <div className="flex flex-col items-center text-center text-xs text-muted-foreground">
+          <PatchyMascot className="size-24 object-contain" decorative />
+          <p>
+            Patchy è la mascotte ufficiale di PatchMe
+            <br />
+            Creato da <span className="font-semibold text-foreground">fabiozagariadev</span>
+            <br />I dati restano solo su questo dispositivo
+          </p>
+        </div>
       </main>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">

@@ -3,14 +3,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Check, Send, Sparkles } from "lucide-react";
+import { PatchyMascot } from "@/components/PatchyMascot";
 
 export function UpdateNotice({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-brand/15 text-brand">
-            <Sparkles className="size-5" aria-hidden="true" />
+          <div className="mb-1 flex items-end gap-2">
+            <PatchyMascot className="size-24 object-contain" decorative />
+            <span className="mb-3 flex size-9 items-center justify-center rounded-xl bg-brand/15 text-brand">
+              <Sparkles className="size-4" aria-hidden="true" />
+            </span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <DialogTitle>Novità in PatchMe</DialogTitle>
