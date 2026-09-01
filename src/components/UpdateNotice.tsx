@@ -11,7 +11,7 @@ export function UpdateNotice({ open, onClose }: { open: boolean; onClose: () => 
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <div className="mb-1 flex items-end gap-2">
-            <PatchyMascot className="size-24 object-contain" decorative />
+            <PatchyMascot className="size-24 object-contain" pose="celebrate" decorative />
             <span className="mb-3 flex size-9 items-center justify-center rounded-xl bg-brand/15 text-brand">
               <Sparkles className="size-4" aria-hidden="true" />
             </span>

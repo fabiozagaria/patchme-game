@@ -94,7 +94,7 @@ function ArchivePage() {
       <main className="mx-auto max-w-3xl px-4 py-4">
         {patches.length === 0 ? (
           <div className="surface-card mt-6 p-8 text-center">
-            <PatchyMascot className="mx-auto mb-2 size-40 object-contain" />
+            <PatchyMascot className="mx-auto mb-2 size-40 object-contain" pose="thinking" />
             <h2 className="text-lg font-semibold text-foreground">{TEXTS.emptyArchiveTitle}</h2>
             <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
               {TEXTS.emptyArchiveBody}
