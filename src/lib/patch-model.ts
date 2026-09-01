@@ -63,7 +63,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   displayName: "",
   versionFormat: "yearWeek",
   theme: "dark",
-  accent: ACCENTS[0].value,
+  accent: "oklch(0.84 0.19 128)",
   onboarded: false,
 };
 

@@ -64,8 +64,11 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
   const moveSection = (index: number, delta: number) => {
     const next = [...patch.sections];
     const target = index + delta;
-    if (target < 0 || target >= next.length) return;
-    [next[index], next[target]] = [next[target], next[index]];
+    const a = next[index];
+    const b = next[target];
+    if (!a || !b) return;
+    next[index] = b;
+    next[target] = a;
     update({ sections: next });
   };
 

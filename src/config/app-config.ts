@@ -68,7 +68,13 @@ export const SECTION_PRESETS: readonly SectionPreset[] = [
 ] as const;
 
 export function presetFor(category: SectionCategory): SectionPreset {
-  return SECTION_PRESETS.find((p) => p.category === category) ?? SECTION_PRESETS[6];
+  const fallback: SectionPreset = {
+    category: "custom",
+    label: "Sezione personalizzata",
+    hint: "Titolo libero",
+    token: "cat-custom",
+  };
+  return SECTION_PRESETS.find((p) => p.category === category) ?? fallback;
 }
 
 export const TEXTS = {
