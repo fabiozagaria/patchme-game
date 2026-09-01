@@ -66,6 +66,12 @@ function SettingsPage() {
 
   const update = (patch: Partial<AppSettings>) => setDraft({ ...current, ...patch });
 
+  const goBack = () => {
+    setDraft(null);
+    setError(undefined);
+    navigate({ to: "/" });
+  };
+
   const submit = () => {
     const nameError = validateDisplayName(current.displayName);
     setError(nameError);
@@ -113,7 +119,7 @@ function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      <AppHeader title="Impostazioni" subtitle={APP_CONFIG.name} backTo="/" />
+      <AppHeader title="Impostazioni" subtitle={APP_CONFIG.name} onBack={goBack} />
 
       <main className="mx-auto max-w-xl space-y-5 px-4 py-5">
         <section className="surface-card p-4">
