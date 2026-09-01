@@ -119,13 +119,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function AppGate({ children }: { children: ReactNode }) {
   const { ready } = useAppStore();
-  const [introDone, setIntroDone] = useState(false);
-  const [showIntro, setShowIntro] = useState(false);
-
-  useEffect(() => {
-    if (shouldShowIntro()) setShowIntro(true);
-    else setIntroDone(true);
-  }, []);
+  const [showIntro] = useState(() => shouldShowIntro());
+  const [introDone, setIntroDone] = useState(!showIntro);
 
   const visible = ready && (introDone || !showIntro);
 
