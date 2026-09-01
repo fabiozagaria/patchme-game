@@ -7,16 +7,17 @@
 export const APP_CONFIG = {
   name: "PatchMe",
   tagline: "Le patch notes della tua settimana",
-  version: "0.2.0",
+  // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
+  version: "0.2.1",
   releaseChannel: "Alpha",
   changelog: {
     date: "1 settembre 2026",
-    title: "PatchMe entra ufficialmente in Alpha.",
+    title: "Condividere una patch ora porta gli amici su PatchMe.",
     items: [
-      "Tema chiaro, scuro o sincronizzato con il dispositivo",
-      "Impostazioni e sezione Novità riorganizzate",
-      "Firma, versione e collegamenti ufficiali sempre accessibili",
-      "Condivisione rapida di PatchMe con amici e tester",
+      "La condivisione include immagine, messaggio e link cliccabile al sito",
+      "Se la condivisione completa non è disponibile, il messaggio viene copiato",
+      "La freccia nelle Impostazioni scarta correttamente nomi vuoti o non salvati",
+      "Informazioni più trasparenti sullo sviluppo assistito dall'AI",
     ],
   },
   links: {
