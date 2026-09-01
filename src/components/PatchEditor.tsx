@@ -36,14 +36,33 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
   const [patch, setPatch] = useState<Patch>(initialPatch);
   const [errors, setErrors] = useState<PatchErrors>({});
   const [dirty, setDirty] = useState(isNew);
-  const [confirmExit, setConfirmExit] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [picker, setPicker] = useState(false);
+  const bypassGuard = useRef(false);
+
+  // Protezione modifiche non salvate: refresh / chiusura scheda.
+  useEffect(() => {
+    if (!dirty) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
+  // Protezione navigazione interna (router + back/forward del browser).
+  const blocker = useBlocker({
+    shouldBlockFn: () => dirty && !bypassGuard.current,
+    enableBeforeUnload: false,
+    withResolver: true,
+  });
 
   const update = (next: Partial<Patch>) => {
     setPatch((prev) => ({ ...prev, ...next }));
     setDirty(true);
   };
+
 
   const usedCategories = useMemo(
     () => new Set(patch.sections.map((s) => s.category)),
