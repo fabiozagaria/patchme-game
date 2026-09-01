@@ -75,18 +75,16 @@ export const patchRepository = {
   get(id: string): Patch | undefined {
     return this.list().find((p) => p.id === id);
   },
-  upsert(patch: Patch): Patch[] {
+  upsert(patch: Patch): { persisted: boolean; patches: Patch[] } {
     const all = this.list();
     const index = all.findIndex((p) => p.id === patch.id);
     if (index >= 0) all[index] = patch;
     else all.unshift(patch);
     const sorted = all.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-    this.saveAll(sorted);
-    return sorted;
+    return { persisted: this.saveAll(sorted), patches: sorted };
   },
-  remove(id: string): Patch[] {
+  remove(id: string): { persisted: boolean; patches: Patch[] } {
     const next = this.list().filter((p) => p.id !== id);
-    this.saveAll(next);
-    return next;
+    return { persisted: this.saveAll(next), patches: next };
   },
 };
