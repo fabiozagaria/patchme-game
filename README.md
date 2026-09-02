@@ -3,9 +3,9 @@
 
 # PatchMe
 
-**La tua vita è un gioco. Ogni settimana riceve una patch.**
+**Trasforma amici, persone e situazioni in patch notes da condividere.**
 
-[![Status](https://img.shields.io/badge/status-0.4.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+[![Status](https://img.shields.io/badge/status-0.4.1%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
 [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
 [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
 [![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
@@ -15,7 +15,7 @@
 
 ## Cos'è PatchMe
 
-PatchMe trasforma i cambiamenti della settimana in patch notes personali ispirate agli aggiornamenti dei videogiochi.
+PatchMe trasforma amici, persone, momenti e cambiamenti della settimana in finte patch notes ispirate agli aggiornamenti dei videogiochi.
 
 Puoi raccontare novità, miglioramenti, problemi risolti, bug ancora aperti e ciò che vuoi aggiungere nella tua prossima versione. Alla fine ottieni una scheda grafica pronta da salvare e condividere.
 
@@ -51,7 +51,7 @@ Il simbolo `+` rappresenta miglioramenti e nuove funzionalità, mentre i pixel d
 
 ## Stato del progetto
 
-PatchMe è attualmente in **0.4.0 Alpha**.
+PatchMe è attualmente in **0.4.1 Alpha**.
 
 Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono ancora cambiare. In questa fase il progetto viene testato con un gruppo ristretto di persone e sviluppato a partire dal loro utilizzo reale.
 
