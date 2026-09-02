@@ -12,6 +12,7 @@ import { UpdateNotice } from "@/components/UpdateNotice";
 import { GuidedPatchWizard, type GuidedAnswer } from "@/components/GuidedPatchWizard";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { WeeklyPromptCard } from "@/components/WeeklyPromptCard";
+import { PlayerProfileCard } from "@/components/PlayerProfileCard";
 import type { WeeklyPromptSelection } from "@/lib/weekly-prompt";
 import { Button } from "@/components/ui/button";
 import {
@@ -106,7 +107,10 @@ function ArchivePage() {
       )}
 
       <main className="mx-auto max-w-3xl px-4 py-4">
-        <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
+        <PlayerProfileCard displayName={settings.displayName} patches={patches} />
+        <div className="mt-4">
+          <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
+        </div>
         {patches.length === 0 ? (
           <div className="surface-card mt-4 p-8 text-center">
             <PatchyMascot className="mx-auto mb-2 size-40 object-contain" pose="thinking" />
