@@ -18,6 +18,8 @@ export const APP_CONFIG = {
       "XP guadagnati pubblicando patch e aggiungendo contenuti",
       "Animazioni e notifiche quando guadagni XP o sali di livello",
       "Titoli sarcastici con riferimenti impliciti ai videogiochi leggendari",
+      "Missioni, trofei e ricompense XP da collezionare",
+      "Un easter egg incomprensibile dedicato al dio della Guerra",
       "Serie calcolata sulle settimane consecutive",
       "Statistiche per patch pubblicate e voci create",
     ],
