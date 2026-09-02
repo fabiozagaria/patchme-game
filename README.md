@@ -28,6 +28,7 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - domanda settimanale di Patchy, trasformabile subito in una patch e condivisibile con gli amici;
 - profilo giocatore locale con livelli, XP, titoli sarcastici, serie settimanale e statistiche;
 - notifiche e animazioni per XP guadagnati e passaggi di livello;
+- missioni, trofei e ricompense XP, incluso un easter egg segreto;
 - patch in stato bozza o pubblicata;
 - sezioni predefinite, personalizzabili e riordinabili;
 - elementi testuali multipli per ogni sezione;
