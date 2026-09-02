@@ -1,14 +1,5 @@
 import { useState } from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Gamepad2,
-  ListChecks,
-  PlusCircle,
-  Save,
-  Share2,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Gamepad2, Share2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PatchyMascot, type PatchyPose } from "@/components/PatchyMascot";
 
@@ -16,44 +7,26 @@ const STEPS = [
   {
     icon: Gamepad2,
     pose: "hello",
-    title: "A cosa serve PatchMe?",
-    body: "Serve a raccontare la tua settimana come se fosse l'aggiornamento di un videogioco.",
-    example: "Hai iniziato palestra? Puoi scrivere: “Nuova funzione: palestra sbloccata”.",
-  },
-  {
-    icon: PlusCircle,
-    pose: "thinking",
-    title: "Crea una nuova patch",
-    body: "Dalla schermata principale premi “Nuova patch”. Puoi rispondere a cinque domande oppure compilare tutto da solo.",
-    example: "Se è la prima volta, scegli “Creazione guidata”: è la strada più semplice.",
-  },
-  {
-    icon: ListChecks,
-    pose: "thinking",
-    title: "Scrivi cosa è cambiato",
-    body: "Dividi la settimana in sezioni. Non devi usare parole perfette: scrivi semplicemente cosa è successo.",
-    example: "Novità: palestra. Miglioramento: dormo meglio. Bug: rimando ancora la sveglia.",
-  },
-  {
-    icon: Save,
-    pose: "celebrate",
-    title: "Salva oppure pubblica",
-    body: "Salva come bozza se vuoi finirla dopo. Premi “Pubblica” quando la patch è pronta.",
-    example: "Pubblicare non la mette online: la patch resta ancora soltanto sul tuo dispositivo.",
+    title: "Trasforma amici e situazioni in finte patch notes",
+    body: "Scrivi cosa è cambiato, crea un'immagine e condividila per farvi due risate.",
+    example:
+      "Andrea v2.1 · Migliorata la puntualità del 4% · Bug noto: dice “sto arrivando” mentre è ancora a casa.",
   },
   {
     icon: Share2,
-    pose: "celebrate",
-    title: "Personalizza e condividi",
-    body: "Apri la patch, scegli uno stile e controlla l'anteprima. Poi salvala come immagine oppure condividila.",
-    example: "Su WhatsApp vengono inviati l'immagine, un breve messaggio e il link a PatchMe.",
+    pose: "thinking",
+    title: "Come funziona?",
+    body: "Scegli chi o cosa vuoi patchare, aggiungi novità, miglioramenti e bug, poi scegli uno stile.",
+    example:
+      "Non sai cosa scrivere? Usa la creazione guidata oppure rispondi alla domanda settimanale di Patchy.",
   },
   {
     icon: ShieldCheck,
-    pose: "bug",
-    title: "Dove vengono salvati i dati?",
-    body: "Non serve un account. Per ora le patch vengono salvate soltanto nel browser che stai usando.",
-    example: "Se cancelli i dati del sito o cambi dispositivo, potresti perdere le patch.",
+    pose: "celebrate",
+    title: "Condividila con chi vuoi",
+    body: "Salva la patch come immagine o inviala su WhatsApp. Non serve un account e resta sul tuo dispositivo.",
+    example:
+      "Attenzione: se cancelli i dati del sito o cambi dispositivo, potresti perdere le patch salvate.",
   },
 ] as const satisfies readonly {
   icon: typeof Gamepad2;
@@ -130,7 +103,7 @@ export function ProductTour({ onDone }: { onDone: () => void }) {
           onClick={() => (step === STEPS.length - 1 ? onDone() : setStep((value) => value + 1))}
           className="tap-safe h-12 bg-brand font-semibold text-brand-foreground"
         >
-          {step === STEPS.length - 1 ? "Ho capito" : "Avanti"}{" "}
+          {step === STEPS.length - 1 ? "Configura e inizia" : "Avanti"}{" "}
           {step < STEPS.length - 1 && <ArrowRight className="ml-1 size-4" />}
         </Button>
       </div>
