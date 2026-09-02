@@ -17,12 +17,21 @@ export interface PlayerProgression {
   weeklyStreak: number;
 }
 
-function playerTitle(level: number) {
-  if (level >= 10) return "Leggenda delle patch";
-  if (level >= 7) return "Architetto degli aggiornamenti";
-  if (level >= 5) return "Domatore di bug";
-  if (level >= 3) return "Cacciatore di cambiamenti";
-  return "Tester della propria vita";
+const PLAYER_TITLES = [
+  "Comparsa col controller scollegato",
+  "Raccoglitore seriale di medikit",
+  "Eroe del tutorial saltato",
+  "Signore dei salvataggi manuali",
+  "Boss del lunedì mattina",
+  "Campione del divano a 16 bit",
+  "Mago dei cheat non dichiarati",
+  "Custode dell'ultimo gettone",
+  "Boss segreto della vita adulta",
+  "Leggenda con la memory card piena",
+] as const;
+
+export function playerTitle(level: number) {
+  return PLAYER_TITLES[Math.min(Math.max(level, 1), PLAYER_TITLES.length) - 1];
 }
 
 function weekStart(dateValue: string) {
