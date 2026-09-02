@@ -18,6 +18,7 @@ export const APP_CONFIG = {
       "Anteprima completa prima di salvare o condividere",
       "Patchy cambia posa in base allo stile scelto",
       "Il template preferito viene ricordato sul dispositivo",
+      "Il tour iniziale non ricompare dopo la configurazione",
     ],
   },
   links: {
