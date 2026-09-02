@@ -28,16 +28,19 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PatchMe — Le patch notes della tua settimana" },
+      { title: "PatchMe — Trasforma persone e momenti in patch notes" },
       {
         name: "description",
         content:
-          "PatchMe trasforma i cambiamenti della tua settimana in patch notes personali, in stile aggiornamento di gioco. Tutto sul tuo dispositivo.",
+          "Trasforma amici, persone e situazioni in finte patch notes da videogioco, crea un'immagine e condividila.",
       },
-      { property: "og:title", content: "PatchMe — Le patch notes della tua settimana" },
+      {
+        property: "og:title",
+        content: "PatchMe — Trasforma persone e momenti in patch notes",
+      },
       {
         property: "og:description",
-        content: "Crea, salva e condividi le patch notes personali della tua settimana.",
+        content: "Crea finte patch notes divertenti e condividile con chi vuoi.",
       },
     ],
   }),
