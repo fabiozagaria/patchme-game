@@ -18,16 +18,16 @@ export interface PlayerProgression {
 }
 
 const PLAYER_TITLES = [
-  "Comparsa col controller scollegato",
-  "Raccoglitore seriale di medikit",
-  "Eroe del tutorial saltato",
-  "Signore dei salvataggi manuali",
-  "Boss del lunedì mattina",
-  "Campione del divano a 16 bit",
-  "Mago dei cheat non dichiarati",
-  "Custode dell'ultimo gettone",
-  "Boss segreto della vita adulta",
-  "Leggenda con la memory card piena",
+  "NPC col libero arbitrio difettoso",
+  "Idraulico abusivo del regno dei funghi",
+  "Bandicoot fiscalmente instabile",
+  "Draghetto viola con l'alito da discount",
+  "Arrampicamuri con l'affitto arretrato",
+  "Dio della guerra sconfitto dalla sveglia",
+  "Non-morto senza anime né ferie",
+  "Prescelto del falò, vittima del lunedì",
+  "Boss finale delle decisioni di merda",
+  "Leggenda col salvataggio corrotto",
 ] as const;
 
 export function playerTitle(level: number) {
