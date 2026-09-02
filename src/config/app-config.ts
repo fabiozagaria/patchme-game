@@ -6,18 +6,18 @@
 
 export const APP_CONFIG = {
   name: "PatchMe",
-  tagline: "Le patch notes della tua settimana",
+  tagline: "Trasforma persone e momenti in patch notes",
   // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
-  version: "0.4.0",
+  version: "0.4.1",
   releaseChannel: "Alpha",
   changelog: {
     date: "2 settembre 2026",
-    title: "Patchy ora ha una domanda nuova ogni settimana.",
+    title: "Ora capisci PatchMe in pochi secondi.",
     items: [
-      "Una nuova domanda settimanale scelta da Patchy",
-      "Risposta trasformata automaticamente in una nuova patch",
-      "Domanda condivisibile con gli amici tramite link",
-      "Domanda sincronizzata con la settimana, senza account",
+      "Introduzione ridotta da sei a tre passaggi",
+      "Scopo di PatchMe spiegato subito e senza giri di parole",
+      "Esempio divertente visibile già nella prima schermata",
+      "Indicazioni più chiare su creazione, condivisione e salvataggio locale",
     ],
   },
   links: {
