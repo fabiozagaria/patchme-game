@@ -8,17 +8,17 @@ export const APP_CONFIG = {
   name: "PatchMe",
   tagline: "Le patch notes della tua settimana",
   // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
-  version: "0.3.0",
+  version: "0.3.1",
   releaseChannel: "Alpha",
   changelog: {
     date: "2 settembre 2026",
-    title: "Ogni patch ora può avere il suo stile.",
+    title: "Capire PatchMe ora è molto più semplice.",
     items: [
-      "Quattro template: PatchMe, Terminale, RPG e Caos",
-      "Anteprima completa prima di salvare o condividere",
-      "Patchy cambia posa in base allo stile scelto",
-      "Il template preferito viene ricordato sul dispositivo",
-      "Il tour iniziale non ricompare dopo la configurazione",
+      "Tutorial riscritto in sei passaggi chiari",
+      "Esempi concreti per creare e compilare una patch",
+      "Differenza tra bozza, pubblicazione e condivisione spiegata meglio",
+      "Avviso più evidente sul salvataggio locale dei dati",
+      "Navigazione e avanzamento del tutorial più accessibili",
     ],
   },
   links: {
