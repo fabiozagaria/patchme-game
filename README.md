@@ -29,6 +29,8 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - profilo giocatore locale con livelli, XP, titoli sarcastici, serie settimanale e statistiche;
 - notifiche e animazioni per XP guadagnati e passaggi di livello;
 - missioni, trofei e ricompense XP, incluso un easter egg segreto;
+- missioni giornaliere e settimanali rinnovabili con ricompense permanenti;
+- venti titoli sarcastici e numerosi easter egg dedicati ai videogiochi leggendari;
 - patch in stato bozza o pubblicata;
 - sezioni predefinite, personalizzabili e riordinabili;
 - elementi testuali multipli per ogni sezione;
