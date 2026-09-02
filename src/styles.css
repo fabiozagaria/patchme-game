@@ -233,3 +233,64 @@
     animation-duration: 1ms;
   }
 }
+
+/* ---- Progressione giocatore ---- */
+@keyframes player-level-up {
+  0%,
+  100% {
+    box-shadow: var(--shadow-soft);
+  }
+  35% {
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--brand) 70%, transparent),
+      0 0 36px color-mix(in oklab, var(--brand) 40%, transparent);
+  }
+}
+
+@keyframes level-up-banner {
+  0% {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.82);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes xp-progress {
+  from {
+    filter: brightness(1.8);
+    transform: scaleY(1.6);
+  }
+  to {
+    filter: none;
+    transform: scaleY(1);
+  }
+}
+
+.player-level-up {
+  animation: player-level-up 900ms ease-in-out 3;
+}
+
+.level-up-banner {
+  animation: level-up-banner 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.xp-progress {
+  animation: xp-progress 650ms ease-out both;
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-level-up,
+  .level-up-banner,
+  .xp-progress {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+}
