@@ -5,6 +5,15 @@ const XP_PER_PATCH = 100;
 const XP_PER_ITEM = 10;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
+export interface PlayerMission {
+  id: string;
+  title: string;
+  description: string;
+  rewardXp: number;
+  completed: boolean;
+  secret?: boolean;
+}
+
 export interface PlayerProgression {
   level: number;
   title: string;
@@ -15,6 +24,9 @@ export interface PlayerProgression {
   publishedPatches: number;
   totalItems: number;
   weeklyStreak: number;
+  bonusXp: number;
+  missions: PlayerMission[];
+  titles: readonly string[];
 }
 
 const PLAYER_TITLES = [
@@ -32,6 +44,71 @@ const PLAYER_TITLES = [
 
 export function playerTitle(level: number) {
   return PLAYER_TITLES[Math.min(Math.max(level, 1), PLAYER_TITLES.length) - 1];
+}
+
+function missionProgress(
+  publishedPatches: number,
+  totalItems: number,
+  weeklyStreak: number,
+  displayName: string,
+  completedMissionIds: readonly string[],
+): PlayerMission[] {
+  const completed = new Set(completedMissionIds);
+  const mission = (
+    id: string,
+    title: string,
+    description: string,
+    rewardXp: number,
+    condition: boolean,
+    secret = false,
+  ): PlayerMission => ({
+    id,
+    title,
+    description,
+    rewardXp,
+    completed: condition || completed.has(id),
+    secret,
+  });
+
+  return [
+    mission(
+      "first-patch",
+      "Premere START",
+      "Pubblica la tua prima patch",
+      50,
+      publishedPatches >= 1,
+    ),
+    mission("triple-combo", "Combo da divano", "Pubblica 3 patch", 100, publishedPatches >= 3),
+    mission(
+      "item-hoarder",
+      "Inventario pieno di cianfrusaglie",
+      "Crea 10 voci",
+      100,
+      totalItems >= 10,
+    ),
+    mission(
+      "weekly-fire",
+      "Riposa al falò",
+      "Mantieni una serie di 2 settimane",
+      150,
+      weeklyStreak >= 2,
+    ),
+    mission(
+      "patch-boss",
+      "Nessuno te l'aveva chiesto",
+      "Pubblica 10 patch",
+      250,
+      publishedPatches >= 10,
+    ),
+    mission(
+      "god-of-war",
+      "Diventa il dio della Guerra",
+      "???",
+      300,
+      displayName.trim().toLocaleLowerCase("it") === "kratos",
+      true,
+    ),
+  ];
 }
 
 function weekStart(dateValue: string) {
@@ -61,7 +138,11 @@ function calculateWeeklyStreak(patches: readonly Patch[]) {
   return streak;
 }
 
-export function calculatePlayerProgression(patches: readonly Patch[]): PlayerProgression {
+export function calculatePlayerProgression(
+  patches: readonly Patch[],
+  displayName = "",
+  completedMissionIds: readonly string[] = [],
+): PlayerProgression {
   const published = patches.filter((patch) => patch.status === "published");
   const totalItems = published.reduce(
     (total, patch) =>
@@ -73,7 +154,18 @@ export function calculatePlayerProgression(patches: readonly Patch[]): PlayerPro
       ),
     0,
   );
-  const totalXp = published.length * XP_PER_PATCH + totalItems * XP_PER_ITEM;
+  const weeklyStreak = calculateWeeklyStreak(published);
+  const missions = missionProgress(
+    published.length,
+    totalItems,
+    weeklyStreak,
+    displayName,
+    completedMissionIds,
+  );
+  const bonusXp = missions
+    .filter((mission) => mission.completed)
+    .reduce((total, mission) => total + mission.rewardXp, 0);
+  const totalXp = published.length * XP_PER_PATCH + totalItems * XP_PER_ITEM + bonusXp;
   const level = Math.floor(totalXp / XP_PER_LEVEL) + 1;
   const xpIntoLevel = totalXp % XP_PER_LEVEL;
 
@@ -86,6 +178,9 @@ export function calculatePlayerProgression(patches: readonly Patch[]): PlayerPro
     progressPercent: Math.round((xpIntoLevel / XP_PER_LEVEL) * 100),
     publishedPatches: published.length,
     totalItems,
-    weeklyStreak: calculateWeeklyStreak(published),
+    weeklyStreak,
+    bonusXp,
+    missions,
+    titles: PLAYER_TITLES,
   };
 }
