@@ -17,7 +17,7 @@ export const APP_CONFIG = {
       "Profilo giocatore locale con livello e titolo",
       "XP guadagnati pubblicando patch e aggiungendo contenuti",
       "Animazioni e notifiche quando guadagni XP o sali di livello",
-      "Titoli ironici ispirati ai videogiochi anni '90 e 2000",
+      "Titoli sarcastici con riferimenti impliciti ai videogiochi leggendari",
       "Serie calcolata sulle settimane consecutive",
       "Statistiche per patch pubblicate e voci create",
     ],
