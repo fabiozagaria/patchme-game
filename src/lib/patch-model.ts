@@ -47,12 +47,14 @@ export const settingsSchema = z.object({
   onboarded: z.boolean(),
   productTourSeen: z.boolean().default(false),
   lastSeenVersion: z.string().default(""),
+  shareTemplate: z.enum(["classic", "terminal", "rpg", "chaos"]).default("classic"),
 });
 
 export type PatchItem = z.infer<typeof patchItemSchema>;
 export type PatchSection = z.infer<typeof patchSectionSchema>;
 export type Patch = z.infer<typeof patchSchema>;
 export type AppSettings = z.infer<typeof settingsSchema>;
+export type ShareTemplate = AppSettings["shareTemplate"];
 
 export const ACCENTS: readonly { id: string; label: string; value: string }[] = [
   { id: "lime", label: "Verde acido", value: "oklch(0.84 0.19 128)" },
@@ -70,6 +72,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   onboarded: false,
   productTourSeen: false,
   lastSeenVersion: "",
+  shareTemplate: "classic",
 };
 
 export function createId(): string {
