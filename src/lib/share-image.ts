@@ -31,8 +31,27 @@ async function waitForFonts(): Promise<void> {
   }
 }
 
+async function waitForImages(node: HTMLElement): Promise<void> {
+  const images = Array.from(node.querySelectorAll("img"));
+  await Promise.all(
+    images.map(async (image) => {
+      if (!image.complete) {
+        await new Promise<void>((resolve) => {
+          image.addEventListener("load", () => resolve(), { once: true });
+          image.addEventListener("error", () => resolve(), { once: true });
+        });
+      }
+      try {
+        await image.decode();
+      } catch {
+        /* il browser può aver già decodificato l'immagine */
+      }
+    }),
+  );
+}
+
 export async function renderNodeToPng(node: HTMLElement): Promise<Blob> {
-  await waitForFonts();
+  await Promise.all([waitForFonts(), waitForImages(node)]);
   const computed = window.getComputedStyle(node);
   const backgroundColor =
     computed.backgroundColor && computed.backgroundColor !== "rgba(0, 0, 0, 0)"

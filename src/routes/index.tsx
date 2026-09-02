@@ -56,7 +56,11 @@ function ArchivePage() {
   }
 
   if (!settings.onboarded) {
-    return <OnboardingWizard onComplete={saveSettings} />;
+    return (
+      <OnboardingWizard
+        onComplete={(nextSettings) => saveSettings({ ...nextSettings, productTourSeen: true })}
+      />
+    );
   }
 
   const finishGuided = (answers: GuidedAnswer[]) => {
