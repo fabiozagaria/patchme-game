@@ -1,16 +1,16 @@
 <div align="center">
   <img src="public/assets/patchy-mascot.png" alt="Patchy, la mascotte di PatchMe" width="220" />
 
-  # PatchMe
+# PatchMe
 
-  **La tua vita è un gioco. Ogni settimana riceve una patch.**
+**La tua vita è un gioco. Ogni settimana riceve una patch.**
 
-  [![Status](https://img.shields.io/badge/status-0.2.1%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
-  [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
-  [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
-  [![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
+[![Status](https://img.shields.io/badge/status-0.3.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+[![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
+[![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
+[![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
 
-  [Prova PatchMe](https://patchme-fabiozagariadev.vercel.app) · [Aggiornamenti Telegram](https://t.me/patchmegame)
+[Prova PatchMe](https://patchme-fabiozagariadev.vercel.app) · [Aggiornamenti Telegram](https://t.me/patchmegame)
 </div>
 
 ## Cos'è PatchMe
@@ -29,11 +29,11 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - sezioni predefinite, personalizzabili e riordinabili;
 - elementi testuali multipli per ogni sezione;
 - visibilità separata delle sezioni nelle immagini condivise;
-- anteprima ed esportazione della patch come immagine;
+- quattro template grafici con anteprima ed esportazione della patch come immagine;
 - archivio locale con modifica ed eliminazione;
 - temi chiaro, scuro e sincronizzato con il dispositivo;
 - colori principali personalizzabili;
-- condivisione nativa dell'app con fallback copia-link;
+- condivisione nativa di immagine, messaggio e link con fallback;
 - sezione Novità e collegamento al canale Telegram;
 - PWA installabile con icone dedicate;
 - interfaccia responsive e ottimizzata per smartphone.
@@ -44,13 +44,13 @@ Patchy è la mascotte ufficiale di PatchMe: una piccola creatura digitale nata d
 
 Il simbolo `+` rappresenta miglioramenti e nuove funzionalità, mentre i pixel dell'antenna reagiscono ai diversi momenti dell'app.
 
-| Classico | Pensieroso | Festeggia | Bug trovato |
-| --- | --- | --- | --- |
+| Classico                                            | Pensieroso                                              | Festeggia                                               | Bug trovato                                     |
+| --------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------- |
 | ![Patchy classico](public/assets/patchy-mascot.png) | ![Patchy pensieroso](public/assets/patchy-thinking.png) | ![Patchy festeggia](public/assets/patchy-celebrate.png) | ![Patchy buggato](public/assets/patchy-bug.png) |
 
 ## Stato del progetto
 
-PatchMe è attualmente in **0.2.1 Alpha**.
+PatchMe è attualmente in **0.3.0 Alpha**.
 
 Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono ancora cambiare. In questa fase il progetto viene testato con un gruppo ristretto di persone e sviluppato a partire dal loro utilizzo reale.
 
@@ -65,7 +65,6 @@ Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono
 
 ### Prossimi aggiornamenti
 
-- condivisione di immagine e link in un'unica azione;
 - pagine pubbliche per le patch;
 - scheda personaggio con classe, livello e statistiche;
 - achievement e recap periodici;
