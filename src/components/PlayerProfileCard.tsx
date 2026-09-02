@@ -1,4 +1,6 @@
-import { FileCheck2, Flame, ListChecks, Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { FileCheck2, Flame, ListChecks, Sparkles, Trophy } from "lucide-react";
+import { toast } from "sonner";
 import type { Patch } from "@/lib/patch-model";
 import { calculatePlayerProgression } from "@/lib/player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
@@ -8,11 +10,58 @@ interface PlayerProfileCardProps {
   patches: readonly Patch[];
 }
 
+const LAST_XP_KEY = "patchme.player.last-xp.v1";
+
 export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardProps) {
   const progression = calculatePlayerProgression(patches);
+  const [levelUp, setLevelUp] = useState(false);
+
+  useEffect(() => {
+    try {
+      const storedXp = window.localStorage.getItem(LAST_XP_KEY);
+      window.localStorage.setItem(LAST_XP_KEY, String(progression.totalXp));
+      if (storedXp === null) return;
+
+      const previousXp = Number(storedXp);
+      const gainedXp = progression.totalXp - previousXp;
+      if (!Number.isFinite(previousXp) || gainedXp <= 0) return;
+
+      const previousLevel = Math.floor(previousXp / progression.xpPerLevel) + 1;
+      toast.success(`+${gainedXp} XP guadagnati`, {
+        description: "La tua patch è entrata nella storia. Più o meno.",
+      });
+
+      if (progression.level > previousLevel) {
+        setLevelUp(true);
+        toast.success(`LEVEL UP! Ora sei livello ${progression.level}`, {
+          description: progression.title,
+          duration: 5000,
+        });
+        const timer = window.setTimeout(() => setLevelUp(false), 3800);
+        return () => window.clearTimeout(timer);
+      }
+    } catch {
+      // La progressione funziona anche quando localStorage non è disponibile.
+    }
+  }, [progression.level, progression.title, progression.totalXp, progression.xpPerLevel]);
 
   return (
-    <section className="surface-card overflow-hidden p-4" aria-labelledby="player-profile-title">
+    <section
+      className={`surface-card relative overflow-hidden p-4 ${levelUp ? "player-level-up" : ""}`}
+      aria-labelledby="player-profile-title"
+    >
+      {levelUp ? (
+        <div
+          className="level-up-banner absolute inset-x-3 top-3 z-10 rounded-xl border border-brand bg-background/95 px-3 py-2 text-center shadow-xl"
+          role="status"
+          aria-live="polite"
+        >
+          <p className="display text-2xl font-black uppercase tracking-wider text-brand">
+            Level up!
+          </p>
+          <p className="text-xs font-bold text-foreground">Nuovo titolo: {progression.title}</p>
+        </div>
+      ) : null}
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
           <PatchyMascot className="size-20 object-contain" pose="celebrate" decorative />
@@ -46,10 +95,14 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
           className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2"
         >
           <div
-            className="h-full rounded-full bg-brand transition-[width]"
+            className="xp-progress h-full rounded-full bg-brand transition-[width] duration-700"
             style={{ width: `${progression.progressPercent}%` }}
           />
         </div>
+        <p className="mt-2 flex items-center justify-center gap-1 text-[0.68rem] font-semibold text-muted-foreground">
+          <Sparkles className="size-3 text-brand" aria-hidden="true" />
+          100 XP per patch + 10 XP per voce
+        </p>
       </div>
 
       <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
