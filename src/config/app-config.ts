@@ -8,16 +8,16 @@ export const APP_CONFIG = {
   name: "PatchMe",
   tagline: "Trasforma persone e momenti in patch notes",
   // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
-  version: "0.4.1",
+  version: "0.5.0",
   releaseChannel: "Alpha",
   changelog: {
     date: "2 settembre 2026",
-    title: "Ora capisci PatchMe in pochi secondi.",
+    title: "Le tue patch ora fanno evolvere un profilo giocatore.",
     items: [
-      "Introduzione ridotta da sei a tre passaggi",
-      "Scopo di PatchMe spiegato subito e senza giri di parole",
-      "Esempio divertente visibile già nella prima schermata",
-      "Indicazioni più chiare su creazione, condivisione e salvataggio locale",
+      "Profilo giocatore locale con livello e titolo",
+      "XP guadagnati pubblicando patch e aggiungendo contenuti",
+      "Serie calcolata sulle settimane consecutive",
+      "Statistiche per patch pubblicate e voci create",
     ],
   },
   links: {
