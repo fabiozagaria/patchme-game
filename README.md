@@ -26,7 +26,8 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - tutorial introduttivo accessibile con esempi e configurazione iniziale;
 - creazione libera oppure guidata tramite cinque domande;
 - domanda settimanale di Patchy, trasformabile subito in una patch e condivisibile con gli amici;
-- profilo giocatore locale con livelli, XP, titoli, serie settimanale e statistiche;
+- profilo giocatore locale con livelli, XP, titoli ironici, serie settimanale e statistiche;
+- notifiche e animazioni per XP guadagnati e passaggi di livello;
 - patch in stato bozza o pubblicata;
 - sezioni predefinite, personalizzabili e riordinabili;
 - elementi testuali multipli per ogni sezione;
