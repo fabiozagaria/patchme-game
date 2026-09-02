@@ -11,6 +11,8 @@ import { ProductTour } from "@/components/ProductTour";
 import { UpdateNotice } from "@/components/UpdateNotice";
 import { GuidedPatchWizard, type GuidedAnswer } from "@/components/GuidedPatchWizard";
 import { PatchyMascot } from "@/components/PatchyMascot";
+import { WeeklyPromptCard } from "@/components/WeeklyPromptCard";
+import type { WeeklyPromptSelection } from "@/lib/weekly-prompt";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -68,6 +70,11 @@ function ArchivePage() {
     navigate({ to: "/patch/new" });
   };
 
+  const startWeeklyPatch = (selection: WeeklyPromptSelection) => {
+    window.sessionStorage.setItem(APP_CONFIG.storageKeys.weeklyDraft, JSON.stringify(selection));
+    navigate({ to: "/patch/new" });
+  };
+
   return (
     <div className="min-h-screen bg-background pb-28">
       <header className="mx-auto flex max-w-3xl items-start justify-between gap-3 px-4 pb-2 pt-8">
@@ -96,8 +103,9 @@ function ArchivePage() {
       )}
 
       <main className="mx-auto max-w-3xl px-4 py-4">
+        <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
         {patches.length === 0 ? (
-          <div className="surface-card mt-6 p-8 text-center">
+          <div className="surface-card mt-4 p-8 text-center">
             <PatchyMascot className="mx-auto mb-2 size-40 object-contain" pose="thinking" />
             <h2 className="text-lg font-semibold text-foreground">{TEXTS.emptyArchiveTitle}</h2>
             <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
@@ -105,7 +113,7 @@ function ArchivePage() {
             </p>
           </div>
         ) : (
-          <ul className="space-y-3">
+          <ul className="mt-4 space-y-3">
             {patches.map((patch) => {
               const clean = cleanPatch(patch);
               const summary = clean.sections
