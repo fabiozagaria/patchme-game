@@ -137,7 +137,7 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
 
       const previousLevel = Math.floor(previousXp / progression.xpPerLevel) + 1;
       enqueueSuccessNotification(`+${gainedXp} XP guadagnati`, {
-        description: "La tua patch è entrata nella storia. Più o meno.",
+        description: "Ricompensa aggiunta al profilo. Il tempo perso ora ha un valore.",
       });
 
       if (progression.level > previousLevel) {
