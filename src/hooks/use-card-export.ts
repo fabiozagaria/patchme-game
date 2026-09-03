@@ -32,7 +32,7 @@ export function useCardExport(target: ExportTarget) {
     try {
       const blob = await capture();
       downloadBlob(blob, fileName);
-      enqueueSuccessNotification("Immagine salvata");
+      enqueueSuccessNotification("Immagine salvata", { sound: "success" });
     } catch {
       toast.error("Non è stato possibile generare l'immagine");
     } finally {
@@ -47,11 +47,16 @@ export function useCardExport(target: ExportTarget) {
       const blob = await capture();
       const outcome = await shareBlob(blob, fileName, target.title, target.shareText ?? "");
       if (outcome === "cancelled") return false;
-      if (outcome === "shared") enqueueSuccessNotification("Condivisione completata");
+      if (outcome === "shared")
+        enqueueSuccessNotification("Condivisione completata", { sound: "success" });
       else if (outcome === "downloaded-and-copied")
-        enqueueSuccessNotification("Immagine scaricata e messaggio copiato");
+        enqueueSuccessNotification("Immagine scaricata e messaggio copiato", {
+          sound: "success",
+        });
       else if (outcome === "downloaded")
-        enqueueSuccessNotification("Condivisione non disponibile: immagine scaricata");
+        enqueueSuccessNotification("Condivisione non disponibile: immagine scaricata", {
+          sound: "success",
+        });
       return true;
     } catch {
       toast.error("Non è stato possibile condividere l'immagine");
