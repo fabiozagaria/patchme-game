@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, Settings, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { APP_CONFIG, TEXTS } from "@/config/app-config";
 import { cleanPatch, type Patch } from "@/lib/patch-model";
 import { formatDate } from "@/lib/versioning";
@@ -208,7 +209,7 @@ function ArchivePage() {
             <AlertDialogAction
               onClick={() => {
                 if (pendingDelete) {
-                  if (deletePatch(pendingDelete.id)) toast.success("Patch eliminata");
+                  if (deletePatch(pendingDelete.id)) enqueueSuccessNotification("Patch eliminata");
                   else
                     toast.error(
                       "Eliminazione non riuscita: memoria del dispositivo non disponibile",
