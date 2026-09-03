@@ -213,7 +213,13 @@ function PatchDetailPage() {
               disabled={busy !== null}
               aria-busy={busy === "share"}
               className="bg-brand text-brand-foreground hover:bg-brand/90"
-              onClick={() => void shareImage()}
+              onClick={() => {
+                void shareImage().then((completed) => {
+                  if (!completed) return;
+                  setShareOpen(false);
+                  navigate({ to: "/" });
+                });
+              }}
             >
               {busy === "share" ? (
                 <Loader2 className="mr-1 size-4 animate-spin" />
