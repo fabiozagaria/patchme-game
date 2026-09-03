@@ -43,7 +43,9 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - temi chiaro, scuro e sincronizzato con il dispositivo;
 - colori principali personalizzabili;
 - avatar del profilo selezionabile tra quattro pose di Patchy;
-- nome visualizzato validato e limitato a cinque modifiche giornaliere;
+- username validato e limitato a cinque modifiche giornaliere;
+- anteprima immediata di tema, colore e avatar anche durante la prima configurazione;
+- focus e scorrimento automatici sul primo errore di validazione;
 - condivisione nativa di immagine, messaggio e link con fallback;
 - sezione Novità e collegamento al canale Telegram;
 - PWA installabile con icone dedicate;
