@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Share2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { APP_CONFIG } from "@/config/app-config";
 import { getWeeklyPrompt, type WeeklyPromptSelection } from "@/lib/weekly-prompt";
 import { PatchyMascot } from "@/components/PatchyMascot";
@@ -30,7 +31,7 @@ export function WeeklyPromptCard({ onCreatePatch }: WeeklyPromptCardProps) {
       if (navigator.share) await navigator.share({ title: "La domanda di Patchy", text });
       else {
         await navigator.clipboard.writeText(text);
-        toast.success("Domanda copiata: ora inviala a chi vuoi");
+        enqueueSuccessNotification("Domanda copiata: ora inviala a chi vuoi");
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
