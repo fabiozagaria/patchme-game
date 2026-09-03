@@ -31,6 +31,8 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - missioni, trofei e ricompense XP, incluso un easter egg segreto;
 - missioni giornaliere e settimanali rinnovabili con ricompense permanenti;
 - venti titoli sarcastici e numerosi easter egg dedicati ai videogiochi leggendari;
+- pagina Progressione separata dall'archivio delle patch;
+- validazione minima di 3 caratteri per le voci pubblicate;
 - patch in stato bozza o pubblicata;
 - sezioni predefinite, personalizzabili e riordinabili;
 - elementi testuali multipli per ogni sezione;
