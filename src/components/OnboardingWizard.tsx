@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { APP_CONFIG } from "@/config/app-config";
-import { ACCENTS, DEFAULT_SETTINGS, type AppSettings, type ThemeMode, type VersionFormat } from "@/lib/patch-model";
+import {
+  ACCENTS,
+  DEFAULT_SETTINGS,
+  type AppSettings,
+  type ThemeMode,
+  type VersionFormat,
+} from "@/lib/patch-model";
 import { validateDisplayName } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AvatarPicker } from "@/components/AvatarPicker";
 
 const VERSION_OPTIONS: { value: VersionFormat; label: string; hint: string }[] = [
   { value: "yearWeek", label: "Anno / settimana", hint: "es. v26.36" },
@@ -37,7 +44,9 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
       <h1 className="mt-2 text-3xl font-extrabold uppercase leading-tight text-foreground">
         Configura la tua prima volta
       </h1>
-      <p className="mt-2 text-sm text-muted-foreground">{APP_CONFIG.tagline}. Tutto resta sul tuo dispositivo e potrai cambiarlo dalle impostazioni.</p>
+      <p className="mt-2 text-sm text-muted-foreground">
+        {APP_CONFIG.tagline}. Tutto resta sul tuo dispositivo e potrai cambiarlo dalle impostazioni.
+      </p>
 
       <div className="mt-8 space-y-6">
         <div className="surface-card p-4">
@@ -85,6 +94,9 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
 
         <fieldset className="surface-card p-4">
           <legend className="px-1 text-sm font-semibold">Tema</legend>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Tema, colore e avatar potranno essere cambiati in qualsiasi momento dalle impostazioni.
+          </p>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {THEME_OPTIONS.map((opt) => (
               <button
@@ -105,7 +117,23 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
         </fieldset>
 
         <fieldset className="surface-card p-4">
+          <legend className="px-1 text-sm font-semibold">Avatar del profilo</legend>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Scegli la versione di Patchy che comparirà nel tuo profilo giocatore.
+          </p>
+          <div className="mt-3">
+            <AvatarPicker
+              value={draft.profileAvatar}
+              onChange={(profileAvatar) => setDraft({ ...draft, profileAvatar })}
+            />
+          </div>
+        </fieldset>
+
+        <fieldset className="surface-card p-4">
           <legend className="px-1 text-sm font-semibold">Colore principale</legend>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Colora pulsanti, livelli e dettagli dell’interfaccia.
+          </p>
           <div className="mt-3 flex flex-wrap gap-3">
             {ACCENTS.map((accent) => (
               <button
