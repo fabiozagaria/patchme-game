@@ -21,7 +21,7 @@ export const APP_CONFIG = {
       "Missioni, trofei e ricompense XP da collezionare",
       "Missioni giornaliere e settimanali che si rinnovano",
       "Animazione speciale quando inizi o continui una serie",
-      "Tanti easter egg dedicati ai videogiochi leggendari",
+      "48 easter egg dedicati ai videogiochi leggendari dal 1990 al 2009",
       "Raccolta missioni spostata in una pagina dedicata",
       "Almeno 3 caratteri richiesti per ogni voce pubblicata",
       "Ritorno automatico all'archivio dopo creazione o condivisione",
