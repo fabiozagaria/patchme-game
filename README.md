@@ -31,7 +31,7 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - coda delle notifiche: ogni messaggio resta visibile per cinque secondi completi;
 - missioni, trofei e ricompense XP, incluso un easter egg segreto;
 - missioni giornaliere e settimanali rinnovabili con ricompense permanenti;
-- venti titoli sarcastici e 48 easter egg dedicati ai videogiochi leggendari;
+- venti titoli sarcastici e 66 easter egg dedicati ai videogiochi leggendari;
 - pagina Progressione separata dall'archivio delle patch;
 - validazione minima di 3 caratteri per le voci pubblicate;
 - patch in stato bozza o pubblicata;
