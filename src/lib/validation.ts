@@ -20,8 +20,17 @@ export function validatePatch(patch: Patch, target: PatchStatus): PatchErrors {
   else if (version.length > APP_CONFIG.limits.version)
     errors.version = `Massimo ${APP_CONFIG.limits.version} caratteri.`;
 
-  if (target === "published" && cleanPatch(patch).sections.length === 0)
-    errors.sections = "Per pubblicare serve almeno una sezione con un elemento compilato.";
+  if (target === "published") {
+    const filledItems = patch.sections.flatMap((section) =>
+      section.items.map((item) => item.text.trim()).filter(Boolean),
+    );
+    if (filledItems.length === 0)
+      errors.sections = "Per pubblicare serve almeno una sezione con un elemento compilato.";
+    else if (filledItems.some((text) => text.length < APP_CONFIG.limits.minItemText))
+      errors.sections = `Ogni voce compilata deve contenere almeno ${APP_CONFIG.limits.minItemText} caratteri.`;
+    else if (cleanPatch(patch).sections.length === 0)
+      errors.sections = "Per pubblicare serve almeno una sezione con un elemento compilato.";
+  }
 
   return errors;
 }
@@ -32,7 +41,8 @@ export function hasErrors(errors: PatchErrors): boolean {
 
 export function validateDisplayName(name: string): string | undefined {
   const v = name.trim();
-  if (v.length === 0) return "Inserisci un nome da mostrare.";
+  if (v.length < APP_CONFIG.limits.minDisplayName)
+    return `Inserisci almeno ${APP_CONFIG.limits.minDisplayName} caratteri.`;
   if (v.length > APP_CONFIG.limits.displayName)
     return `Massimo ${APP_CONFIG.limits.displayName} caratteri.`;
   return undefined;

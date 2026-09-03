@@ -2,6 +2,7 @@ import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Download, Loader2, Palette, Pencil, Share2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { TEXTS } from "@/config/app-config";
 import { useAppStore } from "@/state/app-store";
 import { useCardExport } from "@/hooks/use-card-export";
@@ -213,7 +214,13 @@ function PatchDetailPage() {
               disabled={busy !== null}
               aria-busy={busy === "share"}
               className="bg-brand text-brand-foreground hover:bg-brand/90"
-              onClick={() => void shareImage()}
+              onClick={() => {
+                void shareImage().then((completed) => {
+                  if (!completed) return;
+                  setShareOpen(false);
+                  navigate({ to: "/" });
+                });
+              }}
             >
               {busy === "share" ? (
                 <Loader2 className="mr-1 size-4 animate-spin" />
@@ -240,7 +247,7 @@ function PatchDetailPage() {
                   toast.error("Impossibile eliminare: memoria del dispositivo non disponibile");
                   return;
                 }
-                toast.success("Patch eliminata");
+                enqueueSuccessNotification("Patch eliminata");
                 navigate({ to: "/" });
               }}
             >

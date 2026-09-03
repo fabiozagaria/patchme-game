@@ -4,6 +4,7 @@ import type { SectionCategory } from "@/config/app-config";
 export type PatchStatus = "draft" | "published";
 export type VersionFormat = "yearWeek" | "sequential" | "manual";
 export type ThemeMode = "dark" | "light" | "system";
+export type ProfileAvatar = "hello" | "thinking" | "celebrate" | "bug";
 
 export const sectionCategorySchema = z.enum([
   "news",
@@ -44,6 +45,8 @@ export const settingsSchema = z.object({
   versionFormat: z.enum(["yearWeek", "sequential", "manual"]),
   theme: z.enum(["dark", "light", "system"]),
   accent: z.string(),
+  profileAvatar: z.enum(["hello", "thinking", "celebrate", "bug"]).default("hello"),
+  displayNameChanges: z.array(z.string()).default([]),
   onboarded: z.boolean(),
   productTourSeen: z.boolean().default(false),
   lastSeenVersion: z.string().default(""),
@@ -62,6 +65,11 @@ export const ACCENTS: readonly { id: string; label: string; value: string }[] = 
   { id: "amber", label: "Ambra", value: "oklch(0.83 0.16 78)" },
   { id: "magenta", label: "Magenta", value: "oklch(0.75 0.19 350)" },
   { id: "violet", label: "Viola", value: "oklch(0.74 0.16 296)" },
+  { id: "blue", label: "Blu elettrico", value: "oklch(0.68 0.19 252)" },
+  { id: "red", label: "Rosso", value: "oklch(0.66 0.22 27)" },
+  { id: "orange", label: "Arancione", value: "oklch(0.76 0.18 55)" },
+  { id: "rose", label: "Rosa", value: "oklch(0.73 0.18 10)" },
+  { id: "silver", label: "Argento", value: "oklch(0.78 0.02 255)" },
 ];
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -69,6 +77,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   versionFormat: "yearWeek",
   theme: "dark",
   accent: "oklch(0.84 0.19 128)",
+  profileAvatar: "hello",
+  displayNameChanges: [],
   onboarded: false,
   productTourSeen: false,
   lastSeenVersion: "",

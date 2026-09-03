@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
   BookOpen,
   Check,
@@ -18,6 +19,7 @@ import {
 import { APP_CONFIG } from "@/config/app-config";
 import { ACCENTS, type AppSettings, type ThemeMode, type VersionFormat } from "@/lib/patch-model";
 import { validateDisplayName } from "@/lib/validation";
+import { remainingDisplayNameChanges, todaysDisplayNameChanges } from "@/lib/display-name-limit";
 import { useAppStore } from "@/state/app-store";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
@@ -26,6 +28,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { UpdateNotice } from "@/components/UpdateNotice";
 import { PatchyMascot } from "@/components/PatchyMascot";
+import { AvatarPicker } from "@/components/AvatarPicker";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -54,15 +57,30 @@ const THEME_OPTIONS: { value: ThemeMode; label: string; icon: typeof Sun }[] = [
   { value: "dark", label: "Scuro", icon: Moon },
 ];
 
+function applyAppearance(theme: ThemeMode, accent: string) {
+  const root = document.documentElement;
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.classList.toggle("dark", theme === "dark" || (theme === "system" && prefersDark));
+  root.style.setProperty("--accent-brand", accent);
+}
+
 function SettingsPage() {
   const navigate = useNavigate();
   const { ready, settings, saveSettings } = useAppStore();
   const [draft, setDraft] = useState<AppSettings | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
   const [newsOpen, setNewsOpen] = useState(false);
+  const current = draft ?? settings;
+
+  useEffect(() => {
+    if (!ready || typeof document === "undefined") return;
+    applyAppearance(current.theme, current.accent);
+    return () => applyAppearance(settings.theme, settings.accent);
+  }, [current.accent, current.theme, ready, settings.accent, settings.theme]);
 
   if (!ready) return <div className="min-h-screen bg-background" />;
-  const current = draft ?? settings;
+  const nameChanged = current.displayName.trim() !== settings.displayName;
+  const remainingNameChanges = remainingDisplayNameChanges(settings.displayNameChanges);
 
   const update = (patch: Partial<AppSettings>) => setDraft({ ...current, ...patch });
 
@@ -79,9 +97,18 @@ function SettingsPage() {
       toast.error("Controlla i campi evidenziati");
       return;
     }
+    if (nameChanged && remainingNameChanges === 0) {
+      setError("Hai già usato le 5 modifiche disponibili oggi. Riprova domani.");
+      toast.error("Limite giornaliero raggiunto");
+      return;
+    }
+    const displayNameChanges = nameChanged
+      ? [...todaysDisplayNameChanges(settings.displayNameChanges), new Date().toISOString()]
+      : settings.displayNameChanges;
     const ok = saveSettings({
       ...current,
       displayName: current.displayName.trim(),
+      displayNameChanges,
       onboarded: true,
     });
     if (!ok) {
@@ -89,7 +116,7 @@ function SettingsPage() {
       return;
     }
     setDraft(null);
-    toast.success("Impostazioni salvate");
+    enqueueSuccessNotification("Impostazioni salvate");
   };
 
   const shareApp = async () => {
@@ -111,7 +138,7 @@ function SettingsPage() {
 
     try {
       await navigator.clipboard.writeText(url);
-      toast.success("Link di PatchMe copiato");
+      enqueueSuccessNotification("Link di PatchMe copiato");
     } catch {
       toast.error("Non riesco a copiare il link su questo dispositivo");
     }
@@ -133,6 +160,10 @@ function SettingsPage() {
             className="tap-safe mt-2"
           />
           {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+          <p className="mt-2 text-xs text-muted-foreground">
+            Da 3 a {APP_CONFIG.limits.displayName} caratteri · {remainingNameChanges} modifiche
+            rimaste oggi. Il contatore scende solo se salvi un nome diverso.
+          </p>
         </section>
 
         <fieldset className="surface-card p-4">
@@ -161,6 +192,11 @@ function SettingsPage() {
           <legend className="flex items-center gap-2 px-1 text-sm font-semibold">
             <Palette className="size-4 text-brand" aria-hidden="true" /> Aspetto
           </legend>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            Tema e colore cambiano subito per mostrarti il risultato. Premi “Salva impostazioni” per
+            conservarli; se esci senza salvare torneranno come prima.
+          </p>
+          <p className="mt-4 text-xs font-medium text-muted-foreground">Tema</p>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {THEME_OPTIONS.map((opt) => {
               const Icon = opt.icon;
@@ -187,6 +223,16 @@ function SettingsPage() {
                 </button>
               );
             })}
+          </div>
+          <p className="mt-4 text-xs font-medium text-muted-foreground">Avatar del profilo</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Scegli quale versione di Patchy ti rappresenta: l’anteprima è immediata.
+          </p>
+          <div className="mt-3">
+            <AvatarPicker
+              value={current.profileAvatar}
+              onChange={(profileAvatar) => update({ profileAvatar })}
+            />
           </div>
           <p className="mt-5 text-xs font-medium text-muted-foreground">Colore principale</p>
           <div className="mt-3 flex flex-wrap gap-3">

@@ -8,34 +8,39 @@ import { PatchyMascot } from "@/components/PatchyMascot";
 export function UpdateNotice({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <div className="mb-1 flex items-end gap-2">
-            <PatchyMascot className="size-24 object-contain" pose="celebrate" decorative />
-            <span className="mb-3 flex size-9 items-center justify-center rounded-xl bg-brand/15 text-brand">
-              <Sparkles className="size-4" aria-hidden="true" />
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <DialogTitle>Novità in PatchMe</DialogTitle>
-            <Badge variant="secondary">
-              v{APP_CONFIG.version} {APP_CONFIG.releaseChannel}
-            </Badge>
+      <DialogContent className="flex max-h-[calc(100dvh-1rem)] max-w-sm flex-col gap-0 overflow-hidden rounded-2xl p-0 sm:max-h-[90dvh]">
+        <DialogHeader className="shrink-0 border-b border-border px-4 pb-3 pt-4 pr-12 text-left">
+          <div className="flex items-center gap-3">
+            <PatchyMascot
+              className="size-14 shrink-0 object-contain sm:size-16"
+              pose="celebrate"
+              decorative
+            />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <DialogTitle>Novità in PatchMe</DialogTitle>
+                <Badge variant="secondary">
+                  v{APP_CONFIG.version} {APP_CONFIG.releaseChannel}
+                </Badge>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{APP_CONFIG.changelog.date}</p>
+            </div>
           </div>
         </DialogHeader>
-        <div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-3">
           <p className="text-sm font-medium text-foreground">{APP_CONFIG.changelog.title}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{APP_CONFIG.changelog.date}</p>
+          <ul className="mt-3 space-y-2 rounded-xl bg-surface-2 p-3 text-sm text-foreground">
+            {APP_CONFIG.changelog.items.map((item) => (
+              <li key={item} className="flex gap-2.5">
+                <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden="true" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="space-y-3 rounded-xl bg-surface-2 p-4 text-sm text-foreground">
-          {APP_CONFIG.changelog.items.map((item) => (
-            <li key={item} className="flex gap-3">
-              <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden="true" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="grid gap-2">
+
+        <div className="grid shrink-0 gap-2 border-t border-border bg-background px-4 py-3">
           <Button asChild variant="outline" className="tap-safe">
             <a href={APP_CONFIG.links.telegram} target="_blank" rel="noreferrer">
               <Send className="mr-2 size-4" aria-hidden="true" />
