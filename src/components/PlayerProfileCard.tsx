@@ -2,16 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FileCheck2, Flame, Gamepad2, ListChecks, Sparkles, Trophy } from "lucide-react";
 import { toast } from "sonner";
-import type { Patch } from "@/lib/patch-model";
+import type { Patch, ProfileAvatar } from "@/lib/patch-model";
 import { calculatePlayerProgression, PLAYER_STORAGE_KEYS } from "@/lib/player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
 
 interface PlayerProfileCardProps {
   displayName: string;
   patches: readonly Patch[];
+  avatar: ProfileAvatar;
 }
 
-export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardProps) {
+export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfileCardProps) {
   const [missionLedger, setMissionLedger] = useState<{ ids: string[]; xp: number }>({
     ids: [],
     xp: 0,
@@ -144,7 +145,7 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
       ) : null}
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
-          <PatchyMascot className="size-20 object-contain" pose="celebrate" decorative />
+          <PatchyMascot className="size-20 object-contain" pose={avatar} decorative />
           <span className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full border-2 border-background bg-brand text-xs font-black text-brand-foreground">
             {progression.level}
           </span>
