@@ -34,7 +34,6 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
 
   useEffect(() => {
     applyAppearance(draft.theme, draft.accent);
-    return () => applyAppearance(DEFAULT_SETTINGS.theme, DEFAULT_SETTINGS.accent);
   }, [draft.accent, draft.theme]);
 
   const submit = () => {
