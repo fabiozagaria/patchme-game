@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
@@ -66,12 +66,15 @@ function SettingsPage() {
   const [draft, setDraft] = useState<AppSettings | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
   const [newsOpen, setNewsOpen] = useState(false);
+  const appearanceCommitted = useRef(false);
   const current = draft ?? settings;
 
   useEffect(() => {
     if (!ready || typeof document === "undefined") return;
     applyAppearance(current.theme, current.accent);
-    return () => applyAppearance(settings.theme, settings.accent);
+    return () => {
+      if (!appearanceCommitted.current) applyAppearance(settings.theme, settings.accent);
+    };
   }, [current.accent, current.theme, ready, settings.accent, settings.theme]);
 
   if (!ready) return <div className="min-h-screen bg-background" />;
@@ -113,6 +116,7 @@ function SettingsPage() {
       toast.error("Salvataggio non riuscito: memoria del dispositivo non disponibile");
       return;
     }
+    appearanceCommitted.current = true;
     setDraft(null);
     enqueueSuccessNotification("Impostazioni salvate");
     void navigate({ to: "/" });
