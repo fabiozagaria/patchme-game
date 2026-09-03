@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useBlocker, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
   APP_CONFIG,
   SECTION_PRESETS,
@@ -139,7 +140,7 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     setPatch(saved);
     setDirty(false);
     bypassGuard.current = true;
-    toast.success(status === "published" ? "Patch pubblicata" : "Bozza salvata");
+    enqueueSuccessNotification(status === "published" ? "Patch pubblicata" : "Bozza salvata");
     navigate({ to: "/" });
   };
 
