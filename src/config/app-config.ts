@@ -26,6 +26,9 @@ export const APP_CONFIG = {
       "Almeno 3 caratteri richiesti per ogni voce pubblicata",
       "Ritorno automatico all'archivio dopo creazione o condivisione",
       "Popup Novità più compatto e chiudibile anche sugli schermi piccoli",
+      "Nome utente da 3 caratteri e massimo 5 modifiche al giorno",
+      "Nuovi colori e avatar di Patchy personalizzabili",
+      "Anteprima immediata di tema, colore e avatar prima del salvataggio",
       "Serie calcolata sulle settimane consecutive",
       "Statistiche per patch pubblicate e voci create",
     ],
@@ -50,8 +53,10 @@ export const APP_CONFIG = {
     version: 20,
     itemText: 280,
     minItemText: 3,
+    minDisplayName: 3,
     sectionTitle: 40,
     displayName: 40,
+    dailyDisplayNameChanges: 5,
   },
 } as const;
 
