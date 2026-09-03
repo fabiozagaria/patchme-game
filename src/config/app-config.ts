@@ -11,7 +11,7 @@ export const APP_CONFIG = {
   version: "0.5.0",
   releaseChannel: "Alpha",
   changelog: {
-    date: "2 settembre 2026",
+    date: "3 settembre 2026",
     title: "Le tue patch ora fanno evolvere un profilo giocatore.",
     items: [
       "Profilo giocatore locale con livello e titolo",
@@ -22,6 +22,9 @@ export const APP_CONFIG = {
       "Missioni giornaliere e settimanali che si rinnovano",
       "Animazione speciale quando inizi o continui una serie",
       "Tanti easter egg dedicati ai videogiochi leggendari",
+      "Raccolta missioni spostata in una pagina dedicata",
+      "Almeno 3 caratteri richiesti per ogni voce pubblicata",
+      "Ritorno automatico all'archivio dopo creazione o condivisione",
       "Serie calcolata sulle settimane consecutive",
       "Statistiche per patch pubblicate e voci create",
     ],
@@ -45,6 +48,7 @@ export const APP_CONFIG = {
     title: 80,
     version: 20,
     itemText: 280,
+    minItemText: 3,
     sectionTitle: 40,
     displayName: 40,
   },
