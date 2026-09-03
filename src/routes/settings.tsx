@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
   BookOpen,
   Check,
@@ -115,7 +116,7 @@ function SettingsPage() {
       return;
     }
     setDraft(null);
-    toast.success("Impostazioni salvate");
+    enqueueSuccessNotification("Impostazioni salvate");
   };
 
   const shareApp = async () => {
@@ -137,7 +138,7 @@ function SettingsPage() {
 
     try {
       await navigator.clipboard.writeText(url);
-      toast.success("Link di PatchMe copiato");
+      enqueueSuccessNotification("Link di PatchMe copiato");
     } catch {
       toast.error("Non riesco a copiare il link su questo dispositivo");
     }
