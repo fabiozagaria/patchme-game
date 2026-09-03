@@ -107,7 +107,11 @@ function ArchivePage() {
       )}
 
       <main className="mx-auto max-w-3xl px-4 py-4">
-        <PlayerProfileCard displayName={settings.displayName} patches={patches} />
+        <PlayerProfileCard
+          displayName={settings.displayName}
+          patches={patches}
+          avatar={settings.profileAvatar}
+        />
         <div className="mt-4">
           <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
         </div>
