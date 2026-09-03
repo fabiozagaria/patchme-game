@@ -31,7 +31,9 @@ export function WeeklyPromptCard({ onCreatePatch }: WeeklyPromptCardProps) {
       if (navigator.share) await navigator.share({ title: "La domanda di Patchy", text });
       else {
         await navigator.clipboard.writeText(text);
-        enqueueSuccessNotification("Domanda copiata: ora inviala a chi vuoi");
+        enqueueSuccessNotification("Domanda copiata: ora inviala a chi vuoi", {
+          sound: "success",
+        });
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;

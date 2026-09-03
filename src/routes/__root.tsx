@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppStoreProvider, useAppStore } from "@/state/app-store";
 import { ThemeController } from "@/components/ThemeController";
+import { SoundEffectsController } from "@/components/SoundEffectsController";
 import { IntroSignature, shouldShowIntro } from "@/components/IntroSignature";
 import { PatchyMascot } from "@/components/PatchyMascot";
 
@@ -157,6 +158,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AppStoreProvider>
         <ThemeController />
+        <SoundEffectsController />
         <AppGate>
           {/* Required: nested routes render here. */}
           <Outlet />

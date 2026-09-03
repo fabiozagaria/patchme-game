@@ -80,6 +80,7 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
       newlyCompleted.forEach((mission) =>
         enqueueSuccessNotification(`Trofeo sbloccato: ${mission.title}`, {
           description: `Missione completata · +${mission.rewardXp} XP`,
+          sound: "trophy",
           duration: 5000,
         }),
       );
@@ -113,6 +114,7 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
           : `SERIE CONTINUATA! ${progression.weeklyStreak} settimane`,
         {
           description: "Patchy approva questa discutibile costanza.",
+          sound: "streak",
           duration: 5000,
         },
       );
@@ -138,12 +140,14 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
       const previousLevel = Math.floor(previousXp / progression.xpPerLevel) + 1;
       enqueueSuccessNotification(`+${gainedXp} XP guadagnati`, {
         description: "Ricompensa aggiunta al profilo. Il tempo perso ora ha un valore.",
+        sound: "xp",
       });
 
       if (progression.level > previousLevel) {
         setLevelUp(true);
         enqueueSuccessNotification(`LEVEL UP! Ora sei livello ${progression.level}`, {
           description: progression.title,
+          sound: "level-up",
           duration: 5000,
         });
         const timer = window.setTimeout(() => setLevelUp(false), 3800);
