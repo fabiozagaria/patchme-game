@@ -40,18 +40,21 @@ export function useCardExport(target: ExportTarget) {
   }, [busy, capture, fileName]);
 
   const shareImage = useCallback(async () => {
-    if (busy) return;
+    if (busy) return false;
     setBusy("share");
     try {
       const blob = await capture();
       const outcome = await shareBlob(blob, fileName, target.title, target.shareText ?? "");
-      if (outcome === "shared") toast.success("Condivisione avviata");
+      if (outcome === "cancelled") return false;
+      if (outcome === "shared") toast.success("Condivisione completata");
       else if (outcome === "downloaded-and-copied")
         toast.success("Immagine scaricata e messaggio copiato");
       else if (outcome === "downloaded")
         toast.success("Condivisione non disponibile: immagine scaricata");
+      return true;
     } catch {
       toast.error("Non è stato possibile condividere l'immagine");
+      return false;
     } finally {
       setBusy(null);
     }
