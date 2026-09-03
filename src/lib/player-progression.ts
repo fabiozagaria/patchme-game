@@ -682,6 +682,7 @@ export function calculatePlayerProgression(
   completedMissionIds: readonly string[] = [],
   earnedMissionXp = 0,
   now = new Date(),
+  preservedWeeklyStreak = 0,
 ): PlayerProgression {
   const published = patches.filter((patch) => patch.status === "published");
   const totalItems = published.reduce(
@@ -694,7 +695,7 @@ export function calculatePlayerProgression(
       ),
     0,
   );
-  const weeklyStreak = calculateWeeklyStreak(published);
+  const weeklyStreak = Math.max(calculateWeeklyStreak(published), preservedWeeklyStreak);
   const missions = missionProgress(
     published,
     totalItems,
