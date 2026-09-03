@@ -20,7 +20,11 @@ export const Route = createFileRoute("/progress")({
 
 function ProgressPage() {
   const { ready, settings, patches } = useAppStore();
-  const [ledger, setLedger] = useState<{ ids: string[]; xp: number }>({ ids: [], xp: 0 });
+  const [ledger, setLedger] = useState<{ ids: string[]; xp: number; streak: number }>({
+    ids: [],
+    xp: 0,
+    streak: 0,
+  });
 
   useEffect(() => {
     try {
@@ -31,14 +35,27 @@ function ProgressPage() {
         ? parsed.filter((value): value is string => typeof value === "string")
         : [];
       const xp = Number(window.localStorage.getItem(PLAYER_STORAGE_KEYS.missionXp));
-      setLedger({ ids, xp: Number.isFinite(xp) ? xp : 0 });
+      const streak = Number(window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastStreak));
+      setLedger({
+        ids,
+        xp: Number.isFinite(xp) ? xp : 0,
+        streak: Number.isFinite(streak) ? Math.max(0, streak) : 0,
+      });
     } catch {
-      setLedger({ ids: [], xp: 0 });
+      setLedger({ ids: [], xp: 0, streak: 0 });
     }
   }, []);
 
   const progression = useMemo(
-    () => calculatePlayerProgression(patches, settings.displayName, ledger.ids, ledger.xp),
+    () =>
+      calculatePlayerProgression(
+        patches,
+        settings.displayName,
+        ledger.ids,
+        ledger.xp,
+        new Date(),
+        ledger.streak,
+      ),
     [ledger, patches, settings.displayName],
   );
 
