@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { downloadBlob, renderNodeToPng, safeFileName, shareBlob } from "@/lib/share-image";
 
 interface ExportTarget {
@@ -31,7 +32,7 @@ export function useCardExport(target: ExportTarget) {
     try {
       const blob = await capture();
       downloadBlob(blob, fileName);
-      toast.success("Immagine salvata");
+      enqueueSuccessNotification("Immagine salvata");
     } catch {
       toast.error("Non è stato possibile generare l'immagine");
     } finally {
@@ -46,11 +47,11 @@ export function useCardExport(target: ExportTarget) {
       const blob = await capture();
       const outcome = await shareBlob(blob, fileName, target.title, target.shareText ?? "");
       if (outcome === "cancelled") return false;
-      if (outcome === "shared") toast.success("Condivisione completata");
+      if (outcome === "shared") enqueueSuccessNotification("Condivisione completata");
       else if (outcome === "downloaded-and-copied")
-        toast.success("Immagine scaricata e messaggio copiato");
+        enqueueSuccessNotification("Immagine scaricata e messaggio copiato");
       else if (outcome === "downloaded")
-        toast.success("Condivisione non disponibile: immagine scaricata");
+        enqueueSuccessNotification("Condivisione non disponibile: immagine scaricata");
       return true;
     } catch {
       toast.error("Non è stato possibile condividere l'immagine");
