@@ -1,30 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Check,
-  ChevronDown,
-  FileCheck2,
-  Flame,
-  Gamepad2,
-  ListChecks,
-  LockKeyhole,
-  Medal,
-  Sparkles,
-  Trophy,
-} from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { FileCheck2, Flame, Gamepad2, ListChecks, Sparkles, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import type { Patch } from "@/lib/patch-model";
-import { calculatePlayerProgression } from "@/lib/player-progression";
+import { calculatePlayerProgression, PLAYER_STORAGE_KEYS } from "@/lib/player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
 
 interface PlayerProfileCardProps {
   displayName: string;
   patches: readonly Patch[];
 }
-
-const LAST_XP_KEY = "patchme.player.last-xp.v1";
-const COMPLETED_MISSIONS_KEY = "patchme.player.completed-missions.v1";
-const MISSION_XP_KEY = "patchme.player.mission-xp.v1";
-const LAST_STREAK_KEY = "patchme.player.last-streak.v1";
 
 export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardProps) {
   const [missionLedger, setMissionLedger] = useState<{ ids: string[]; xp: number }>({
@@ -46,12 +31,12 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
   useEffect(() => {
     try {
       const saved = JSON.parse(
-        window.localStorage.getItem(COMPLETED_MISSIONS_KEY) ?? "[]",
+        window.localStorage.getItem(PLAYER_STORAGE_KEYS.completedMissions) ?? "[]",
       ) as unknown;
       const savedIds = Array.isArray(saved)
         ? saved.filter((value): value is string => typeof value === "string")
         : [];
-      const savedXpRaw = window.localStorage.getItem(MISSION_XP_KEY);
+      const savedXpRaw = window.localStorage.getItem(PLAYER_STORAGE_KEYS.missionXp);
       const savedXpValue = Number(savedXpRaw);
       const migratedXp = progression.missions
         .filter((mission) => savedIds.includes(mission.id))
@@ -66,8 +51,8 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
       const newlyEarnedXp = newlyCompleted.reduce((total, mission) => total + mission.rewardXp, 0);
       const mergedXp = savedXp + newlyEarnedXp;
 
-      window.localStorage.setItem(COMPLETED_MISSIONS_KEY, JSON.stringify(merged));
-      window.localStorage.setItem(MISSION_XP_KEY, String(mergedXp));
+      window.localStorage.setItem(PLAYER_STORAGE_KEYS.completedMissions, JSON.stringify(merged));
+      window.localStorage.setItem(PLAYER_STORAGE_KEYS.missionXp, String(mergedXp));
       setMissionLedger((current) => {
         const sameIds =
           current.ids.length === merged.length && current.ids.every((id) => merged.includes(id));
@@ -87,8 +72,8 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
 
   useEffect(() => {
     try {
-      const stored = window.localStorage.getItem(LAST_STREAK_KEY);
-      window.localStorage.setItem(LAST_STREAK_KEY, String(progression.weeklyStreak));
+      const stored = window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastStreak);
+      window.localStorage.setItem(PLAYER_STORAGE_KEYS.lastStreak, String(progression.weeklyStreak));
       if (stored === null) return;
 
       const previousStreak = Number(stored);
@@ -113,8 +98,8 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
 
   useEffect(() => {
     try {
-      const storedXp = window.localStorage.getItem(LAST_XP_KEY);
-      window.localStorage.setItem(LAST_XP_KEY, String(progression.totalXp));
+      const storedXp = window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastXp);
+      window.localStorage.setItem(PLAYER_STORAGE_KEYS.lastXp, String(progression.totalXp));
       if (storedXp === null) return;
 
       const previousXp = Number(storedXp);
@@ -139,13 +124,6 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
       // La progressione funziona anche quando localStorage non è disponibile.
     }
   }, [progression.level, progression.title, progression.totalXp, progression.xpPerLevel]);
-
-  const missionGroups = [
-    { kind: "daily", label: "Missioni giornaliere", hint: "Si rinnovano ogni giorno" },
-    { kind: "weekly", label: "Missioni settimanali", hint: "Si rinnovano ogni lunedì" },
-    { kind: "base", label: "Missioni permanenti", hint: "Una volta sola, ma sono parecchie" },
-    { kind: "secret", label: "Easter egg", hint: "Requisiti volutamente incomprensibili" },
-  ] as const;
 
   return (
     <section
@@ -238,121 +216,22 @@ export function PlayerProfileCard({ displayName, patches }: PlayerProfileCardPro
         </div>
       </dl>
 
-      <details className="group mt-4 border-t border-border pt-3">
-        <summary className="tap-safe flex cursor-pointer list-none items-center gap-2 rounded-lg px-2 text-sm font-bold text-foreground hover:bg-surface-2">
-          <Gamepad2 className="size-5 text-brand" aria-hidden="true" />
-          <span className="flex-1">Titoli, missioni e trofei</span>
-          <span className="text-xs text-muted-foreground">
-            {progression.missions.filter((mission) => mission.completed).length}/
-            {progression.missions.length}
+      <Link
+        to="/progress"
+        className="tap-safe mt-4 flex items-center gap-3 rounded-xl border border-brand/35 bg-brand/10 px-3 py-2.5 text-foreground transition-colors hover:bg-brand/15"
+      >
+        <Gamepad2 className="size-5 shrink-0 text-brand" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-black">Titoli, missioni e trofei</span>
+          <span className="block text-xs text-muted-foreground">
+            Apri la raccolta senza perdere di vista le patch
           </span>
-          <ChevronDown
-            className="size-4 transition-transform group-open:rotate-180"
-            aria-hidden="true"
-          />
-        </summary>
-
-        <div className="mt-3 space-y-4">
-          <section aria-labelledby="missions-title">
-            <div className="flex items-center justify-between gap-2">
-              <h3 id="missions-title" className="text-sm font-black uppercase text-foreground">
-                Missioni e trofei
-              </h3>
-              <span className="text-xs font-bold text-brand">+{progression.bonusXp} XP bonus</span>
-            </div>
-            <div className="mt-3 space-y-4">
-              {missionGroups.map((group) => {
-                const missions = progression.missions.filter(
-                  (mission) => mission.kind === group.kind,
-                );
-                return (
-                  <div key={group.kind}>
-                    <div className="flex items-end justify-between gap-2">
-                      <div>
-                        <h4 className="text-xs font-black uppercase text-foreground">
-                          {group.label}
-                        </h4>
-                        <p className="text-[0.68rem] text-muted-foreground">{group.hint}</p>
-                      </div>
-                      <span className="text-[0.68rem] font-bold text-muted-foreground">
-                        {missions.filter((mission) => mission.completed).length}/{missions.length}
-                      </span>
-                    </div>
-                    <ul className="mt-2 space-y-2">
-                      {missions.map((mission) => (
-                        <li
-                          key={mission.id}
-                          className={`flex items-start gap-3 rounded-lg border p-3 ${
-                            mission.completed
-                              ? "border-brand/50 bg-brand/10"
-                              : "border-border bg-surface-2"
-                          }`}
-                        >
-                          <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-background">
-                            {mission.completed ? (
-                              <Medal className="size-4 text-brand" aria-hidden="true" />
-                            ) : (
-                              <LockKeyhole
-                                className="size-4 text-muted-foreground"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-bold text-foreground">{mission.title}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {mission.completed && mission.secret
-                                ? "Hai capito il riferimento. Patchy è confuso ma impressionato."
-                                : mission.description}
-                            </p>
-                          </div>
-                          <span className="shrink-0 text-xs font-black text-brand">
-                            {mission.completed ? (
-                              <Check className="size-4" aria-label="Completata" />
-                            ) : (
-                              `+${mission.rewardXp}`
-                            )}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          <section aria-labelledby="titles-title">
-            <h3 id="titles-title" className="text-sm font-black uppercase text-foreground">
-              Titoli da sbloccare
-            </h3>
-            <ol className="mt-2 grid gap-2 sm:grid-cols-2">
-              {progression.titles.map((title, index) => {
-                const unlocked = progression.level >= index + 1;
-                return (
-                  <li
-                    key={title}
-                    className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs ${
-                      unlocked
-                        ? "border-brand/40 bg-brand/10 font-bold text-foreground"
-                        : "border-border bg-surface-2 text-muted-foreground"
-                    }`}
-                  >
-                    {unlocked ? (
-                      <Trophy className="size-4 shrink-0 text-brand" aria-hidden="true" />
-                    ) : (
-                      <LockKeyhole className="size-4 shrink-0" aria-hidden="true" />
-                    )}
-                    <span>
-                      Liv. {index + 1} · {unlocked ? title : "???"}
-                    </span>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-        </div>
-      </details>
+        </span>
+        <span className="shrink-0 text-xs font-black text-brand">
+          {progression.missions.filter((mission) => mission.completed).length}/
+          {progression.missions.length}
+        </span>
+      </Link>
 
       {progression.publishedPatches === 0 ? (
         <p className="mt-3 text-center text-xs text-muted-foreground">
