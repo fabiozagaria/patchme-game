@@ -41,7 +41,8 @@ export function hasErrors(errors: PatchErrors): boolean {
 
 export function validateDisplayName(name: string): string | undefined {
   const v = name.trim();
-  if (v.length === 0) return "Inserisci un nome da mostrare.";
+  if (v.length < APP_CONFIG.limits.minDisplayName)
+    return `Inserisci almeno ${APP_CONFIG.limits.minDisplayName} caratteri.`;
   if (v.length > APP_CONFIG.limits.displayName)
     return `Massimo ${APP_CONFIG.limits.displayName} caratteri.`;
   return undefined;
