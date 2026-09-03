@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FileCheck2, Flame, Gamepad2, ListChecks, Sparkles, Trophy } from "lucide-react";
-import { toast } from "sonner";
 import type { Patch, ProfileAvatar } from "@/lib/patch-model";
 import { calculatePlayerProgression, PLAYER_STORAGE_KEYS } from "@/lib/player-progression";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { PatchyMascot } from "@/components/PatchyMascot";
 
 interface PlayerProfileCardProps {
@@ -61,7 +61,7 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
       });
 
       newlyCompleted.forEach((mission) =>
-        toast.success(`Trofeo sbloccato: ${mission.title}`, {
+        enqueueSuccessNotification(`Trofeo sbloccato: ${mission.title}`, {
           description: `Missione completata · +${mission.rewardXp} XP`,
           duration: 5000,
         }),
@@ -81,7 +81,7 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
       if (!Number.isFinite(previousStreak) || progression.weeklyStreak <= previousStreak) return;
 
       setStreakCelebration(true);
-      toast.success(
+      enqueueSuccessNotification(
         previousStreak === 0
           ? "SERIE INIZIATA! Il falò è acceso."
           : `SERIE CONTINUATA! ${progression.weeklyStreak} settimane`,
@@ -108,13 +108,13 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
       if (!Number.isFinite(previousXp) || gainedXp <= 0) return;
 
       const previousLevel = Math.floor(previousXp / progression.xpPerLevel) + 1;
-      toast.success(`+${gainedXp} XP guadagnati`, {
+      enqueueSuccessNotification(`+${gainedXp} XP guadagnati`, {
         description: "La tua patch è entrata nella storia. Più o meno.",
       });
 
       if (progression.level > previousLevel) {
         setLevelUp(true);
-        toast.success(`LEVEL UP! Ora sei livello ${progression.level}`, {
+        enqueueSuccessNotification(`LEVEL UP! Ora sei livello ${progression.level}`, {
           description: progression.title,
           duration: 5000,
         });
