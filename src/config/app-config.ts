@@ -31,6 +31,7 @@ export const APP_CONFIG = {
       "Focus e scorrimento automatici sul primo errore di validazione",
       "Notifiche XP corrette per missioni ed easter egg",
       "Effetti sonori retro per salvataggi, XP, trofei, serie e level-up",
+      "Le serie conquistate non si azzerano eliminando le patch",
       "Nome utente da 3 caratteri e massimo 5 modifiche al giorno",
       "Nuovi colori e avatar di Patchy personalizzabili",
       "Anteprima immediata di tema, colore e avatar prima del salvataggio",

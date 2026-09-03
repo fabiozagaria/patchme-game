@@ -18,9 +18,18 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
     xp: 0,
   });
   const [missionLedgerReady, setMissionLedgerReady] = useState(false);
+  const [preservedStreak, setPreservedStreak] = useState(0);
   const progression = useMemo(
-    () => calculatePlayerProgression(patches, displayName, missionLedger.ids, missionLedger.xp),
-    [displayName, missionLedger, patches],
+    () =>
+      calculatePlayerProgression(
+        patches,
+        displayName,
+        missionLedger.ids,
+        missionLedger.xp,
+        new Date(),
+        preservedStreak,
+      ),
+    [displayName, missionLedger, patches, preservedStreak],
   );
   const [levelUp, setLevelUp] = useState(false);
   const [streakCelebration, setStreakCelebration] = useState(false);
@@ -47,7 +56,11 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
         .reduce((total, mission) => total + mission.rewardXp, 0);
       const savedXp =
         savedXpRaw !== null && Number.isFinite(savedXpValue) ? savedXpValue : migratedXp;
+      const savedStreak = Number(
+        window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastStreak) ?? "0",
+      );
       setMissionLedger({ ids: savedIds, xp: savedXp });
+      setPreservedStreak(Number.isFinite(savedStreak) ? Math.max(0, savedStreak) : 0);
     } catch {
       // La progressione funziona anche quando localStorage non è disponibile.
     } finally {
@@ -101,10 +114,15 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
 
     try {
       const stored = window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastStreak);
-      window.localStorage.setItem(PLAYER_STORAGE_KEYS.lastStreak, String(progression.weeklyStreak));
+      const previousStreak = Number(stored);
+      const nextStreak = Math.max(
+        Number.isFinite(previousStreak) ? previousStreak : 0,
+        progression.weeklyStreak,
+      );
+      window.localStorage.setItem(PLAYER_STORAGE_KEYS.lastStreak, String(nextStreak));
+      setPreservedStreak(nextStreak);
       if (stored === null) return;
 
-      const previousStreak = Number(stored);
       if (!Number.isFinite(previousStreak) || progression.weeklyStreak <= previousStreak) return;
 
       setStreakCelebration(true);
