@@ -2,6 +2,7 @@ import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Download, Loader2, Palette, Pencil, Share2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { TEXTS } from "@/config/app-config";
 import { useAppStore } from "@/state/app-store";
 import { useCardExport } from "@/hooks/use-card-export";
@@ -246,7 +247,7 @@ function PatchDetailPage() {
                   toast.error("Impossibile eliminare: memoria del dispositivo non disponibile");
                   return;
                 }
-                toast.success("Patch eliminata");
+                enqueueSuccessNotification("Patch eliminata");
                 navigate({ to: "/" });
               }}
             >
