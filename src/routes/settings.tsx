@@ -15,6 +15,8 @@ import {
   Sparkles,
   Sun,
   Send,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { APP_CONFIG } from "@/config/app-config";
 import { ACCENTS, type AppSettings, type ThemeMode, type VersionFormat } from "@/lib/patch-model";
@@ -32,6 +34,8 @@ import { UpdateNotice } from "@/components/UpdateNotice";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { AvatarPicker } from "@/components/AvatarPicker";
 import { ProfileAppearancePreview } from "@/components/ProfileAppearancePreview";
+import { Switch } from "@/components/ui/switch";
+import { setSoundEffectsEnabled } from "@/lib/sound-effects";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -77,6 +81,14 @@ function SettingsPage() {
     };
   }, [current.accent, current.theme, ready, settings.accent, settings.theme]);
 
+  useEffect(() => {
+    if (!ready) return;
+    setSoundEffectsEnabled(current.soundEffects);
+    return () => {
+      if (!appearanceCommitted.current) setSoundEffectsEnabled(settings.soundEffects);
+    };
+  }, [current.soundEffects, ready, settings.soundEffects]);
+
   if (!ready) return <div className="min-h-screen bg-background" />;
   const nameChanged = current.displayName.trim() !== settings.displayName;
   const remainingNameChanges = remainingDisplayNameChanges(settings.displayNameChanges);
@@ -118,7 +130,7 @@ function SettingsPage() {
     }
     appearanceCommitted.current = true;
     setDraft(null);
-    enqueueSuccessNotification("Impostazioni salvate");
+    enqueueSuccessNotification("Impostazioni salvate", { sound: "success" });
     void navigate({ to: "/" });
   };
 
@@ -141,7 +153,7 @@ function SettingsPage() {
 
     try {
       await navigator.clipboard.writeText(url);
-      enqueueSuccessNotification("Link di PatchMe copiato");
+      enqueueSuccessNotification("Link di PatchMe copiato", { sound: "success" });
     } catch {
       toast.error("Non riesco a copiare il link su questo dispositivo");
     }
@@ -255,6 +267,32 @@ function SettingsPage() {
                 style={{ backgroundColor: accent.value }}
               />
             ))}
+          </div>
+          <div className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-border bg-surface-2 p-3">
+            <div className="flex min-w-0 items-center gap-3">
+              {current.soundEffects ? (
+                <Volume2 className="size-5 shrink-0 text-brand" aria-hidden="true" />
+              ) : (
+                <VolumeX className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+              )}
+              <div>
+                <Label htmlFor="sound-effects" className="font-semibold">
+                  Effetti sonori
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Suoni retro per XP, trofei, serie e level-up.
+                </p>
+              </div>
+            </div>
+            <Switch
+              id="sound-effects"
+              checked={current.soundEffects}
+              onCheckedChange={(soundEffects) => {
+                setSoundEffectsEnabled(soundEffects);
+                update({ soundEffects });
+              }}
+              aria-label="Attiva effetti sonori"
+            />
           </div>
         </fieldset>
 
