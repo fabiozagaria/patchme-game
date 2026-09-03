@@ -140,7 +140,7 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     setDirty(false);
     bypassGuard.current = true;
     toast.success(status === "published" ? "Patch pubblicata" : "Bozza salvata");
-    navigate({ to: "/patch/$id", params: { id: saved.id } });
+    navigate({ to: "/" });
   };
 
   const requestExit = () => {
@@ -287,15 +287,28 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
               <div className="mt-3 space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="flex items-start gap-2">
-                    <Textarea
-                      aria-label="Elemento della sezione"
-                      value={item.text}
-                      rows={2}
-                      maxLength={APP_CONFIG.limits.itemText}
-                      placeholder={preset.hint}
-                      onChange={(e) => setItem(section.id, item.id, e.target.value)}
-                      className="min-h-[56px] flex-1 resize-none bg-surface-2"
-                    />
+                    <div className="flex-1">
+                      <Textarea
+                        aria-label="Elemento della sezione"
+                        value={item.text}
+                        rows={2}
+                        minLength={APP_CONFIG.limits.minItemText}
+                        maxLength={APP_CONFIG.limits.itemText}
+                        placeholder={preset.hint}
+                        aria-invalid={
+                          item.text.trim().length > 0 &&
+                          item.text.trim().length < APP_CONFIG.limits.minItemText
+                        }
+                        onChange={(e) => setItem(section.id, item.id, e.target.value)}
+                        className="min-h-[56px] resize-none bg-surface-2"
+                      />
+                      {item.text.trim().length > 0 &&
+                      item.text.trim().length < APP_CONFIG.limits.minItemText ? (
+                        <p className="mt-1 text-xs text-destructive">
+                          Scrivi almeno {APP_CONFIG.limits.minItemText} caratteri.
+                        </p>
+                      ) : null}
+                    </div>
                     <button
                       type="button"
                       aria-label="Elimina elemento"
