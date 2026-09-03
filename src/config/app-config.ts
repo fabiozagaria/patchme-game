@@ -25,6 +25,7 @@ export const APP_CONFIG = {
       "Raccolta missioni spostata in una pagina dedicata",
       "Almeno 3 caratteri richiesti per ogni voce pubblicata",
       "Ritorno automatico all'archivio dopo creazione o condivisione",
+      "Popup Novità più compatto e chiudibile anche sugli schermi piccoli",
       "Serie calcolata sulle settimane consecutive",
       "Statistiche per patch pubblicate e voci create",
     ],
