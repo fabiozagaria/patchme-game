@@ -142,7 +142,9 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     setPatch(saved);
     setDirty(false);
     bypassGuard.current = true;
-    enqueueSuccessNotification(status === "published" ? "Patch pubblicata" : "Bozza salvata");
+    enqueueSuccessNotification(status === "published" ? "Patch pubblicata" : "Bozza salvata", {
+      sound: "success",
+    });
     navigate({ to: "/" });
   };
 
