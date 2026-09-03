@@ -5,7 +5,11 @@ const MISSION_GROUPS = [
   { kind: "daily", label: "Missioni giornaliere", hint: "Si rinnovano ogni giorno" },
   { kind: "weekly", label: "Missioni settimanali", hint: "Si rinnovano ogni lunedì" },
   { kind: "base", label: "Missioni permanenti", hint: "Una volta sola, ma sono parecchie" },
-  { kind: "secret", label: "Easter egg", hint: "Requisiti volutamente incomprensibili" },
+  {
+    kind: "secret",
+    label: "Easter egg",
+    hint: "Il titolo suggerisce il gioco. Il nome giusto sblocca il trofeo.",
+  },
 ] as const;
 
 export function ProgressionCollection({ progression }: { progression: PlayerProgression }) {
