@@ -17,6 +17,7 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
     ids: [],
     xp: 0,
   });
+  const [missionLedgerReady, setMissionLedgerReady] = useState(false);
   const progression = useMemo(
     () => calculatePlayerProgression(patches, displayName, missionLedger.ids, missionLedger.xp),
     [displayName, missionLedger, patches],
@@ -30,6 +31,8 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
   const currentlyCompletedKey = currentlyCompletedIds.join(",");
 
   useEffect(() => {
+    if (missionLedgerReady) return;
+
     try {
       const saved = JSON.parse(
         window.localStorage.getItem(PLAYER_STORAGE_KEYS.completedMissions) ?? "[]",
@@ -44,6 +47,20 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
         .reduce((total, mission) => total + mission.rewardXp, 0);
       const savedXp =
         savedXpRaw !== null && Number.isFinite(savedXpValue) ? savedXpValue : migratedXp;
+      setMissionLedger({ ids: savedIds, xp: savedXp });
+    } catch {
+      // La progressione funziona anche quando localStorage non è disponibile.
+    } finally {
+      setMissionLedgerReady(true);
+    }
+  }, [missionLedgerReady, progression.missions]);
+
+  useEffect(() => {
+    if (!missionLedgerReady) return;
+
+    try {
+      const savedIds = missionLedger.ids;
+      const savedXp = missionLedger.xp;
       const savedSet = new Set(savedIds);
       const newlyCompleted = progression.missions.filter(
         (mission) => mission.completed && !savedSet.has(mission.id),
@@ -69,9 +86,18 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
     } catch {
       // Missioni e trofei restano utilizzabili anche senza persistenza locale.
     }
-  }, [currentlyCompletedIds, currentlyCompletedKey, progression.missions]);
+  }, [
+    currentlyCompletedIds,
+    currentlyCompletedKey,
+    missionLedger.ids,
+    missionLedger.xp,
+    missionLedgerReady,
+    progression.missions,
+  ]);
 
   useEffect(() => {
+    if (!missionLedgerReady) return;
+
     try {
       const stored = window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastStreak);
       window.localStorage.setItem(PLAYER_STORAGE_KEYS.lastStreak, String(progression.weeklyStreak));
@@ -95,9 +121,11 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
     } catch {
       // La serie resta visibile anche se il browser non consente la persistenza.
     }
-  }, [progression.weeklyStreak]);
+  }, [missionLedgerReady, progression.weeklyStreak]);
 
   useEffect(() => {
+    if (!missionLedgerReady) return;
+
     try {
       const storedXp = window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastXp);
       window.localStorage.setItem(PLAYER_STORAGE_KEYS.lastXp, String(progression.totalXp));
@@ -109,7 +137,7 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
 
       const previousLevel = Math.floor(previousXp / progression.xpPerLevel) + 1;
       enqueueSuccessNotification(`+${gainedXp} XP guadagnati`, {
-        description: "La tua patch è entrata nella storia. Più o meno.",
+        description: "Ricompensa aggiunta al profilo. Il tempo perso ora ha un valore.",
       });
 
       if (progression.level > previousLevel) {
@@ -124,7 +152,13 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
     } catch {
       // La progressione funziona anche quando localStorage non è disponibile.
     }
-  }, [progression.level, progression.title, progression.totalXp, progression.xpPerLevel]);
+  }, [
+    missionLedgerReady,
+    progression.level,
+    progression.title,
+    progression.totalXp,
+    progression.xpPerLevel,
+  ]);
 
   return (
     <section

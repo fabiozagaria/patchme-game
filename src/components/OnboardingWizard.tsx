@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APP_CONFIG } from "@/config/app-config";
 import {
   ACCENTS,
@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AvatarPicker } from "@/components/AvatarPicker";
+import { ProfileAppearancePreview } from "@/components/ProfileAppearancePreview";
+import { applyAppearance } from "@/lib/appearance";
+import { focusValidationError } from "@/lib/focus-validation-error";
 
 const VERSION_OPTIONS: { value: VersionFormat; label: string; hint: string }[] = [
   { value: "yearWeek", label: "Anno / settimana", hint: "es. v26.36" },
@@ -29,10 +32,17 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
   const [draft, setDraft] = useState<AppSettings>({ ...DEFAULT_SETTINGS });
   const [error, setError] = useState<string | undefined>(undefined);
 
+  useEffect(() => {
+    applyAppearance(draft.theme, draft.accent);
+  }, [draft.accent, draft.theme]);
+
   const submit = () => {
     const nameError = validateDisplayName(draft.displayName);
     setError(nameError);
-    if (nameError) return;
+    if (nameError) {
+      focusValidationError("#username");
+      return;
+    }
     onComplete({ ...draft, displayName: draft.displayName.trim(), onboarded: true });
   };
 
@@ -49,22 +59,23 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
       </p>
 
       <div className="mt-8 space-y-6">
+        <ProfileAppearancePreview avatar={draft.profileAvatar} username={draft.displayName} />
         <div className="surface-card p-4">
-          <Label htmlFor="displayName" className="text-sm font-semibold">
-            Nome visualizzato
+          <Label htmlFor="username" className="text-sm font-semibold">
+            Username
           </Label>
           <Input
-            id="displayName"
+            id="username"
             value={draft.displayName}
             maxLength={APP_CONFIG.limits.displayName}
-            placeholder="Come vuoi essere chiamato"
+            placeholder="Scegli il tuo username"
             aria-invalid={Boolean(error)}
-            aria-describedby={error ? "displayName-error" : undefined}
+            aria-describedby={error ? "username-error" : undefined}
             onChange={(e) => setDraft({ ...draft, displayName: e.target.value })}
             className="tap-safe mt-2"
           />
           {error && (
-            <p id="displayName-error" className="mt-2 text-xs text-destructive">
+            <p id="username-error" className="mt-2 text-xs text-destructive">
               {error}
             </p>
           )}
@@ -95,7 +106,7 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
         <fieldset className="surface-card p-4">
           <legend className="px-1 text-sm font-semibold">Tema</legend>
           <p className="mt-1 text-xs text-muted-foreground">
-            Tema, colore e avatar potranno essere cambiati in qualsiasi momento dalle impostazioni.
+            La scelta viene applicata subito e potrà essere cambiata dalle impostazioni.
           </p>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {THEME_OPTIONS.map((opt) => (

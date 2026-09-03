@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
@@ -19,6 +19,8 @@ import {
 import { APP_CONFIG } from "@/config/app-config";
 import { ACCENTS, type AppSettings, type ThemeMode, type VersionFormat } from "@/lib/patch-model";
 import { validateDisplayName } from "@/lib/validation";
+import { applyAppearance } from "@/lib/appearance";
+import { focusValidationError } from "@/lib/focus-validation-error";
 import { remainingDisplayNameChanges, todaysDisplayNameChanges } from "@/lib/display-name-limit";
 import { useAppStore } from "@/state/app-store";
 import { AppHeader } from "@/components/AppHeader";
@@ -29,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { UpdateNotice } from "@/components/UpdateNotice";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { AvatarPicker } from "@/components/AvatarPicker";
+import { ProfileAppearancePreview } from "@/components/ProfileAppearancePreview";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -36,7 +39,7 @@ export const Route = createFileRoute("/settings")({
       { title: "Impostazioni — PatchMe" },
       {
         name: "description",
-        content: "Nome visualizzato, formato versione, tema e colore principale di PatchMe.",
+        content: "Username, formato versione, tema, avatar e colore principale di PatchMe.",
       },
       { property: "og:title", content: "Impostazioni — PatchMe" },
       { property: "og:description", content: "Personalizza PatchMe come preferisci." },
@@ -57,25 +60,21 @@ const THEME_OPTIONS: { value: ThemeMode; label: string; icon: typeof Sun }[] = [
   { value: "dark", label: "Scuro", icon: Moon },
 ];
 
-function applyAppearance(theme: ThemeMode, accent: string) {
-  const root = document.documentElement;
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  root.classList.toggle("dark", theme === "dark" || (theme === "system" && prefersDark));
-  root.style.setProperty("--accent-brand", accent);
-}
-
 function SettingsPage() {
   const navigate = useNavigate();
   const { ready, settings, saveSettings } = useAppStore();
   const [draft, setDraft] = useState<AppSettings | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
   const [newsOpen, setNewsOpen] = useState(false);
+  const appearanceCommitted = useRef(false);
   const current = draft ?? settings;
 
   useEffect(() => {
     if (!ready || typeof document === "undefined") return;
     applyAppearance(current.theme, current.accent);
-    return () => applyAppearance(settings.theme, settings.accent);
+    return () => {
+      if (!appearanceCommitted.current) applyAppearance(settings.theme, settings.accent);
+    };
   }, [current.accent, current.theme, ready, settings.accent, settings.theme]);
 
   if (!ready) return <div className="min-h-screen bg-background" />;
@@ -95,11 +94,13 @@ function SettingsPage() {
     setError(nameError);
     if (nameError) {
       toast.error("Controlla i campi evidenziati");
+      focusValidationError("#username");
       return;
     }
     if (nameChanged && remainingNameChanges === 0) {
       setError("Hai già usato le 5 modifiche disponibili oggi. Riprova domani.");
       toast.error("Limite giornaliero raggiunto");
+      focusValidationError("#username");
       return;
     }
     const displayNameChanges = nameChanged
@@ -115,8 +116,10 @@ function SettingsPage() {
       toast.error("Salvataggio non riuscito: memoria del dispositivo non disponibile");
       return;
     }
+    appearanceCommitted.current = true;
     setDraft(null);
     enqueueSuccessNotification("Impostazioni salvate");
+    void navigate({ to: "/" });
   };
 
   const shareApp = async () => {
@@ -150,9 +153,9 @@ function SettingsPage() {
 
       <main className="mx-auto max-w-xl space-y-5 px-4 py-5">
         <section className="surface-card p-4">
-          <Label htmlFor="name">Nome visualizzato</Label>
+          <Label htmlFor="username">Username</Label>
           <Input
-            id="name"
+            id="username"
             value={current.displayName}
             maxLength={APP_CONFIG.limits.displayName}
             aria-invalid={Boolean(error)}
@@ -196,6 +199,7 @@ function SettingsPage() {
             Tema e colore cambiano subito per mostrarti il risultato. Premi “Salva impostazioni” per
             conservarli; se esci senza salvare torneranno come prima.
           </p>
+          <ProfileAppearancePreview avatar={current.profileAvatar} username={current.displayName} />
           <p className="mt-4 text-xs font-medium text-muted-foreground">Tema</p>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {THEME_OPTIONS.map((opt) => {

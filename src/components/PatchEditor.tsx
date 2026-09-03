@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { focusValidationError } from "@/lib/focus-validation-error";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -129,6 +130,7 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     setErrors(found);
     if (hasErrors(found)) {
       toast.error("Controlla i campi evidenziati");
+      focusValidationError();
       return;
     }
     const cleaned = cleanPatch(candidate);
@@ -166,10 +168,15 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
               maxLength={APP_CONFIG.limits.title}
               placeholder="La settimana del ritorno"
               aria-invalid={Boolean(errors.title)}
+              aria-describedby={errors.title ? "title-error" : undefined}
               onChange={(e) => update({ title: e.target.value })}
               className="tap-safe mt-1.5"
             />
-            {errors.title && <p className="mt-1.5 text-xs text-destructive">{errors.title}</p>}
+            {errors.title && (
+              <p id="title-error" className="mt-1.5 text-xs text-destructive">
+                {errors.title}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -181,11 +188,14 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
                 maxLength={APP_CONFIG.limits.version}
                 placeholder="v26.36"
                 aria-invalid={Boolean(errors.version)}
+                aria-describedby={errors.version ? "version-error" : undefined}
                 onChange={(e) => update({ version: e.target.value })}
                 className="tap-safe mt-1.5"
               />
               {errors.version && (
-                <p className="mt-1.5 text-xs text-destructive">{errors.version}</p>
+                <p id="version-error" className="mt-1.5 text-xs text-destructive">
+                  {errors.version}
+                </p>
               )}
             </div>
             <div>
@@ -286,40 +296,43 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
               </div>
 
               <div className="mt-3 space-y-2">
-                {section.items.map((item) => (
-                  <div key={item.id} className="flex items-start gap-2">
-                    <div className="flex-1">
-                      <Textarea
-                        aria-label="Elemento della sezione"
-                        value={item.text}
-                        rows={2}
-                        minLength={APP_CONFIG.limits.minItemText}
-                        maxLength={APP_CONFIG.limits.itemText}
-                        placeholder={preset.hint}
-                        aria-invalid={
-                          item.text.trim().length > 0 &&
-                          item.text.trim().length < APP_CONFIG.limits.minItemText
-                        }
-                        onChange={(e) => setItem(section.id, item.id, e.target.value)}
-                        className="min-h-[56px] resize-none bg-surface-2"
-                      />
-                      {item.text.trim().length > 0 &&
-                      item.text.trim().length < APP_CONFIG.limits.minItemText ? (
-                        <p className="mt-1 text-xs text-destructive">
-                          Scrivi almeno {APP_CONFIG.limits.minItemText} caratteri.
-                        </p>
-                      ) : null}
+                {section.items.map((item) => {
+                  const itemErrorId = `item-${item.id}-error`;
+                  const itemIsShort =
+                    item.text.trim().length > 0 &&
+                    item.text.trim().length < APP_CONFIG.limits.minItemText;
+                  return (
+                    <div key={item.id} className="flex items-start gap-2">
+                      <div className="flex-1">
+                        <Textarea
+                          aria-label="Elemento della sezione"
+                          value={item.text}
+                          rows={2}
+                          minLength={APP_CONFIG.limits.minItemText}
+                          maxLength={APP_CONFIG.limits.itemText}
+                          placeholder={preset.hint}
+                          aria-invalid={itemIsShort}
+                          aria-describedby={itemIsShort ? itemErrorId : undefined}
+                          onChange={(e) => setItem(section.id, item.id, e.target.value)}
+                          className="min-h-[56px] resize-none bg-surface-2"
+                        />
+                        {itemIsShort ? (
+                          <p id={itemErrorId} className="mt-1 text-xs text-destructive">
+                            Scrivi almeno {APP_CONFIG.limits.minItemText} caratteri.
+                          </p>
+                        ) : null}
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Elimina elemento"
+                        onClick={() => removeItem(section.id, item.id)}
+                        className="tap-safe flex w-9 items-center justify-center rounded-md text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      aria-label="Elimina elemento"
-                      onClick={() => removeItem(section.id, item.id)}
-                      className="tap-safe flex w-9 items-center justify-center rounded-md text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <Button
@@ -335,7 +348,11 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
         })}
 
         {errors.sections && (
-          <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+          <p
+            tabIndex={-1}
+            aria-invalid="true"
+            className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          >
             {errors.sections}
           </p>
         )}
