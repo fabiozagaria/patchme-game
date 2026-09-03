@@ -28,4 +28,11 @@ assert.deepEqual(
   "Cambiare username non deve inventare il trofeo della prima patch",
 );
 
-console.log("Progressione: 7 controlli superati.");
+const preservedStreak = calculatePlayerProgression([], "Fabio", [], 0, now, 3);
+assert.equal(
+  preservedStreak.weeklyStreak,
+  3,
+  "Eliminare tutte le patch non deve cancellare una serie già conquistata",
+);
+
+console.log("Progressione: 8 controlli superati.");
