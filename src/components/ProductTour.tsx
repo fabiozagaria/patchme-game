@@ -18,7 +18,7 @@ const STEPS = [
     title: "Come funziona?",
     body: "Scegli chi o cosa vuoi patchare, aggiungi novità, miglioramenti e bug, poi scegli uno stile.",
     example:
-      "Non sai cosa scrivere? Usa la creazione guidata oppure rispondi alla domanda settimanale di Patchy.",
+      "Non sai cosa scrivere? Usa la creazione guidata o uno dei suggerimenti rapidi dell'editor.",
   },
   {
     icon: ShieldCheck,
