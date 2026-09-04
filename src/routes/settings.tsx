@@ -15,7 +15,6 @@ import {
   Share2,
   Sparkles,
   Sun,
-  Send,
   ShieldAlert,
   Skull,
   Volume2,
@@ -449,6 +448,14 @@ function SettingsPage() {
             <span className="flex-1 text-sm font-medium">Come funziona</span>
             <span className="text-xs text-muted-foreground">Ripeti l'introduzione</span>
           </button>
+          <Link
+            to="/notifications"
+            className="tap-safe flex w-full items-center gap-3 border-t border-border px-4 py-3 text-left"
+          >
+            <BellRing className="size-5 text-brand" aria-hidden="true" />
+            <span className="flex-1 text-sm font-medium">Centro notifiche</span>
+            <span className="text-xs text-muted-foreground">Storico completo</span>
+          </Link>
           <button
             type="button"
             onClick={() => setNewsOpen(true)}
@@ -520,16 +527,6 @@ function SettingsPage() {
               </p>
             </div>
           </div>
-          <a
-            href={APP_CONFIG.links.telegram}
-            target="_blank"
-            rel="noreferrer"
-            className="tap-safe flex items-center gap-3 border-b border-border px-4 py-3"
-          >
-            <Send className="size-5 text-brand" aria-hidden="true" />
-            <span className="flex-1 text-sm font-medium">Aggiornamenti Telegram</span>
-            <ExternalLink className="size-4 text-muted-foreground" aria-hidden="true" />
-          </a>
           <a
             href={APP_CONFIG.links.github}
             target="_blank"
