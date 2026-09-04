@@ -8,9 +8,8 @@
 [![Status](https://img.shields.io/badge/status-0.7.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
 [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
 [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
-[![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
 
-[Prova PatchMe](https://patchme-fabiozagariadev.vercel.app) · [Aggiornamenti Telegram](https://t.me/patchmegame)
+[Prova PatchMe](https://patchme-fabiozagariadev.vercel.app)
 </div>
 
 ## Cos'è PatchMe
@@ -25,11 +24,11 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 
 - tutorial introduttivo accessibile con esempi e configurazione iniziale;
 - creazione libera oppure guidata tramite cinque domande;
-- domanda settimanale di Patchy, trasformabile subito in una patch e condivisibile con gli amici;
+- miccia sociale per iniziare subito una patch su un amico o sul gruppo;
 - profilo giocatore locale con livelli, XP, titoli sarcastici, serie settimanale e statistiche;
 - progressione persistita tramite repository versionato con migrazione automatica dei dati precedenti;
 - avatar base, segreti e acquistati gestiti da un solo Profilo;
-- modalità Hardcore opzionale con conferma esplicita, copy alternativo e avatar esclusivo;
+- modalità Hardcore opzionale con conferma esplicita, copy più scurrile e avatar esclusivo;
 - bonus locale al primo accesso di ogni giorno: 25 XP e 3 Bit;
 - notifiche browser facoltative quando PatchMe rileva una nuova versione al successivo avvio;
 - notifiche e animazioni per XP guadagnati e passaggi di livello;
@@ -65,11 +64,13 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - patch dedicate a se stessi, amici, gruppi o situazioni, con destinatario facoltativo;
 - autore, tono e invito “Sei stato patchato” integrati nell'immagine;
 - suggerimenti rapidi facoltativi e link locale per creare una contro-patch;
-- moneta Bit ufficiale riutilizzata in tutta l'interfaccia;
-- level-up 3D con riff metal originale e sottofondo discreto per la modalità Hardcore;
+- moneta Bit ufficiale con B cromatica, riutilizzata in tutta l'interfaccia;
+- Username stabile con primo cambio gratuito e cambi successivi da 200 Bit;
+- Nome visualizzato gratuito e separato, usato anche per gli easter egg;
+- level-up 3D con breve riff metal originale, senza sottofondo continuo;
 - esportazione e condivisione delle patch disponibili soltanto dopo la pubblicazione;
 - pulsante di condivisione rapida nell'archivio per le patch pubblicate;
-- sezione Novità e collegamento al canale Telegram;
+- centro notifiche locale con aggiornamenti correnti e passati, attività di gioco e timestamp;
 - popup-regalo animato per celebrare i 44 Bit iniziali dopo le Novità;
 - PWA installabile con icone dedicate;
 - interfaccia responsive e ottimizzata per smartphone.

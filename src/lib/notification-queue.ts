@@ -1,5 +1,6 @@
 import { toast, type ExternalToast } from "sonner";
 import { playGameSound, type GameSound } from "@/lib/sound-effects";
+import { addGameNotification } from "@/lib/notification-center";
 
 const VISIBLE_DURATION_MS = 5000;
 
@@ -42,6 +43,10 @@ function showNextNotification() {
  * la notifica arriva davvero in primo piano, così nessun messaggio scade in coda.
  */
 export function enqueueSuccessNotification(title: string, options?: QueuedNotification["options"]) {
+  addGameNotification(
+    title,
+    typeof options?.description === "string" ? options.description : undefined,
+  );
   pending.push({ title, options });
   showNextNotification();
 }

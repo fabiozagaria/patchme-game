@@ -15,7 +15,6 @@ import {
   Share2,
   Sparkles,
   Sun,
-  Send,
   ShieldAlert,
   Skull,
   Volume2,
@@ -23,10 +22,9 @@ import {
 } from "lucide-react";
 import { APP_CONFIG } from "@/config/app-config";
 import { ACCENTS, type AppSettings, type ThemeMode, type VersionFormat } from "@/lib/patch-model";
-import { validateDisplayName } from "@/lib/validation";
+import { validateDisplayName, validateUsername } from "@/lib/validation";
 import { applyAppearance } from "@/lib/appearance";
 import { focusValidationError } from "@/lib/focus-validation-error";
-import { remainingDisplayNameChanges, todaysDisplayNameChanges } from "@/lib/display-name-limit";
 import { useAppStore } from "@/state/app-store";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
@@ -37,7 +35,10 @@ import { UpdateNotice } from "@/components/UpdateNotice";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { ProfileAppearancePreview } from "@/components/ProfileAppearancePreview";
 import { Switch } from "@/components/ui/switch";
-import { setHardcoreAmbienceEnabled, setSoundEffectsEnabled } from "@/lib/sound-effects";
+import { setSoundEffectsEnabled } from "@/lib/sound-effects";
+import { BitCoin } from "@/components/BitCoin";
+import { loadProgressionState, saveProgressionState } from "@/lib/progression-repository";
+import { canAffordUsernameChange, usernameChangeCost } from "@/lib/username-change";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -85,7 +86,8 @@ function SettingsPage() {
   const navigate = useNavigate();
   const { ready, settings, saveSettings } = useAppStore();
   const [draft, setDraft] = useState<AppSettings | null>(null);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [usernameError, setUsernameError] = useState<string | undefined>(undefined);
+  const [displayNameError, setDisplayNameError] = useState<string | undefined>(undefined);
   const [newsOpen, setNewsOpen] = useState(false);
   const [hardcoreConfirmOpen, setHardcoreConfirmOpen] = useState(false);
   const appearanceCommitted = useRef(false);
@@ -107,60 +109,49 @@ function SettingsPage() {
     };
   }, [current.soundEffects, ready, settings.soundEffects]);
 
-  useEffect(() => {
-    if (!ready) return;
-    setHardcoreAmbienceEnabled(current.hardcoreMode && current.soundEffects);
-    return () => {
-      if (!appearanceCommitted.current) {
-        setHardcoreAmbienceEnabled(settings.hardcoreMode && settings.soundEffects);
-      }
-    };
-  }, [
-    current.hardcoreMode,
-    current.soundEffects,
-    ready,
-    settings.hardcoreMode,
-    settings.soundEffects,
-  ]);
-
   if (!ready) return <div className="min-h-screen bg-background" />;
-  const nameChanged = current.displayName.trim() !== settings.displayName;
-  const remainingNameChanges = remainingDisplayNameChanges(settings.displayNameChanges);
+  const usernameChanged = current.username.trim() !== settings.username;
+  const changeCost = usernameChangeCost(settings.usernameChanges);
 
   const update = (patch: Partial<AppSettings>) => setDraft({ ...current, ...patch });
 
   const goBack = () => {
     setDraft(null);
-    setError(undefined);
+    setUsernameError(undefined);
+    setDisplayNameError(undefined);
     navigate({ to: "/" });
   };
 
   const submit = () => {
-    const nameError = validateDisplayName(current.displayName);
-    setError(nameError);
-    if (nameError) {
+    const nextUsernameError = validateUsername(current.username);
+    const nextDisplayNameError = validateDisplayName(current.displayName);
+    setUsernameError(nextUsernameError);
+    setDisplayNameError(nextDisplayNameError);
+    if (nextUsernameError || nextDisplayNameError) {
       toast.error("Controlla i campi evidenziati");
+      focusValidationError(nextUsernameError ? "#username" : "#display-name");
+      return;
+    }
+    const progression = loadProgressionState();
+    if (usernameChanged && !canAffordUsernameChange(progression.bits, settings.usernameChanges)) {
+      setUsernameError(`Servono ${changeCost} Bit. Ne hai ${progression.bits}.`);
+      toast.error("Bit insufficienti per cambiare Username");
       focusValidationError("#username");
       return;
     }
-    if (nameChanged && remainingNameChanges === 0) {
-      setError("Hai già usato le 5 modifiche disponibili oggi. Riprova domani.");
-      toast.error("Limite giornaliero raggiunto");
-      focusValidationError("#username");
-      return;
-    }
-    const displayNameChanges = nameChanged
-      ? [...todaysDisplayNameChanges(settings.displayNameChanges), new Date().toISOString()]
-      : settings.displayNameChanges;
     const ok = saveSettings({
       ...current,
+      username: current.username.trim(),
       displayName: current.displayName.trim(),
-      displayNameChanges,
+      usernameChanges: usernameChanged ? settings.usernameChanges + 1 : settings.usernameChanges,
       onboarded: true,
     });
     if (!ok) {
       toast.error("Salvataggio non riuscito: memoria del dispositivo non disponibile");
       return;
+    }
+    if (usernameChanged && changeCost > 0) {
+      saveProgressionState({ ...progression, bits: progression.bits - changeCost });
     }
     appearanceCommitted.current = true;
     setDraft(null);
@@ -231,25 +222,52 @@ function SettingsPage() {
           <Label htmlFor="username">Username</Label>
           <Input
             id="username"
-            value={current.displayName}
+            value={current.username}
             maxLength={APP_CONFIG.limits.displayName}
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? "username-error" : "username-help"}
+            aria-invalid={Boolean(usernameError)}
+            aria-describedby={usernameError ? "username-error" : "username-help"}
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            onChange={(e) => update({ displayName: e.target.value })}
+            onChange={(e) => update({ username: e.target.value })}
             className="tap-safe mt-2"
           />
-          {error && (
+          {usernameError && (
             <p id="username-error" className="mt-2 text-xs text-destructive">
-              {error}
+              {usernameError}
             </p>
           )}
           <p id="username-help" className="mt-2 text-xs text-muted-foreground">
-            Da 3 a {APP_CONFIG.limits.displayName} caratteri, senza spazi {"·"}{" "}
-            {remainingNameChanges} modifiche rimaste oggi. Il contatore scende solo se salvi un nome
-            diverso.
+            Identità pubblica fissa, da 3 a {APP_CONFIG.limits.displayName} caratteri e senza spazi.{" "}
+            {settings.usernameChanges === 0
+              ? "Il primo cambio è gratuito."
+              : "Ogni cambio successivo costa 200 Bit."}
+          </p>
+          {usernameChanged ? (
+            <p className="mt-3 flex items-center gap-1 text-sm font-black text-brand">
+              Costo del cambio: {changeCost} <BitCoin className="size-5" />
+            </p>
+          ) : null}
+        </section>
+
+        <section className="surface-card p-4">
+          <Label htmlFor="display-name">Nome visualizzato</Label>
+          <Input
+            id="display-name"
+            value={current.displayName}
+            maxLength={APP_CONFIG.limits.displayName}
+            aria-invalid={Boolean(displayNameError)}
+            aria-describedby={displayNameError ? "display-name-error" : "display-name-help"}
+            onChange={(e) => update({ displayName: e.target.value })}
+            className="tap-safe mt-2"
+          />
+          {displayNameError ? (
+            <p id="display-name-error" className="mt-2 text-xs text-destructive">
+              {displayNameError}
+            </p>
+          ) : null}
+          <p id="display-name-help" className="mt-2 text-xs text-muted-foreground">
+            È gratuito, può contenere spazi ed è il nome usato dagli easter egg.
           </p>
         </section>
 
@@ -351,8 +369,7 @@ function SettingsPage() {
                   Effetti sonori
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Suoni retro per XP e trofei, riff metal per i level-up e musica ambientale bassa
-                  in modalità Hardcore.
+                  Suoni retro per XP e trofei e un breve riff metal soltanto durante i level-up.
                 </p>
               </div>
             </div>
@@ -409,8 +426,8 @@ function SettingsPage() {
                 persone dotate di dignità.
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Attivandola sblocchi anche un Patchy fuori controllo e un sottofondo metal a basso
-                volume. Avatar e audio restano controllabili dal Profilo e da queste impostazioni.
+                Attivandola sblocchi anche un Patchy fuori controllo. Niente musica continua:
+                restano soltanto gli effetti sonori degli eventi.
               </p>
             </div>
           </div>
@@ -431,6 +448,14 @@ function SettingsPage() {
             <span className="flex-1 text-sm font-medium">Come funziona</span>
             <span className="text-xs text-muted-foreground">Ripeti l'introduzione</span>
           </button>
+          <Link
+            to="/notifications"
+            className="tap-safe flex w-full items-center gap-3 border-t border-border px-4 py-3 text-left"
+          >
+            <BellRing className="size-5 text-brand" aria-hidden="true" />
+            <span className="flex-1 text-sm font-medium">Centro notifiche</span>
+            <span className="text-xs text-muted-foreground">Storico completo</span>
+          </Link>
           <button
             type="button"
             onClick={() => setNewsOpen(true)}
@@ -502,16 +527,6 @@ function SettingsPage() {
               </p>
             </div>
           </div>
-          <a
-            href={APP_CONFIG.links.telegram}
-            target="_blank"
-            rel="noreferrer"
-            className="tap-safe flex items-center gap-3 border-b border-border px-4 py-3"
-          >
-            <Send className="size-5 text-brand" aria-hidden="true" />
-            <span className="flex-1 text-sm font-medium">Aggiornamenti Telegram</span>
-            <ExternalLink className="size-4 text-muted-foreground" aria-hidden="true" />
-          </a>
           <a
             href={APP_CONFIG.links.github}
             target="_blank"

@@ -51,7 +51,13 @@ export const storageAvailable = (): boolean => safeStorage() !== null;
 export const settingsRepository = {
   load(): AppSettings {
     const parsed = settingsSchema.safeParse(readRaw(APP_CONFIG.storageKeys.settings));
-    return parsed.success ? parsed.data : DEFAULT_SETTINGS;
+    if (!parsed.success) return DEFAULT_SETTINGS;
+    const legacyName = parsed.data.displayName.trim();
+    return {
+      ...parsed.data,
+      username: parsed.data.username.trim() || legacyName,
+      displayName: legacyName || parsed.data.username.trim(),
+    };
   },
   save(settings: AppSettings): boolean {
     return writeRaw(APP_CONFIG.storageKeys.settings, settings);

@@ -18,6 +18,7 @@ import { hardcoreCopy } from "@/lib/hardcore-copy";
 import { LevelUpCelebration } from "@/components/LevelUpCelebration";
 
 interface PlayerProfileCardProps {
+  username: string;
   displayName: string;
   patches: readonly Patch[];
   avatar: ProfileAvatar;
@@ -27,6 +28,7 @@ interface PlayerProfileCardProps {
 }
 
 export function PlayerProfileCard({
+  username,
   displayName,
   patches,
   avatar,
@@ -53,7 +55,12 @@ export function PlayerProfileCard({
     >
       {levelUp ? <LevelUpCelebration level={progression.level} title={progression.title} /> : null}
       <div className="flex items-center gap-3">
-        <div className="relative shrink-0">
+        <Link
+          to="/profile"
+          hash="avatar"
+          aria-label="Cambia avatar"
+          className="tap-safe relative shrink-0 rounded-2xl transition-transform hover:scale-105"
+        >
           {equippedAvatar?.imageSrc ? (
             <img src={equippedAvatar.imageSrc} alt="" className="size-20 object-contain" />
           ) : (
@@ -62,7 +69,7 @@ export function PlayerProfileCard({
           <span className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full border-2 border-background bg-brand text-xs font-black text-brand-foreground">
             {progression.level}
           </span>
-        </div>
+        </Link>
         <div className="min-w-0 flex-1">
           <p className="text-xs font-bold uppercase tracking-wider text-brand">
             {hardcoreCopy(hardcoreMode, "Profilo giocatore", "Scheda del disagiato")}
@@ -70,6 +77,7 @@ export function PlayerProfileCard({
           <h2 id="player-profile-title" className="truncate text-xl font-extrabold text-foreground">
             {displayName || "Giocatore"} · Livello {progression.level}
           </h2>
+          <p className="truncate text-xs font-bold text-brand">@{username || "username"}</p>
           <p className="text-sm font-semibold text-muted-foreground">{progression.title}</p>
         </div>
         <button

@@ -163,24 +163,43 @@
 /* Moneta ufficiale Bit: stessa identità in ogni schermata. */
 .bit-coin {
   aspect-ratio: 1;
-  border: 0.12em solid #92400e;
+  position: relative;
+  border: 0.11em solid transparent;
   border-radius: 999px;
-  color: #422006;
+  color: white;
   background:
-    radial-gradient(circle at 30% 24%, #fff7ae 0 12%, transparent 13%),
-    radial-gradient(circle at 35% 28%, #fde68a, #facc15 52%, #b45309 100%);
+    linear-gradient(#151826, #090b12) padding-box,
+    conic-gradient(from 15deg, #67e8f9, #c084fc, #fb7185, #facc15, #4ade80, #67e8f9)
+      border-box;
   box-shadow:
-    inset -0.12em -0.16em 0.22em #713f1266,
-    inset 0.08em 0.08em 0.15em #fff9b688,
-    0 0.12em 0.35em #facc1538;
+    inset 0 0 0.12em #ffffff35,
+    inset -0.12em -0.16em 0.25em #0009,
+    0 0.12em 0.42em #a855f755;
+  overflow: hidden;
+}
+
+.bit-coin::before {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border-radius: inherit;
+  background: conic-gradient(from 220deg, #22d3ee22, #c084fc55, #facc1533, #22d3ee22);
+  filter: blur(0.04em);
 }
 
 .bit-coin-mark {
   font-family: var(--font-display);
-  font-size: 0.62em;
+  position: relative;
+  z-index: 1;
+  font-size: 0.64em;
   font-weight: 900;
   line-height: 1;
-  transform: skewX(-8deg);
+  background: linear-gradient(135deg, #ecfeff 5%, #67e8f9 28%, #e879f9 58%, #fde047 88%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 0.08em #a5f3fc);
+  transform: skewX(-7deg);
 }
 
 /* ---- Intro firma ---- */

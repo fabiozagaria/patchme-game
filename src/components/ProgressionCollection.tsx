@@ -1,6 +1,7 @@
 import { Check, LockKeyhole, Medal, Trophy } from "lucide-react";
 import type { PlayerProgression } from "@/lib/player-progression";
 import { BitCoin } from "@/components/BitCoin";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 const MISSION_GROUPS = [
   { kind: "daily", label: "Missioni giornaliere", hint: "Si rinnovano ogni giorno" },
@@ -13,17 +14,27 @@ const MISSION_GROUPS = [
   },
 ] as const;
 
-export function ProgressionCollection({ progression }: { progression: PlayerProgression }) {
+export function ProgressionCollection({
+  progression,
+  hardcoreMode = false,
+}: {
+  progression: PlayerProgression;
+  hardcoreMode?: boolean;
+}) {
   return (
     <div className="space-y-5">
       <section className="surface-card p-4" aria-labelledby="missions-title">
         <div className="flex items-center justify-between gap-2">
           <div>
             <h2 id="missions-title" className="text-xl font-black uppercase text-foreground">
-              Missioni e trofei
+              {hardcoreCopy(hardcoreMode, "Missioni e trofei", "Missioni e trofei del cazzo")}
             </h2>
             <p className="text-xs text-muted-foreground">
-              Completa obiettivi, accumula XP e Bit e cerca di capire gli easter egg.
+              {hardcoreCopy(
+                hardcoreMode,
+                "Completa obiettivi, accumula XP e Bit e cerca di capire gli easter egg.",
+                "Completa 'ste missioni, arraffa XP e Bit e prova a capire gli easter egg, genio.",
+              )}
             </p>
           </div>
           <span className="shrink-0 text-xs font-black text-brand">+{progression.bonusXp} XP</span>
@@ -33,8 +44,12 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
           {MISSION_GROUPS.map((group) => {
             const missions = progression.missions.filter((mission) => mission.kind === group.kind);
             return (
-              <section key={group.kind} aria-labelledby={`mission-group-${group.kind}`}>
-                <div className="flex items-end justify-between gap-2">
+              <details
+                key={group.kind}
+                defaultOpen={group.kind === "daily"}
+                className="group overflow-hidden rounded-xl border border-border bg-surface-2"
+              >
+                <summary className="tap-safe flex cursor-pointer list-none items-center justify-between gap-2 px-3 py-3 marker:hidden">
                   <div>
                     <h3
                       id={`mission-group-${group.kind}`}
@@ -47,8 +62,8 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
                   <span className="text-xs font-bold text-muted-foreground">
                     {missions.filter((mission) => mission.completed).length}/{missions.length}
                   </span>
-                </div>
-                <ul className="mt-2 space-y-2">
+                </summary>
+                <ul className="space-y-2 border-t border-border p-2">
                   {missions.map((mission) => (
                     <li
                       key={mission.id}
@@ -93,20 +108,26 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
                     </li>
                   ))}
                 </ul>
-              </section>
+              </details>
             );
           })}
         </div>
       </section>
 
-      <section className="surface-card p-4" aria-labelledby="titles-title">
-        <h2 id="titles-title" className="text-xl font-black uppercase text-foreground">
-          Titoli da sbloccare
-        </h2>
-        <p className="text-xs text-muted-foreground">
-          Ogni livello rende il tuo titolo leggermente più imbarazzante.
-        </p>
-        <ol className="mt-3 grid gap-2 sm:grid-cols-2">
+      <details className="surface-card group overflow-hidden" aria-labelledby="titles-title">
+        <summary className="tap-safe cursor-pointer list-none p-4 marker:hidden">
+          <h2 id="titles-title" className="text-xl font-black uppercase text-foreground">
+            {hardcoreCopy(hardcoreMode, "Titoli da sbloccare", "Titoli sempre più rincoglioniti")}
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            {hardcoreCopy(
+              hardcoreMode,
+              "Tocca per vedere la collezione completa senza farti chilometri di scroll.",
+              "Apri 'sta roba solo se vuoi contemplare quanto tempo hai buttato.",
+            )}
+          </p>
+        </summary>
+        <ol className="grid gap-2 border-t border-border p-4 sm:grid-cols-2">
           {progression.titles.map((title, index) => {
             const unlocked = progression.level >= index + 1;
             return (
@@ -130,7 +151,7 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
             );
           })}
         </ol>
-      </section>
+      </details>
     </div>
   );
 }
