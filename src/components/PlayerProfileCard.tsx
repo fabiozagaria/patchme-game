@@ -1,8 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FileCheck2, Flame, Gamepad2, ListChecks, Sparkles, Trophy } from "lucide-react";
 import type { Patch, ProfileAvatar } from "@/lib/patch-model";
-import { calculatePlayerProgression, PLAYER_STORAGE_KEYS } from "@/lib/player-progression";
+import {
+  calculatePlayerProgression,
+  PLAYER_STORAGE_KEYS,
+  SUPER_SAIYAN_MISSION,
+} from "@/lib/player-progression";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { PatchyMascot } from "@/components/PatchyMascot";
 
@@ -10,9 +14,17 @@ interface PlayerProfileCardProps {
   displayName: string;
   patches: readonly Patch[];
   avatar: ProfileAvatar;
+  superSaiyanUnlocked: boolean;
+  onUnlockSuperSaiyan: () => boolean;
 }
 
-export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfileCardProps) {
+export function PlayerProfileCard({
+  displayName,
+  patches,
+  avatar,
+  superSaiyanUnlocked,
+  onUnlockSuperSaiyan,
+}: PlayerProfileCardProps) {
   const [missionLedger, setMissionLedger] = useState<{ ids: string[]; xp: number }>({
     ids: [],
     xp: 0,
@@ -33,11 +45,42 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
   );
   const [levelUp, setLevelUp] = useState(false);
   const [streakCelebration, setStreakCelebration] = useState(false);
+  const secretTapCount = useRef(0);
+  const secretClaimed = useRef(false);
   const currentlyCompletedIds = useMemo(
     () => progression.missions.filter((mission) => mission.completed).map((mission) => mission.id),
     [progression.missions],
   );
   const currentlyCompletedKey = currentlyCompletedIds.join(",");
+
+  const handleSecretTap = () => {
+    if (!missionLedgerReady || superSaiyanUnlocked || secretClaimed.current) return;
+    secretTapCount.current += 1;
+    if (secretTapCount.current < 7) return;
+    secretClaimed.current = true;
+
+    if (!onUnlockSuperSaiyan()) {
+      secretClaimed.current = false;
+      return;
+    }
+
+    const ids = [...new Set([...missionLedger.ids, SUPER_SAIYAN_MISSION.id])];
+    const xp = missionLedger.ids.includes(SUPER_SAIYAN_MISSION.id)
+      ? missionLedger.xp
+      : missionLedger.xp + SUPER_SAIYAN_MISSION.rewardXp;
+    try {
+      window.localStorage.setItem(PLAYER_STORAGE_KEYS.completedMissions, JSON.stringify(ids));
+      window.localStorage.setItem(PLAYER_STORAGE_KEYS.missionXp, String(xp));
+    } catch {
+      // Lo sblocco dell'avatar resta valido anche se il registro XP non è disponibile.
+    }
+    setMissionLedger({ ids, xp });
+    enqueueSuccessNotification("FORMA DORATA SBLOCCATA!", {
+      description: `Patchy ha superato il limite · +${SUPER_SAIYAN_MISSION.rewardXp} XP`,
+      sound: "level-up",
+      duration: 5000,
+    });
+  };
 
   useEffect(() => {
     if (missionLedgerReady) return;
@@ -213,7 +256,14 @@ export function PlayerProfileCard({ displayName, patches, avatar }: PlayerProfil
           </h2>
           <p className="text-sm font-semibold text-muted-foreground">{progression.title}</p>
         </div>
-        <Trophy className="size-6 shrink-0 text-brand" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={handleSecretTap}
+          className="tap-safe shrink-0 rounded-lg p-2 text-brand"
+          aria-label="Trofei del profilo"
+        >
+          <Trophy className="size-6" aria-hidden="true" />
+        </button>
       </div>
 
       <div className="mt-4">
