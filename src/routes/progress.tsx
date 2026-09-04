@@ -2,7 +2,12 @@ import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { ProgressionCollection } from "@/components/ProgressionCollection";
-import { calculatePlayerProgression, PLAYER_STORAGE_KEYS } from "@/lib/player-progression";
+import { calculatePlayerProgression } from "@/lib/player-progression";
+import {
+  EMPTY_PROGRESSION_STATE,
+  loadProgressionState,
+  type ProgressionState,
+} from "@/lib/progression-repository";
 import { useAppStore } from "@/state/app-store";
 
 export const Route = createFileRoute("/progress")({
@@ -20,30 +25,10 @@ export const Route = createFileRoute("/progress")({
 
 function ProgressPage() {
   const { ready, settings, patches } = useAppStore();
-  const [ledger, setLedger] = useState<{ ids: string[]; xp: number; streak: number }>({
-    ids: [],
-    xp: 0,
-    streak: 0,
-  });
+  const [persisted, setPersisted] = useState<ProgressionState>(EMPTY_PROGRESSION_STATE);
 
   useEffect(() => {
-    try {
-      const parsed = JSON.parse(
-        window.localStorage.getItem(PLAYER_STORAGE_KEYS.completedMissions) ?? "[]",
-      ) as unknown;
-      const ids = Array.isArray(parsed)
-        ? parsed.filter((value): value is string => typeof value === "string")
-        : [];
-      const xp = Number(window.localStorage.getItem(PLAYER_STORAGE_KEYS.missionXp));
-      const streak = Number(window.localStorage.getItem(PLAYER_STORAGE_KEYS.lastStreak));
-      setLedger({
-        ids,
-        xp: Number.isFinite(xp) ? xp : 0,
-        streak: Number.isFinite(streak) ? Math.max(0, streak) : 0,
-      });
-    } catch {
-      setLedger({ ids: [], xp: 0, streak: 0 });
-    }
+    setPersisted(loadProgressionState());
   }, []);
 
   const progression = useMemo(
@@ -51,12 +36,12 @@ function ProgressPage() {
       calculatePlayerProgression(
         patches,
         settings.displayName,
-        ledger.ids,
-        ledger.xp,
+        persisted.completedMissionIds,
+        persisted.missionXp,
         new Date(),
-        ledger.streak,
+        persisted.highestStreak,
       ),
-    [ledger, patches, settings.displayName],
+    [patches, persisted, settings.displayName],
   );
 
   if (!ready) return <div className="min-h-screen bg-background" />;

@@ -27,6 +27,7 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - creazione libera oppure guidata tramite cinque domande;
 - domanda settimanale di Patchy, trasformabile subito in una patch e condivisibile con gli amici;
 - profilo giocatore locale con livelli, XP, titoli sarcastici, serie settimanale e statistiche;
+- progressione persistita tramite repository versionato con migrazione automatica dei dati precedenti;
 - notifiche e animazioni per XP guadagnati e passaggi di livello;
 - effetti sonori retro disattivabili per salvataggi, XP, trofei, serie e level-up;
 - coda delle notifiche: ogni messaggio resta visibile per cinque secondi completi;

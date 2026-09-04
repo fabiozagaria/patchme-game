@@ -9,6 +9,7 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "test:progression": "node --experimental-strip-types scripts/test-player-progression.mjs",
+    "test:progression-storage": "node --experimental-strip-types scripts/test-progression-repository.mjs",
     "test:sounds": "node --experimental-strip-types scripts/test-sound-effects.mjs",
     "test:sharing": "node --experimental-strip-types scripts/test-sharing-rules.mjs",
     "lint": "eslint .",
