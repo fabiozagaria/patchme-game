@@ -50,7 +50,8 @@ export const Route = createFileRoute("/patch/new")({
 });
 
 function NewPatchPage() {
-  const counterSeed = Route.useSearch();
+  const routeSeed = Route.useSearch();
+  const [counterSeed] = useState(routeSeed);
   const { ready, settings, patches, saveSettings } = useAppStore();
   const [creationSeed, setCreationSeed] = useState<{
     guidedAnswers: GuidedAnswer[];
