@@ -184,8 +184,9 @@ function SettingsPage() {
             </p>
           )}
           <p id="username-help" className="mt-2 text-xs text-muted-foreground">
-            Da 3 a {APP_CONFIG.limits.displayName} caratteri, senza spazi · {remainingNameChanges}
-            {" "}modifiche rimaste oggi. Il contatore scende solo se salvi un nome diverso.
+            Da 3 a {APP_CONFIG.limits.displayName} caratteri, senza spazi {"·"}{" "}
+            {remainingNameChanges} modifiche rimaste oggi. Il contatore scende solo se salvi un nome
+            diverso.
           </p>
         </section>
 
