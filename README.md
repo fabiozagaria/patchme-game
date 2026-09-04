@@ -1,7 +1,7 @@
 <div align="center">
   <img src="public/assets/patchy-mascot.png" alt="Patchy, la mascotte di PatchMe" width="220" />
 
-# PatchMe
+# PatchMe — v0.7.0 Alpha
 
 **Trasforma amici, persone e situazioni in patch notes da condividere.**
 
