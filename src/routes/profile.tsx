@@ -140,8 +140,11 @@ function ProfilePage() {
                 id="profile-preview-title"
                 className="truncate text-2xl font-black text-foreground"
               >
-                @{settings.displayName || "username"}
+                {settings.displayName || "Giocatore"}
               </h1>
+              <p className="truncate text-sm font-black text-brand">
+                @{settings.username || "username"}
+              </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Ogni scelta viene applicata e salvata immediatamente.
               </p>
@@ -164,7 +167,12 @@ function ProfilePage() {
           );
           const selectedId = equippedCosmeticId(progression, slot);
           return (
-            <section key={slot} className="surface-card p-4" aria-labelledby={`profile-${slot}`}>
+            <section
+              key={slot}
+              id={slot === "avatar" ? "avatar" : undefined}
+              className="surface-card scroll-mt-4 p-4"
+              aria-labelledby={`profile-${slot}`}
+            >
               <div className="flex items-start gap-3">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
                   {slot === "avatar" ? <UserRound /> : slot === "frame" ? <Image /> : <Sparkles />}
