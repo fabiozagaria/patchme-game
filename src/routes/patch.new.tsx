@@ -19,7 +19,11 @@ import { OnboardingWizard } from "@/components/OnboardingWizard";
 
 export const Route = createFileRoute("/patch/new")({
   validateSearch: (search: Record<string, unknown>) => ({
-    counter: search.counter === true || search.counter === "1" || search.counter === "true",
+    counter:
+      search.counter === true ||
+      search.counter === 1 ||
+      search.counter === "1" ||
+      search.counter === "true",
     subject: (["self", "friend", "group", "situation"] as const).includes(
       search.subject as PatchSubject,
     )
