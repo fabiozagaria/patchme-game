@@ -128,13 +128,13 @@ function PatchDetailPage() {
   };
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const counterPatchUrl = patch
-    ? createCounterPatchUrl(appUrl, settings.displayName, patch.tone, selectedTemplate)
+    ? createCounterPatchUrl(appUrl, settings.username, patch.tone, selectedTemplate)
     : appUrl;
   const { nodeRef, busy, saveImage, shareImage, copyCaption } = useCardExport({
     version: patch?.version ?? "",
     title: patch?.title ?? "PatchMe",
     shareText: patch
-      ? `${patch.targetName ? `${patch.targetName}, sei stato patchato.\n` : ""}${patch.title} · ${patch.version}\nCreata da @${settings.displayName}\n\nRispondi con una contro-patch: ${counterPatchUrl}`
+      ? `${patch.targetName ? `${patch.targetName}, sei stato patchato.\n` : ""}${patch.title} · ${patch.version}\nCreata da @${settings.username}\n\nRispondi con una contro-patch: ${counterPatchUrl}`
       : `Crea la tua patch su PatchMe: ${appUrl}`,
   });
 
@@ -168,7 +168,7 @@ function PatchDetailPage() {
       <main className="mx-auto max-w-md px-4 py-5">
         <PatchPreviewCard
           patch={patch}
-          displayName={settings.displayName}
+          displayName={settings.username}
           template={selectedTemplate}
           orientation={selectedOrientation}
           profile={sharedProfile}
@@ -184,7 +184,7 @@ function PatchDetailPage() {
           <PatchPreviewCard
             ref={nodeRef}
             patch={patch}
-            displayName={settings.displayName}
+            displayName={settings.username}
             template={selectedTemplate}
             orientation={selectedOrientation}
             profile={sharedProfile}
@@ -358,10 +358,10 @@ function PatchDetailPage() {
               >
                 3 · Anteprima
               </p>
-              <div className="social-preview-stage rounded-2xl border border-border bg-black/20 p-3 sm:p-4">
+              <div className="social-preview-stage overflow-hidden rounded-2xl border border-border bg-black/20 p-3 sm:p-4">
                 <PatchPreviewCard
                   patch={patch}
-                  displayName={settings.displayName}
+                  displayName={settings.username}
                   template={selectedTemplate}
                   orientation={selectedOrientation}
                   profile={sharedProfile}
