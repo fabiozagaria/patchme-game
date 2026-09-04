@@ -1,4 +1,5 @@
 import type { Patch } from "@/lib/patch-model";
+import { normalizeUsername } from "./username.ts";
 
 const XP_PER_LEVEL = 250;
 const XP_PER_PATCH = 100;
@@ -12,6 +13,12 @@ export const PLAYER_STORAGE_KEYS = {
   lastStreak: "patchme.player.last-streak.v1",
 } as const;
 
+export const SUPER_SAIYAN_MISSION = {
+  id: "patchy-super-saiyan",
+  title: "Potenza oltre novemila",
+  rewardXp: 777,
+} as const;
+
 export interface PlayerMission {
   id: string;
   title: string;
@@ -19,6 +26,7 @@ export interface PlayerMission {
   rewardXp: number;
   completed: boolean;
   secret?: boolean;
+  hiddenUntilCompleted?: boolean;
   kind: "base" | "daily" | "weekly" | "secret";
 }
 
@@ -63,11 +71,19 @@ const PLAYER_TITLES = [
 interface SecretMissionDefinition {
   id: string;
   title: string;
-  triggerName: string;
+  triggerName: string | null;
   rewardXp: number;
+  hiddenUntilCompleted?: boolean;
 }
 
 const SECRET_MISSIONS: readonly SecretMissionDefinition[] = [
+  {
+    id: SUPER_SAIYAN_MISSION.id,
+    title: SUPER_SAIYAN_MISSION.title,
+    triggerName: null,
+    rewardXp: SUPER_SAIYAN_MISSION.rewardXp,
+    hiddenUntilCompleted: true,
+  },
   {
     id: "god-of-war",
     title: "Diventa il dio della Guerra",
@@ -503,7 +519,7 @@ function missionProgress(
   const weekDays = new Set(
     weekPatches.map((patch) => activityDay(patch.updatedAt)).filter((day) => day !== null),
   ).size;
-  const normalizedName = displayName.trim().toLocaleLowerCase("it");
+  const normalizedName = normalizeUsername(displayName);
   const completed = new Set(completedMissionIds);
   const mission = (
     id: string,
@@ -512,6 +528,7 @@ function missionProgress(
     rewardXp: number,
     condition: boolean,
     kind: PlayerMission["kind"] = "base",
+    hiddenUntilCompleted = false,
   ): PlayerMission => ({
     id,
     title,
@@ -519,6 +536,7 @@ function missionProgress(
     rewardXp,
     completed: condition || completed.has(id),
     secret: kind === "secret",
+    hiddenUntilCompleted,
     kind,
   });
 
@@ -642,8 +660,9 @@ function missionProgress(
         secret.title,
         "???",
         secret.rewardXp,
-        normalizedName === secret.triggerName,
+        secret.triggerName !== null && normalizedName === normalizeUsername(secret.triggerName),
         "secret",
+        secret.hiddenUntilCompleted,
       ),
     ),
   ];
