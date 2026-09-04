@@ -45,6 +45,8 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - colori principali personalizzabili;
 - avatar del profilo selezionabile tra quattro pose di Patchy;
 - username validato e limitato a cinque modifiche giornaliere;
+- username senza spazi, con easter egg adattati anche ai nomi composti;
+- avatar segreto di Patchy in forma dorata, sbloccabile dall'interfaccia;
 - anteprima immediata di tema, colore e avatar anche durante la prima configurazione;
 - focus e scorrimento automatici sul primo errore di validazione;
 - condivisione nativa di immagine, messaggio e link con fallback;
