@@ -35,6 +35,8 @@ export const APP_CONFIG = {
       "Condivisione disponibile soltanto dopo la pubblicazione",
       "Condivisione rapida delle patch pubblicate direttamente dall'archivio",
       "Nome utente da 3 caratteri e massimo 5 modifiche al giorno",
+      "Username senza spazi e easter egg compatibili con i nomi composti",
+      "Easter egg iper segreto con Patchy in forma dorata sbloccabile",
       "Nuovi colori e avatar di Patchy personalizzabili",
       "Anteprima immediata di tema, colore e avatar prima del salvataggio",
       "Notifiche mostrate in coda per 5 secondi completi ciascuna",
