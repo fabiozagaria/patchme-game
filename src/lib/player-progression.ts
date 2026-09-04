@@ -6,13 +6,6 @@ const XP_PER_PATCH = 100;
 const XP_PER_ITEM = 10;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-export const PLAYER_STORAGE_KEYS = {
-  lastXp: "patchme.player.last-xp.v1",
-  completedMissions: "patchme.player.completed-missions.v1",
-  missionXp: "patchme.player.mission-xp.v1",
-  lastStreak: "patchme.player.last-streak.v1",
-} as const;
-
 export const SUPER_SAIYAN_MISSION = {
   id: "patchy-super-saiyan",
   title: "Potenza oltre novemila",
