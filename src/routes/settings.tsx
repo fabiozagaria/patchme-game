@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
@@ -15,6 +15,8 @@ import {
   Sparkles,
   Sun,
   Send,
+  ShieldAlert,
+  Skull,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -32,10 +34,20 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { UpdateNotice } from "@/components/UpdateNotice";
 import { PatchyMascot } from "@/components/PatchyMascot";
-import { AvatarPicker } from "@/components/AvatarPicker";
 import { ProfileAppearancePreview } from "@/components/ProfileAppearancePreview";
 import { Switch } from "@/components/ui/switch";
 import { setSoundEffectsEnabled } from "@/lib/sound-effects";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -43,7 +55,7 @@ export const Route = createFileRoute("/settings")({
       { title: "Impostazioni — PatchMe" },
       {
         name: "description",
-        content: "Username, formato versione, tema, avatar e colore principale di PatchMe.",
+        content: "Username, formato versione, tema, colore e modalità di PatchMe.",
       },
       { property: "og:title", content: "Impostazioni — PatchMe" },
       { property: "og:description", content: "Personalizza PatchMe come preferisci." },
@@ -70,6 +82,7 @@ function SettingsPage() {
   const [draft, setDraft] = useState<AppSettings | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
   const [newsOpen, setNewsOpen] = useState(false);
+  const [hardcoreConfirmOpen, setHardcoreConfirmOpen] = useState(false);
   const appearanceCommitted = useRef(false);
   const current = draft ?? settings;
 
@@ -130,7 +143,14 @@ function SettingsPage() {
     }
     appearanceCommitted.current = true;
     setDraft(null);
-    enqueueSuccessNotification("Impostazioni salvate", { sound: "success" });
+    enqueueSuccessNotification(
+      hardcoreCopy(
+        current.hardcoreMode,
+        "Impostazioni salvate",
+        "Impostazioni salvate. Contento adesso?",
+      ),
+      { sound: "success" },
+    );
     void navigate({ to: "/" });
   };
 
@@ -249,16 +269,14 @@ function SettingsPage() {
               );
             })}
           </div>
-          <p className="mt-4 text-xs font-medium text-muted-foreground">Avatar del profilo</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Scegli quale versione di Patchy ti rappresenta: l’anteprima è immediata.
-          </p>
-          <div className="mt-3">
-            <AvatarPicker
-              value={current.profileAvatar}
-              onChange={(profileAvatar) => update({ profileAvatar })}
-              unlockedAvatars={current.unlockedAvatars}
-            />
+          <div className="mt-4 rounded-xl border border-border bg-surface-2 p-3">
+            <p className="text-sm font-semibold text-foreground">Avatar e cosmetici</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Patchy base, avatar segreti e acquisti vivono tutti nel Profilo.
+            </p>
+            <Button asChild variant="outline" size="sm" className="mt-3">
+              <Link to="/profile">Apri il Profilo</Link>
+            </Button>
           </div>
           <p className="mt-5 text-xs font-medium text-muted-foreground">Colore principale</p>
           <div className="mt-3 flex flex-wrap gap-3">
@@ -305,6 +323,54 @@ function SettingsPage() {
             />
           </div>
         </fieldset>
+
+        <section
+          className="surface-card border-2 border-destructive/70 p-4"
+          aria-labelledby="hardcore-title"
+        >
+          <div className="flex items-start gap-3">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive">
+              <Skull aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[0.65rem] font-black uppercase tracking-widest text-destructive">
+                    Impostazione rischiosa
+                  </p>
+                  <Label
+                    id="hardcore-title"
+                    htmlFor="hardcore-mode"
+                    className="text-base font-black"
+                  >
+                    Modalità Hardcore
+                  </Label>
+                </div>
+                <Switch
+                  id="hardcore-mode"
+                  checked={current.hardcoreMode}
+                  onCheckedChange={(enabled) => {
+                    if (enabled) setHardcoreConfirmOpen(true);
+                    else update({ hardcoreMode: false });
+                  }}
+                  aria-describedby="hardcore-warning"
+                />
+              </div>
+              <p
+                id="hardcore-warning"
+                className="mt-3 text-sm font-semibold leading-relaxed text-destructive"
+              >
+                ⚠️ Meglio evitare: sostituisce i testi del sito con un linguaggio volgare, molto
+                sarcastico e potenzialmente offensivo. Non attivarla davanti a bambini, nonne o
+                persone dotate di dignità.
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Attivandola sblocchi anche un Patchy fuori controllo. L’avatar si sceglie sempre dal
+                Profilo.
+              </p>
+            </div>
+          </div>
+        </section>
 
         <section className="surface-card overflow-hidden">
           <div className="border-b border-border px-4 py-3">
@@ -429,6 +495,36 @@ function SettingsPage() {
       </div>
 
       <UpdateNotice open={newsOpen} onClose={() => setNewsOpen(false)} />
+      <AlertDialog open={hardcoreConfirmOpen} onOpenChange={setHardcoreConfirmOpen}>
+        <AlertDialogContent className="border-2 border-destructive">
+          <AlertDialogHeader>
+            <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-destructive/15 text-destructive">
+              <ShieldAlert className="size-8" aria-hidden="true" />
+            </div>
+            <AlertDialogTitle className="text-center">
+              Vuoi davvero togliere il guinzaglio a Patchy?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              L’interfaccia diventerà scurrile e sarcastica. Alcune frasi possono offendere esseri
+              umani funzionanti. In compenso sbloccherai un avatar Hardcore esclusivo.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No, tengo un minimo di dignità</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() =>
+                update({
+                  hardcoreMode: true,
+                  unlockedAvatars: [...new Set([...current.unlockedAvatars, "hardcore" as const])],
+                })
+              }
+            >
+              Attiva Hardcore
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

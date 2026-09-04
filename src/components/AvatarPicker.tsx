@@ -8,6 +8,7 @@ const AVATARS: readonly { value: ProfileAvatar; label: string }[] = [
   { value: "celebrate", label: "Festeggiante" },
   { value: "bug", label: "Buggato" },
   { value: "superSaiyan", label: "Forma dorata" },
+  { value: "hardcore", label: "Fuori controllo" },
 ];
 
 export function AvatarPicker({
@@ -15,13 +16,14 @@ export function AvatarPicker({
   onChange,
   unlockedAvatars = [],
 }: {
-  value: ProfileAvatar;
+  value: ProfileAvatar | null;
   onChange: (value: ProfileAvatar) => void;
   unlockedAvatars?: readonly ProfileAvatar[];
 }) {
-  const visibleAvatars = AVATARS.filter(
-    (avatar) => avatar.value !== "superSaiyan" || unlockedAvatars.includes(avatar.value),
-  );
+  const visibleAvatars = AVATARS.filter((avatar) => {
+    const isBase = !["superSaiyan", "hardcore"].includes(avatar.value);
+    return isBase || unlockedAvatars.includes(avatar.value);
+  });
 
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">

@@ -37,6 +37,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNew: boolean }) {
   const navigate = useNavigate();
@@ -129,7 +130,13 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     const found = validatePatch(candidate, status);
     setErrors(found);
     if (hasErrors(found)) {
-      toast.error("Controlla i campi evidenziati");
+      toast.error(
+        hardcoreCopy(
+          settings.hardcoreMode,
+          "Controlla i campi evidenziati",
+          "Hai compilato 'sta roba col culo. Controlla gli errori.",
+        ),
+      );
       focusValidationError();
       return;
     }
@@ -142,9 +149,22 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
     setPatch(saved);
     setDirty(false);
     bypassGuard.current = true;
-    enqueueSuccessNotification(status === "published" ? "Patch pubblicata" : "Bozza salvata", {
-      sound: "success",
-    });
+    enqueueSuccessNotification(
+      status === "published"
+        ? hardcoreCopy(
+            settings.hardcoreMode,
+            "Patch pubblicata",
+            "Patch pubblicata. Contro ogni previsione.",
+          )
+        : hardcoreCopy(
+            settings.hardcoreMode,
+            "Bozza salvata",
+            "Bozza salvata. Finirla era troppo, eh?",
+          ),
+      {
+        sound: "success",
+      },
+    );
     navigate({ to: "/" });
   };
 
@@ -155,8 +175,16 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
   return (
     <div className="min-h-screen bg-background pb-32">
       <AppHeader
-        title={isNew ? "Nuova patch" : "Modifica patch"}
-        subtitle={dirty ? "Modifiche non salvate" : "Tutto salvato"}
+        title={
+          isNew
+            ? hardcoreCopy(settings.hardcoreMode, "Nuova patch", "Nuova dannata patch")
+            : hardcoreCopy(settings.hardcoreMode, "Modifica patch", "Sistema questo casino")
+        }
+        subtitle={
+          dirty
+            ? hardcoreCopy(settings.hardcoreMode, "Modifiche non salvate", "Casino non salvato")
+            : hardcoreCopy(settings.hardcoreMode, "Tutto salvato", "Miracolosamente salvato")
+        }
         onBack={requestExit}
       />
 
@@ -377,21 +405,21 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
               onClick={() => setPreviewOpen(true)}
               className="tap-safe h-11 flex-1"
             >
-              Anteprima
+              {hardcoreCopy(settings.hardcoreMode, "Anteprima", "Guarda il disastro")}
             </Button>
             <Button
               variant="secondary"
               onClick={() => persist("draft")}
               className="tap-safe h-11 flex-1"
             >
-              Salva bozza
+              {hardcoreCopy(settings.hardcoreMode, "Salva bozza", "Salva 'sta mezza roba")}
             </Button>
           </div>
           <Button
             onClick={() => persist("published")}
             className="tap-safe h-12 w-full bg-brand font-semibold text-brand-foreground hover:bg-brand/90 sm:h-11 sm:w-auto sm:flex-1"
           >
-            Pubblica
+            {hardcoreCopy(settings.hardcoreMode, "Pubblica", "Pubblica e pentiti")}
           </Button>
         </div>
       </div>

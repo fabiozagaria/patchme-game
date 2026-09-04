@@ -3,6 +3,7 @@ import { Check, Image, Palette, RotateCcw, ShoppingBag, Sparkles, UserRound } fr
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { PatchyMascot } from "@/components/PatchyMascot";
+import { AvatarPicker } from "@/components/AvatarPicker";
 import { Button } from "@/components/ui/button";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
@@ -23,6 +24,8 @@ import {
   type ProgressionState,
 } from "@/lib/progression-repository";
 import { useAppStore } from "@/state/app-store";
+import type { ProfileAvatar } from "@/lib/patch-model";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -59,7 +62,7 @@ const SLOT_COPY: Record<
 };
 
 function ProfilePage() {
-  const { ready, settings } = useAppStore();
+  const { ready, settings, saveSettings } = useAppStore();
   const [progression, setProgression] = useState<ProgressionState>(EMPTY_PROGRESSION_STATE);
   const equippedAvatar = cosmeticById(progression.equippedAvatarId);
 
@@ -85,12 +88,35 @@ function ProfilePage() {
     commit({ ...progression, [field]: null }, `${SLOT_COPY[slot].empty} selezionato`);
   };
 
+  const selectPatchyAvatar = (profileAvatar: ProfileAvatar) => {
+    const nextProgression = { ...progression, equippedAvatarId: null };
+    if (!saveSettings({ ...settings, profileAvatar })) return;
+    saveProgressionState(nextProgression);
+    setProgression(nextProgression);
+    enqueueSuccessNotification(
+      hardcoreCopy(
+        settings.hardcoreMode,
+        "Avatar equipaggiato",
+        "Hai cambiato faccia. Il problema resta.",
+      ),
+      { sound: "xp" },
+    );
+  };
+
   if (!ready) return <div className="min-h-screen bg-background" />;
   if (!settings.onboarded) return <Navigate to="/" />;
 
   return (
     <div className="min-h-screen bg-background pb-12">
-      <AppHeader title="Profilo" subtitle="Il camerino di Patchy" backTo="/" />
+      <AppHeader
+        title={hardcoreCopy(settings.hardcoreMode, "Profilo", "La tua dannata faccia")}
+        subtitle={hardcoreCopy(
+          settings.hardcoreMode,
+          "Il camerino di Patchy",
+          "Il camerino delle pessime scelte",
+        )}
+        backTo="/"
+      />
       <main className="mx-auto max-w-3xl space-y-5 px-4 py-5">
         <section
           className={`surface-card relative overflow-hidden p-5 ${profileFrameClass(progression.equippedProfileFrameId)} ${profileEffectClass(progression.equippedProfileEffectId)}`}
@@ -150,16 +176,27 @@ function ProfilePage() {
                   <p className="text-sm text-muted-foreground">{copy.description}</p>
                 </div>
               </div>
+              {slot === "avatar" ? (
+                <div className="mt-4">
+                  <AvatarPicker
+                    value={selectedId === null ? settings.profileAvatar : null}
+                    onChange={selectPatchyAvatar}
+                    unlockedAvatars={settings.unlockedAvatars}
+                  />
+                </div>
+              ) : null}
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                <button
-                  type="button"
-                  aria-pressed={selectedId === null}
-                  onClick={() => clearSlot(slot)}
-                  className={`tap-safe flex min-h-14 items-center justify-between rounded-xl border px-3 py-2 text-left text-sm font-bold ${selectedId === null ? "border-brand bg-brand/10 text-foreground" : "border-border text-muted-foreground"}`}
-                >
-                  {copy.empty}
-                  {selectedId === null ? <Check className="size-4 text-brand" /> : null}
-                </button>
+                {slot !== "avatar" ? (
+                  <button
+                    type="button"
+                    aria-pressed={selectedId === null}
+                    onClick={() => clearSlot(slot)}
+                    className={`tap-safe flex min-h-14 items-center justify-between rounded-xl border px-3 py-2 text-left text-sm font-bold ${selectedId === null ? "border-brand bg-brand/10 text-foreground" : "border-border text-muted-foreground"}`}
+                  >
+                    {copy.empty}
+                    {selectedId === null ? <Check className="size-4 text-brand" /> : null}
+                  </button>
+                ) : null}
                 {items.map((item) => (
                   <button
                     key={item.id}
@@ -186,7 +223,9 @@ function ProfilePage() {
               </div>
               {items.length === 0 ? (
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Non possiedi ancora alternative per questo slot. Visita lo Shop per sbloccarne.
+                  {slot === "avatar"
+                    ? "Gli altri travestimenti si comprano nello Shop o si sbloccano facendo cose discutibili."
+                    : "Non possiedi ancora alternative per questo slot. Visita lo Shop per sbloccarne."}
                 </p>
               ) : null}
             </section>

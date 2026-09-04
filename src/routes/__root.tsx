@@ -135,11 +135,16 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function AppGate({ children }: { children: ReactNode }) {
-  const { ready } = useAppStore();
+  const { ready, settings } = useAppStore();
   const [showIntro] = useState(() => shouldShowIntro());
   const [introDone, setIntroDone] = useState(!showIntro);
 
   const visible = ready && (introDone || !showIntro);
+
+  useEffect(() => {
+    document.documentElement.dataset.hardcore = settings.hardcoreMode ? "true" : "false";
+    return () => delete document.documentElement.dataset.hardcore;
+  }, [settings.hardcoreMode]);
 
   return (
     <>

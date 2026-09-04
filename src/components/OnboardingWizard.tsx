@@ -11,7 +11,6 @@ import { validateDisplayName } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AvatarPicker } from "@/components/AvatarPicker";
 import { ProfileAppearancePreview } from "@/components/ProfileAppearancePreview";
 import { applyAppearance } from "@/lib/appearance";
 import { focusValidationError } from "@/lib/focus-validation-error";
@@ -131,19 +130,6 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
                 {opt.label}
               </button>
             ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="surface-card p-4">
-          <legend className="px-1 text-sm font-semibold">Avatar del profilo</legend>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Scegli la versione di Patchy che comparirà nel tuo profilo giocatore.
-          </p>
-          <div className="mt-3">
-            <AvatarPicker
-              value={draft.profileAvatar}
-              onChange={(profileAvatar) => setDraft({ ...draft, profileAvatar })}
-            />
           </div>
         </fieldset>
 

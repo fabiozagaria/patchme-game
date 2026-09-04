@@ -13,6 +13,7 @@ import {
   type ProgressionState,
 } from "@/lib/progression-repository";
 import { useAppStore } from "@/state/app-store";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 export const Route = createFileRoute("/shop")({
   head: () => ({
@@ -69,8 +70,12 @@ function ShopPage() {
   return (
     <div className="min-h-screen bg-background pb-12">
       <AppHeader
-        title="Patchy Shop"
-        subtitle="Cosmetici completamente necessari"
+        title={hardcoreCopy(settings.hardcoreMode, "Patchy Shop", "Negozio di cazzate costose")}
+        subtitle={hardcoreCopy(
+          settings.hardcoreMode,
+          "Cosmetici completamente necessari",
+          "Butta qui i tuoi Bit, campione",
+        )}
         backTo="/"
         action={
           <span className="flex items-center gap-1 rounded-full bg-amber-400/15 px-3 py-1.5 text-sm font-black text-amber-400">
@@ -86,7 +91,11 @@ function ShopPage() {
             </span>
             <div className="min-w-0 flex-1">
               <h2 id="shop-title" className="text-xl font-black uppercase text-foreground">
-                Negozio cosmetico
+                {hardcoreCopy(
+                  settings.hardcoreMode,
+                  "Negozio cosmetico",
+                  "Emporio delle minchiate",
+                )}
               </h2>
               <p className="text-sm text-muted-foreground">
                 Avatar, cornici ed effetti coordinati. I cosmetici non danno vantaggi; alcuni

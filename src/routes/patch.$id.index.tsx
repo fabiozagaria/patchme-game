@@ -38,6 +38,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 export const Route = createFileRoute("/patch/$id/")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -193,14 +194,24 @@ function PatchDetailPage() {
               className="tap-safe h-12 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
               onClick={() => setShareOpen(true)}
             >
-              <Palette className="mr-2 size-4" /> Personalizza e condividi
+              <Palette className="mr-2 size-4" />{" "}
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                "Personalizza e condividi",
+                "Truccala e spargi il danno",
+              )}
             </Button>
           ) : (
             <Button
               className="tap-safe h-12 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
               onClick={() => navigate({ to: "/patch/$id/edit", params: { id: patch.id } })}
             >
-              <LockKeyhole className="mr-2 size-4" /> Pubblica per condividere
+              <LockKeyhole className="mr-2 size-4" />{" "}
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                "Pubblica per condividere",
+                "Pubblicala prima, genio",
+              )}
             </Button>
           )}
           <div className="flex gap-2">
@@ -209,13 +220,15 @@ function PatchDetailPage() {
               className="tap-safe h-11 flex-1 text-muted-foreground hover:text-destructive"
               onClick={() => setConfirm(true)}
             >
-              <Trash2 className="mr-1 size-4" /> Elimina
+              <Trash2 className="mr-1 size-4" />{" "}
+              {hardcoreCopy(settings.hardcoreMode, "Elimina", "Buttala")}
             </Button>
             <Button
               className="tap-safe h-11 flex-1 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
               onClick={() => navigate({ to: "/patch/$id/edit", params: { id: patch.id } })}
             >
-              <Pencil className="mr-1 size-4" /> Modifica
+              <Pencil className="mr-1 size-4" />{" "}
+              {hardcoreCopy(settings.hardcoreMode, "Modifica", "Rattoppa")}
             </Button>
           </div>
         </div>
@@ -224,7 +237,13 @@ function PatchDetailPage() {
       <Dialog open={shareable && shareOpen} onOpenChange={setShareOpen}>
         <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Scegli lo stile della patch</DialogTitle>
+            <DialogTitle>
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                "Scegli lo stile della patch",
+                "Scegli come impacchettare 'sto disastro",
+              )}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="grid grid-cols-2 gap-2" role="group" aria-label="Template grafico">
