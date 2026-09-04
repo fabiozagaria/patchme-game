@@ -68,7 +68,11 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
                         )}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-bold text-foreground">{mission.title}</p>
+                        <p className="text-sm font-bold text-foreground">
+                          {mission.hiddenUntilCompleted && !mission.completed
+                            ? "???"
+                            : mission.title}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {mission.completed && mission.secret
                             ? "Hai capito il riferimento. Patchy è confuso ma impressionato."

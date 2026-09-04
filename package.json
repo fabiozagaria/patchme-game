@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test:progression": "node --experimental-strip-types scripts/test-player-progression.mjs",
     "test:sounds": "node --experimental-strip-types scripts/test-sound-effects.mjs",
+    "test:sharing": "node --experimental-strip-types scripts/test-sharing-rules.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

@@ -4,7 +4,7 @@ interface PatchyMascotProps {
   pose?: PatchyPose;
 }
 
-export type PatchyPose = "hello" | "thinking" | "celebrate" | "bug";
+export type PatchyPose = "hello" | "thinking" | "celebrate" | "bug" | "superSaiyan";
 
 const POSES: Record<PatchyPose, { src: string; alt: string }> = {
   hello: {
@@ -22,6 +22,10 @@ const POSES: Record<PatchyPose, { src: string; alt: string }> = {
   bug: {
     src: "/assets/patchy-bug.png",
     alt: "Patchy ha trovato un bug",
+  },
+  superSaiyan: {
+    src: "/assets/patchy-super-saiyan.webp",
+    alt: "Patchy nella sua forma dorata definitiva",
   },
 };
 

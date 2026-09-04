@@ -5,7 +5,7 @@
 
 **Trasforma amici, persone e situazioni in patch notes da condividere.**
 
-[![Status](https://img.shields.io/badge/status-0.5.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+[![Status](https://img.shields.io/badge/status-0.6.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
 [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
 [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
 [![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
@@ -45,9 +45,13 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - colori principali personalizzabili;
 - avatar del profilo selezionabile tra quattro pose di Patchy;
 - username validato e limitato a cinque modifiche giornaliere;
+- username senza spazi, con easter egg adattati anche ai nomi composti;
+- avatar segreto di Patchy in forma dorata, sbloccabile dall'interfaccia;
 - anteprima immediata di tema, colore e avatar anche durante la prima configurazione;
 - focus e scorrimento automatici sul primo errore di validazione;
 - condivisione nativa di immagine, messaggio e link con fallback;
+- esportazione e condivisione delle patch disponibili soltanto dopo la pubblicazione;
+- pulsante di condivisione rapida nell'archivio per le patch pubblicate;
 - sezione Novità e collegamento al canale Telegram;
 - PWA installabile con icone dedicate;
 - interfaccia responsive e ottimizzata per smartphone.
@@ -64,7 +68,7 @@ Il simbolo `+` rappresenta miglioramenti e nuove funzionalità, mentre i pixel d
 
 ## Stato del progetto
 
-PatchMe è attualmente in **0.5.0 Alpha**.
+PatchMe è attualmente in **0.6.0 Alpha**.
 
 Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono ancora cambiare. In questa fase il progetto viene testato con un gruppo ristretto di persone e sviluppato a partire dal loro utilizzo reale.
 

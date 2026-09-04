@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Settings, Trash2, Pencil } from "lucide-react";
+import { Plus, Settings, Share2, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { APP_CONFIG, TEXTS } from "@/config/app-config";
@@ -112,6 +112,14 @@ function ArchivePage() {
           displayName={settings.displayName}
           patches={patches}
           avatar={settings.profileAvatar}
+          superSaiyanUnlocked={settings.unlockedAvatars.includes("superSaiyan")}
+          onUnlockSuperSaiyan={() =>
+            saveSettings({
+              ...settings,
+              profileAvatar: "superSaiyan",
+              unlockedAvatars: [...new Set([...settings.unlockedAvatars, "superSaiyan" as const])],
+            })
+          }
         />
         <div className="mt-4">
           <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
@@ -159,7 +167,23 @@ function ArchivePage() {
                       {summary || "Nessun contenuto"}
                     </p>
                   </Link>
-                  <div className="mt-3 flex justify-end gap-1">
+                  <div className="mt-3 flex flex-wrap justify-end gap-1">
+                    {patch.status === "published" ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="tap-safe"
+                        onClick={() =>
+                          navigate({
+                            to: "/patch/$id",
+                            params: { id: patch.id },
+                            search: { share: true },
+                          })
+                        }
+                      >
+                        <Share2 className="mr-1 size-4" /> Condividi
+                      </Button>
+                    ) : null}
                     <Button
                       variant="ghost"
                       size="sm"

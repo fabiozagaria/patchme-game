@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { calculatePlayerProgression } from "../src/lib/player-progression.ts";
+import { normalizeUsername, usernameHasWhitespace } from "../src/lib/username.ts";
 
 const now = new Date("2026-09-03T12:00:00Z");
 const completedIds = (progression) =>
@@ -16,6 +17,16 @@ assert.deepEqual(
   ["god-of-war"],
   "Kratos senza patch deve sbloccare soltanto il relativo easter egg",
 );
+
+const solidSnake = calculatePlayerProgression([], "SolidSnake", [], 0, now);
+assert.equal(
+  completedIds(solidSnake).includes("metal-gear-solid"),
+  true,
+  "Gli easter egg con nomi composti devono funzionare senza spazi",
+);
+assert.equal(normalizeUsername(" Solid Snake "), "solidsnake");
+assert.equal(usernameHasWhitespace("Solid Snake"), true);
+assert.equal(usernameHasWhitespace("SolidSnake"), false);
 
 const claimedKratos = calculatePlayerProgression([], "Kratos", ["god-of-war"], 500, now);
 assert.equal(claimedKratos.totalXp, 500, "Un easter egg già riscosso non deve duplicare gli XP");
@@ -35,4 +46,4 @@ assert.equal(
   "Eliminare tutte le patch non deve cancellare una serie già conquistata",
 );
 
-console.log("Progressione: 8 controlli superati.");
+console.log("Progressione: 12 controlli superati.");
