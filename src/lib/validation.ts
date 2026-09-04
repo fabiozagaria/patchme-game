@@ -1,5 +1,6 @@
 import { APP_CONFIG } from "@/config/app-config";
 import { cleanPatch, type Patch, type PatchStatus } from "./patch-model";
+import { usernameHasWhitespace } from "./username.ts";
 
 export interface PatchErrors {
   title?: string;
@@ -45,5 +46,6 @@ export function validateDisplayName(name: string): string | undefined {
     return `Inserisci almeno ${APP_CONFIG.limits.minDisplayName} caratteri.`;
   if (v.length > APP_CONFIG.limits.displayName)
     return `Massimo ${APP_CONFIG.limits.displayName} caratteri.`;
+  if (usernameHasWhitespace(v)) return "Lo username non può contenere spazi.";
   return undefined;
 }
