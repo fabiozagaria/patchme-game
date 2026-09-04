@@ -317,6 +317,36 @@
   animation: streak-flame 460ms ease-in-out 5;
 }
 
+.profile-frame-arcade {
+  box-shadow:
+    inset 0 0 0 2px #22d3ee,
+    0 0 20px #d946ef55;
+}
+.profile-frame-mushroom {
+  border-color: #ef4444;
+  box-shadow: inset 0 -5px 0 #22c55e;
+}
+.profile-frame-bonfire {
+  border-color: #fb923c;
+  box-shadow: 0 0 24px #f9731645;
+}
+.profile-frame-wasteland {
+  border-color: #a3e635;
+  box-shadow: inset 0 0 22px #84cc1625;
+}
+.profile-frame-red-ring {
+  border-color: #dc2626;
+  box-shadow:
+    0 0 30px #dc262655,
+    inset 0 0 15px #7f1d1d55;
+}
+.profile-frame-golden-warrior {
+  border-color: #facc15;
+  box-shadow:
+    0 0 34px #facc1566,
+    inset 0 0 20px #f59e0b33;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .player-level-up,
   .level-up-banner,
