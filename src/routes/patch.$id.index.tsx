@@ -2,12 +2,16 @@ import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Check,
+  Copy,
   Download,
   Loader2,
   LockKeyhole,
   Palette,
   Pencil,
   Share2,
+  Smartphone,
+  Square,
+  RectangleHorizontal,
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -123,7 +127,7 @@ function PatchDetailPage() {
     publishedPatches: progression.publishedPatches,
   };
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const { nodeRef, busy, saveImage, shareImage } = useCardExport({
+  const { nodeRef, busy, saveImage, shareImage, copyCaption } = useCardExport({
     version: patch?.version ?? "",
     title: patch?.title ?? "PatchMe",
     shareText: patch
@@ -235,91 +239,153 @@ function PatchDetailPage() {
       </div>
 
       <Dialog open={shareable && shareOpen} onOpenChange={setShareOpen}>
-        <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto">
+        <DialogContent className="social-studio-dialog flex max-h-[calc(100dvh-1rem)] max-w-lg flex-col gap-0 overflow-hidden rounded-3xl p-0 sm:max-h-[92dvh]">
           <DialogHeader>
-            <DialogTitle>
-              {hardcoreCopy(
-                settings.hardcoreMode,
-                "Scegli lo stile della patch",
-                "Scegli come impacchettare 'sto disastro",
-              )}
-            </DialogTitle>
+            <div className="border-b border-border bg-surface-2 px-5 pb-4 pt-5 pr-12">
+              <p className="display text-xs font-black uppercase tracking-[0.22em] text-brand">
+                Studio social
+              </p>
+              <DialogTitle className="mt-1 text-2xl">
+                {hardcoreCopy(
+                  settings.hardcoreMode,
+                  "Prepara la patch da condividere",
+                  "Trucca 'sto disastro e spargilo in giro",
+                )}
+              </DialogTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Stile, formato e profilo vengono esportati esattamente come li vedi.
+              </p>
+            </div>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-2" role="group" aria-label="Template grafico">
-            {SHARE_TEMPLATES.map((template) => {
-              const selected = selectedTemplate === template.id;
-              return (
-                <button
-                  key={template.id}
-                  type="button"
-                  aria-pressed={selected}
-                  onClick={() => chooseTemplate(template.id)}
-                  className={`tap-safe relative rounded-xl border p-3 text-left ${
-                    selected ? "border-brand bg-brand/10" : "border-border bg-surface-2"
-                  }`}
-                >
-                  <span className={`mb-3 block h-2 w-10 rounded-full ${template.swatch}`} />
-                  <span className="block text-sm font-semibold text-foreground">
-                    {template.name}
-                  </span>
-                  <span className="mt-0.5 block text-xs text-muted-foreground">
-                    {template.description}
-                  </span>
-                  {selected ? (
-                    <Check
-                      className="absolute right-3 top-3 size-4 text-brand"
-                      aria-hidden="true"
-                    />
-                  ) : null}
-                </button>
-              );
-            })}
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5">
+            <section aria-labelledby="share-style-title">
+              <p
+                id="share-style-title"
+                className="mb-2 text-xs font-black uppercase tracking-wider text-muted-foreground"
+              >
+                1 · Stile
+              </p>
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label="Template grafico">
+                {SHARE_TEMPLATES.map((template) => {
+                  const selected = selectedTemplate === template.id;
+                  return (
+                    <button
+                      key={template.id}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => chooseTemplate(template.id)}
+                      className={`tap-safe relative rounded-xl border p-3 text-left ${
+                        selected ? "border-brand bg-brand/10" : "border-border bg-surface-2"
+                      }`}
+                    >
+                      <span className={`mb-3 block h-2 w-10 rounded-full ${template.swatch}`} />
+                      <span className="block text-sm font-semibold text-foreground">
+                        {template.name}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        {template.description}
+                      </span>
+                      {selected ? (
+                        <Check
+                          className="absolute right-3 top-3 size-4 text-brand"
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section aria-labelledby="share-format-title">
+              <p
+                id="share-format-title"
+                className="mb-2 text-xs font-black uppercase tracking-wider text-muted-foreground"
+              >
+                2 · Formato social
+              </p>
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label="Formato immagine">
+                {(["vertical", "story", "square", "horizontal"] as const).map((orientation) => {
+                  const selected = selectedOrientation === orientation;
+                  const size = EXPORT_SIZES[orientation];
+                  const FormatIcon =
+                    orientation === "story"
+                      ? Smartphone
+                      : orientation === "horizontal"
+                        ? RectangleHorizontal
+                        : Square;
+                  return (
+                    <button
+                      key={orientation}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => chooseOrientation(orientation)}
+                      className={`tap-safe relative rounded-xl border p-3 text-left transition-all ${selected ? "border-brand bg-brand/10 shadow-[0_0_0_1px_var(--brand)]" : "border-border bg-surface-2 hover:border-brand/50"}`}
+                    >
+                      <FormatIcon
+                        className={`mb-2 size-5 ${selected ? "text-brand" : "text-muted-foreground"}`}
+                        aria-hidden="true"
+                      />
+                      <span className="block text-sm font-semibold text-foreground">
+                        {size.label}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        {size.output}
+                      </span>
+                      <span className="mt-1 block text-[0.68rem] leading-tight text-muted-foreground">
+                        {size.hint}
+                      </span>
+                      {selected ? (
+                        <Check
+                          className="absolute right-3 top-3 size-4 text-brand"
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section aria-labelledby="share-preview-title">
+              <p
+                id="share-preview-title"
+                className="mb-2 text-xs font-black uppercase tracking-wider text-muted-foreground"
+              >
+                3 · Anteprima
+              </p>
+              <div className="social-preview-stage rounded-2xl border border-border bg-black/20 p-3 sm:p-4">
+                <PatchPreviewCard
+                  patch={patch}
+                  displayName={settings.displayName}
+                  template={selectedTemplate}
+                  orientation={selectedOrientation}
+                  profile={sharedProfile}
+                  sharing
+                />
+              </div>
+              <p className="mt-2 text-center text-xs text-muted-foreground">
+                Avatar, livello, titolo, serie e cosmetici sono inclusi nell’immagine.
+              </p>
+            </section>
           </div>
 
-          <div>
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Formato social
-            </p>
-            <div className="grid grid-cols-2 gap-2" role="group" aria-label="Formato immagine">
-              {(["vertical", "horizontal"] as const).map((orientation) => {
-                const selected = selectedOrientation === orientation;
-                const size = EXPORT_SIZES[orientation];
-                return (
-                  <button
-                    key={orientation}
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => chooseOrientation(orientation)}
-                    className={`tap-safe rounded-xl border p-3 text-left ${selected ? "border-brand bg-brand/10" : "border-border bg-surface-2"}`}
-                  >
-                    <span className="block text-sm font-semibold text-foreground">
-                      {orientation === "vertical" ? "Verticale" : "Orizzontale"}
-                    </span>
-                    <span className="mt-0.5 block text-xs text-muted-foreground">
-                      {size.output} · {orientation === "vertical" ? "Post social" : "Chat e link"}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div>
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Anteprima
-            </p>
-            <PatchPreviewCard
-              patch={patch}
-              displayName={settings.displayName}
-              template={selectedTemplate}
-              orientation={selectedOrientation}
-              profile={sharedProfile}
-              sharing
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid shrink-0 grid-cols-3 gap-2 border-t border-border bg-background px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
+            <Button
+              variant="outline"
+              disabled={busy !== null}
+              aria-busy={busy === "copy"}
+              onClick={() => void copyCaption()}
+              className="min-w-0 px-2"
+            >
+              {busy === "copy" ? (
+                <Loader2 className="mr-1 size-4 animate-spin" />
+              ) : (
+                <Copy className="mr-1 size-4" />
+              )}
+              <span className="truncate">Testo</span>
+            </Button>
             <Button
               variant="secondary"
               disabled={busy !== null}
@@ -331,7 +397,7 @@ function PatchDetailPage() {
               ) : (
                 <Download className="mr-1 size-4" />
               )}
-              Salva
+              <span className="truncate">Salva</span>
             </Button>
             <Button
               disabled={busy !== null}
@@ -350,7 +416,7 @@ function PatchDetailPage() {
               ) : (
                 <Share2 className="mr-1 size-4" />
               )}
-              Condividi
+              <span className="truncate">Condividi</span>
             </Button>
           </div>
         </DialogContent>

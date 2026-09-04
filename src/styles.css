@@ -234,6 +234,139 @@
   }
 }
 
+/* ---- Regalo 44 Bit: effetto 3D leggero, senza dipendenze WebGL ---- */
+@keyframes gift-coin-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-70px) rotateY(0deg) scale(0.45);
+  }
+  62% {
+    opacity: 1;
+    transform: translateY(8px) rotateY(680deg) scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateY(720deg) scale(1);
+  }
+}
+
+@keyframes gift-aura-pulse {
+  50% {
+    opacity: 0.85;
+    transform: translateX(-50%) scale(1.14);
+  }
+}
+
+@keyframes gift-particle-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  28% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+        calc(-50% + cos(calc(var(--particle) * 30deg)) * 125px),
+        calc(-50% + sin(calc(var(--particle) * 30deg)) * 125px)
+      )
+      scale(1.2);
+  }
+}
+
+.welcome-gift-stage {
+  background:
+    radial-gradient(
+      circle at 50% 15%,
+      color-mix(in oklab, var(--brand) 18%, transparent),
+      transparent 42%
+    ),
+    linear-gradient(180deg, color-mix(in oklab, var(--surface) 94%, var(--brand)), var(--surface));
+}
+
+.welcome-gift-aura {
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--brand) 38%, transparent),
+    transparent 68%
+  );
+  filter: blur(8px);
+  animation: gift-aura-pulse 1.4s ease-in-out infinite;
+}
+
+.welcome-gift-coin {
+  width: 7.5rem;
+  height: 7.5rem;
+  perspective: 700px;
+}
+
+.welcome-gift-coin-face {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 6px double #854d0e;
+  border-radius: 999px;
+  color: #422006;
+  background: radial-gradient(circle at 32% 25%, #fef08a, #facc15 48%, #a16207 100%);
+  box-shadow:
+    inset -10px -12px 18px #713f1255,
+    inset 8px 8px 14px #fff7aa88,
+    0 14px 35px #facc1544;
+  transform-style: preserve-3d;
+  animation: gift-coin-enter 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.welcome-gift-coin-face span {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 0.8;
+}
+
+.welcome-gift-coin-face small {
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+}
+
+.welcome-gift-particle {
+  animation: gift-particle-burst 1.15s ease-out calc(250ms + var(--particle) * 18ms) both;
+}
+
+.social-studio-dialog {
+  box-shadow:
+    0 28px 90px oklch(0 0 0 / 0.58),
+    0 0 42px color-mix(in oklab, var(--brand) 10%, transparent);
+}
+
+.social-preview-stage {
+  background:
+    linear-gradient(45deg, color-mix(in oklab, var(--brand) 5%, transparent) 25%, transparent 25%),
+    linear-gradient(-45deg, color-mix(in oklab, var(--brand) 5%, transparent) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, color-mix(in oklab, var(--brand) 5%, transparent) 75%),
+    linear-gradient(-45deg, transparent 75%, color-mix(in oklab, var(--brand) 5%, transparent) 75%);
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-size: 16px 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-gift-coin-face,
+  .welcome-gift-particle,
+  .welcome-gift-aura {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+}
+
 /* ---- Progressione giocatore ---- */
 @keyframes player-level-up {
   0%,

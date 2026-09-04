@@ -10,6 +10,7 @@ import { useAppStore } from "@/state/app-store";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { ProductTour } from "@/components/ProductTour";
 import { UpdateNotice } from "@/components/UpdateNotice";
+import { WelcomeGift } from "@/components/WelcomeGift";
 import { GuidedPatchWizard, type GuidedAnswer } from "@/components/GuidedPatchWizard";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { WeeklyPromptCard } from "@/components/WeeklyPromptCard";
@@ -332,6 +333,10 @@ function ArchivePage() {
       <UpdateNotice
         open={settings.lastSeenVersion !== APP_CONFIG.version}
         onClose={() => saveSettings({ ...settings, lastSeenVersion: APP_CONFIG.version })}
+      />
+      <WelcomeGift
+        open={settings.lastSeenVersion === APP_CONFIG.version && !settings.welcomeGiftSeen}
+        onClose={() => saveSettings({ ...settings, welcomeGiftSeen: true })}
       />
     </div>
   );
