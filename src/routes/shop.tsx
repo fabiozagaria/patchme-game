@@ -1,21 +1,14 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { Check, Coins, LockKeyhole, RotateCcw, ShoppingBag, Sparkles } from "lucide-react";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
+import { Coins, LockKeyhole, Palette, ShoppingBag, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
-import {
-  equippedCosmeticId,
-  SHOP_COLLECTIONS,
-  SHOP_COSMETICS,
-  type ShopCosmetic,
-} from "@/lib/patchy-shop";
+import { SHOP_COLLECTIONS, SHOP_COSMETICS, type ShopCosmetic } from "@/lib/patchy-shop";
 import {
   EMPTY_PROGRESSION_STATE,
-  equipCosmetic,
   loadProgressionState,
   purchaseCosmetic,
-  resetEquippedCosmetics,
   saveProgressionState,
   type ProgressionState,
 } from "@/lib/progression-repository";
@@ -70,19 +63,6 @@ function ShopPage() {
     });
   };
 
-  const equip = (item: ShopCosmetic) => {
-    const result = equipCosmetic(progression, item.id, item.kind);
-    if (!result.ok) return;
-    commit(result.state);
-    setMessage(`${item.name} equipaggiato.`);
-    enqueueSuccessNotification(`${item.name} equipaggiato`, { sound: "xp" });
-  };
-
-  const resetAppearance = () => {
-    commit(resetEquippedCosmetics(progression));
-    setMessage("Aspetto base ripristinato.");
-  };
-
   if (!ready) return <div className="min-h-screen bg-background" />;
   if (!settings.onboarded) return <Navigate to="/" />;
 
@@ -114,8 +94,10 @@ function ShopPage() {
               </p>
             </div>
           </div>
-          <Button variant="outline" size="sm" className="mt-3" onClick={resetAppearance}>
-            <RotateCcw className="mr-2 size-4" /> Ripristina aspetto base
+          <Button asChild variant="outline" size="sm" className="mt-3">
+            <Link to="/profile">
+              <Palette className="mr-2 size-4" /> Personalizza il profilo
+            </Link>
           </Button>
           {message ? (
             <p
@@ -147,7 +129,6 @@ function ShopPage() {
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   {items.map((item) => {
                     const owned = progression.ownedCosmeticIds.includes(item.id);
-                    const equipped = equippedCosmeticId(progression, item.kind) === item.id;
                     const requirementMet =
                       !item.requiredMissionId ||
                       progression.completedMissionIds.includes(item.requiredMissionId);
@@ -155,7 +136,7 @@ function ShopPage() {
                     return (
                       <article
                         key={item.id}
-                        className={`surface-card overflow-hidden p-4 ${item.kind !== "avatar" ? (item.previewClass ?? "") : ""} ${equipped ? "ring-2 ring-brand" : ""}`}
+                        className={`surface-card overflow-hidden p-4 ${item.kind !== "avatar" ? (item.previewClass ?? "") : ""}`}
                       >
                         {item.imageSrc ? (
                           <div className="mb-3 flex h-40 items-center justify-center rounded-xl bg-surface-2">
@@ -186,19 +167,10 @@ function ShopPage() {
                           </p>
                         ) : null}
                         {owned ? (
-                          <Button
-                            className="mt-4 w-full"
-                            variant={equipped ? "secondary" : "outline"}
-                            disabled={equipped}
-                            onClick={() => equip(item)}
-                          >
-                            {equipped ? (
-                              <>
-                                <Check className="mr-2 size-4" /> Equipaggiato
-                              </>
-                            ) : (
-                              "Equipaggia"
-                            )}
+                          <Button asChild className="mt-4 w-full" variant="outline">
+                            <Link to="/profile">
+                              <Palette className="mr-2 size-4" /> Gestisci nel profilo
+                            </Link>
                           </Button>
                         ) : (
                           <Button

@@ -22,6 +22,8 @@ export const APP_CONFIG = {
       "Collezioni coordinate con avatar, cornici ed effetti animati",
       "Cosmetici speciali acquistabili soltanto dopo il relativo trofeo",
       "Saldo, acquisti ed equipaggiamento salvati nel profilo",
+      "Nuova pagina Profilo per equipaggiare avatar, cornici ed effetti in un solo posto",
+      "Shop dedicato agli acquisti e slot sfondi già predisposto per i prossimi cosmetici",
       "Nessun vantaggio a pagamento: i Bit servono soltanto a fare i fighi",
     ],
   },

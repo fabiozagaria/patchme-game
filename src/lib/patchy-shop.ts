@@ -179,12 +179,14 @@ export function equippedCosmeticId(
     equippedProfileFrameId: string | null;
     equippedAvatarId: string | null;
     equippedProfileEffectId: string | null;
+    equippedProfileBackgroundId: string | null;
   },
   kind: CosmeticSlot,
 ): string | null {
-  return kind === "frame"
-    ? state.equippedProfileFrameId
-    : kind === "avatar"
-      ? state.equippedAvatarId
-      : state.equippedProfileEffectId;
+  return {
+    frame: state.equippedProfileFrameId,
+    avatar: state.equippedAvatarId,
+    effect: state.equippedProfileEffectId,
+    background: state.equippedProfileBackgroundId,
+  }[kind];
 }

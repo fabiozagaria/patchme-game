@@ -5,6 +5,7 @@ import {
   Flame,
   Gamepad2,
   ListChecks,
+  Palette,
   ShoppingBag,
   Sparkles,
   Trophy,
@@ -144,8 +145,21 @@ export function PlayerProfileCard({
       </dl>
 
       <Link
-        to="/progress"
+        to="/profile"
         className="tap-safe mt-4 flex items-center gap-3 rounded-xl border border-brand/35 bg-brand/10 px-3 py-2.5 text-foreground transition-colors hover:bg-brand/15"
+      >
+        <Palette className="size-5 shrink-0 text-brand" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-black">Personalizza profilo</span>
+          <span className="block text-xs text-muted-foreground">
+            Scegli avatar, cornice, effetto e futuri sfondi
+          </span>
+        </span>
+      </Link>
+
+      <Link
+        to="/progress"
+        className="tap-safe mt-3 flex items-center gap-3 rounded-xl border border-brand/35 bg-brand/10 px-3 py-2.5 text-foreground transition-colors hover:bg-brand/15"
       >
         <Gamepad2 className="size-5 shrink-0 text-brand" aria-hidden="true" />
         <span className="min-w-0 flex-1">

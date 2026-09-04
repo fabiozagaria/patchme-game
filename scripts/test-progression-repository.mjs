@@ -73,7 +73,12 @@ assert.deepEqual(equipCosmetic(EMPTY_PROGRESSION_STATE, "avatar-undead", "avatar
 });
 const avatarState = {
   ...purchased.state,
-  ownedCosmeticIds: [...purchased.state.ownedCosmeticIds, "avatar-undead", "effect-embers"],
+  ownedCosmeticIds: [
+    ...purchased.state.ownedCosmeticIds,
+    "avatar-undead",
+    "effect-embers",
+    "background-test",
+  ],
 };
 const avatarEquipped = equipCosmetic(avatarState, "avatar-undead", "avatar");
 assert.equal(avatarEquipped.ok, true);
@@ -81,12 +86,16 @@ assert.equal(avatarEquipped.state.equippedAvatarId, "avatar-undead");
 const effectEquipped = equipCosmetic(avatarEquipped.state, "effect-embers", "effect");
 assert.equal(effectEquipped.ok, true);
 assert.equal(effectEquipped.state.equippedProfileEffectId, "effect-embers");
-const reset = resetEquippedCosmetics(effectEquipped.state);
+const backgroundEquipped = equipCosmetic(effectEquipped.state, "background-test", "background");
+assert.equal(backgroundEquipped.ok, true);
+assert.equal(backgroundEquipped.state.equippedProfileBackgroundId, "background-test");
+const reset = resetEquippedCosmetics(backgroundEquipped.state);
 assert.equal(reset.equippedAvatarId, null);
 assert.equal(reset.equippedProfileFrameId, null);
 assert.equal(reset.equippedProfileEffectId, null);
+assert.equal(reset.equippedProfileBackgroundId, null);
 
 assert.equal(saveProgressionState(equipped.state, legacy), true);
 assert.deepEqual(loadProgressionState(new Map(), legacy), equipped.state);
 
-console.log("Repository progressione e shop: 32 controlli superati.");
+console.log("Repository progressione e shop: 35 controlli superati.");
