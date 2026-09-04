@@ -4,7 +4,9 @@ import type { SectionCategory } from "@/config/app-config";
 export type PatchStatus = "draft" | "published";
 export type VersionFormat = "yearWeek" | "sequential" | "manual";
 export type ThemeMode = "dark" | "light" | "system";
-export type ShareOrientation = "vertical" | "horizontal";
+export type ShareOrientation = "vertical" | "story" | "square" | "horizontal";
+export type PatchSubject = "self" | "friend" | "group" | "situation";
+export type PatchTone = "light" | "sarcastic" | "hardcore";
 export type ProfileAvatar = "hello" | "thinking" | "celebrate" | "bug" | "superSaiyan" | "hardcore";
 
 export const sectionCategorySchema = z.enum([
@@ -36,6 +38,9 @@ export const patchSchema = z.object({
   version: z.string(),
   date: z.string(),
   status: z.enum(["draft", "published"]),
+  subject: z.enum(["self", "friend", "group", "situation"]).default("self"),
+  targetName: z.string().default(""),
+  tone: z.enum(["light", "sarcastic", "hardcore"]).default("light"),
   sections: z.array(patchSectionSchema),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -58,8 +63,9 @@ export const settingsSchema = z.object({
   onboarded: z.boolean(),
   productTourSeen: z.boolean().default(false),
   lastSeenVersion: z.string().default(""),
+  welcomeGiftSeen: z.boolean().default(false),
   shareTemplate: z.enum(["classic", "terminal", "rpg", "chaos"]).default("classic"),
-  shareOrientation: z.enum(["vertical", "horizontal"]).default("vertical"),
+  shareOrientation: z.enum(["vertical", "story", "square", "horizontal"]).default("vertical"),
 });
 
 export type PatchItem = z.infer<typeof patchItemSchema>;
@@ -67,6 +73,39 @@ export type PatchSection = z.infer<typeof patchSectionSchema>;
 export type Patch = z.infer<typeof patchSchema>;
 export type AppSettings = z.infer<typeof settingsSchema>;
 export type ShareTemplate = AppSettings["shareTemplate"];
+
+export const PATCH_SUBJECTS: readonly {
+  id: PatchSubject;
+  label: string;
+  hint: string;
+  placeholder: string;
+}[] = [
+  { id: "self", label: "Su di me", hint: "Auto-patch", placeholder: "Te stesso" },
+  {
+    id: "friend",
+    label: "Su un amico",
+    hint: "Presa in giro autorizzabile",
+    placeholder: "Es. Francesco",
+  },
+  {
+    id: "group",
+    label: "Sul gruppo",
+    hint: "Caos collettivo",
+    placeholder: "Es. Gli Scappati di Casa",
+  },
+  {
+    id: "situation",
+    label: "Su una situazione",
+    hint: "Evento da patchare",
+    placeholder: "Es. Vacanza al mare",
+  },
+] as const;
+
+export const PATCH_TONES: readonly { id: PatchTone; label: string; hint: string }[] = [
+  { id: "light", label: "Leggero", hint: "Ironico, senza vittime" },
+  { id: "sarcastic", label: "Bastardo", hint: "Più cattivo, ancora condivisibile" },
+  { id: "hardcore", label: "Hardcore", hint: "Nessun filtro. Usalo con amici veri." },
+] as const;
 
 export const ACCENTS: readonly { id: string; label: string; value: string }[] = [
   { id: "lime", label: "Verde acido", value: "oklch(0.84 0.19 128)" },
@@ -96,6 +135,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   onboarded: false,
   productTourSeen: false,
   lastSeenVersion: "",
+  welcomeGiftSeen: false,
   shareTemplate: "classic",
   shareOrientation: "vertical",
 };
@@ -125,6 +165,7 @@ export function cleanPatch(patch: Patch): Patch {
     ...patch,
     title: patch.title.trim(),
     version: patch.version.trim(),
+    targetName: patch.targetName.trim(),
     sections: patch.sections
       .map((s) => ({
         ...s,

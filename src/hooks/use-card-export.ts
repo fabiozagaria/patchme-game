@@ -1,7 +1,13 @@
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
-import { downloadBlob, renderNodeToPng, safeFileName, shareBlob } from "@/lib/share-image";
+import {
+  copyShareText,
+  downloadBlob,
+  renderNodeToPng,
+  safeFileName,
+  shareBlob,
+} from "@/lib/share-image";
 
 interface ExportTarget {
   version: string;
@@ -16,7 +22,7 @@ interface ExportTarget {
  */
 export function useCardExport(target: ExportTarget) {
   const nodeRef = useRef<HTMLDivElement | null>(null);
-  const [busy, setBusy] = useState<"save" | "share" | null>(null);
+  const [busy, setBusy] = useState<"save" | "share" | "copy" | null>(null);
 
   const capture = useCallback(async (): Promise<Blob> => {
     const node = nodeRef.current;
@@ -66,5 +72,18 @@ export function useCardExport(target: ExportTarget) {
     }
   }, [busy, capture, fileName, target.shareText, target.title]);
 
-  return { nodeRef, busy, saveImage, shareImage };
+  const copyCaption = useCallback(async () => {
+    if (busy) return false;
+    setBusy("copy");
+    try {
+      const copied = await copyShareText(target.shareText ?? "");
+      if (copied) enqueueSuccessNotification("Didascalia copiata", { sound: "success" });
+      else toast.error("Il browser non consente di copiare la didascalia");
+      return copied;
+    } finally {
+      setBusy(null);
+    }
+  }, [busy, target.shareText]);
+
+  return { nodeRef, busy, saveImage, shareImage, copyCaption };
 }

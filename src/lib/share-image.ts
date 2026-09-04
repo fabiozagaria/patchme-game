@@ -89,7 +89,7 @@ function isAbortError(error: unknown): boolean {
     : error instanceof Error && error.name === "AbortError";
 }
 
-async function copyShareText(text: string): Promise<boolean> {
+export async function copyShareText(text: string): Promise<boolean> {
   try {
     if (!navigator.clipboard?.writeText) return false;
     await navigator.clipboard.writeText(text);

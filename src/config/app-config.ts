@@ -6,20 +6,24 @@
 
 export const APP_CONFIG = {
   name: "PatchMe",
-  tagline: "Trasforma persone e momenti in patch notes",
+  tagline: "Trasforma le storie del gruppo in patch notes",
   // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
-  version: "0.7.1",
+  version: "0.8.0",
   releaseChannel: "Alpha",
   changelog: {
     date: "4 settembre 2026",
-    title: "Patchy ti paga anche solo per esserti presentato.",
+    title: "Le tue patch sono pronte a invadere le chat.",
     items: [
-      "Bonus giornaliero di 25 XP e 3 Bit al primo accesso del giorno",
-      "Ricompensa protetta da refresh e navigazioni ripetute",
-      "Disclaimer più chiaro sui 44 Bit iniziali per tutti i profili locali",
-      "Notifiche Android/browser facoltative per le nuove versioni",
-      "Permesso notifiche richiesto soltanto dopo un'azione esplicita",
-      "Nessun login necessario finché progressi e Bit rimangono sul dispositivo",
+      "Patch dedicate a te, un amico, un gruppo o una situazione",
+      "Destinatario facoltativo, autore e tono visibili nell'immagine",
+      "Suggerimenti rapidi leggeri, bastardi o Hardcore",
+      "Link pronto per rispondere con una contro-patch senza account",
+      "Studio social con quattro formati esatti e didascalia copiabile",
+      "Nuova moneta Bit ufficiale in profilo, missioni e Shop",
+      "Regalo di benvenuto da 44 Bit celebrato con una sorpresa 3D",
+      "Level-up 3D accompagnato da un breve riff metal originale",
+      "Sottofondo metal discreto e disattivabile in modalità Hardcore",
+      "Transizioni e micro-interazioni più fluide con movimento ridotto automatico",
     ],
   },
   links: {
@@ -43,6 +47,7 @@ export const APP_CONFIG = {
     itemText: 280,
     minItemText: 3,
     minDisplayName: 3,
+    patchTarget: 50,
     sectionTitle: 40,
     displayName: 40,
     dailyDisplayNameChanges: 5,

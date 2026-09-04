@@ -37,7 +37,7 @@ import { UpdateNotice } from "@/components/UpdateNotice";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { ProfileAppearancePreview } from "@/components/ProfileAppearancePreview";
 import { Switch } from "@/components/ui/switch";
-import { setSoundEffectsEnabled } from "@/lib/sound-effects";
+import { setHardcoreAmbienceEnabled, setSoundEffectsEnabled } from "@/lib/sound-effects";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -106,6 +106,22 @@ function SettingsPage() {
       if (!appearanceCommitted.current) setSoundEffectsEnabled(settings.soundEffects);
     };
   }, [current.soundEffects, ready, settings.soundEffects]);
+
+  useEffect(() => {
+    if (!ready) return;
+    setHardcoreAmbienceEnabled(current.hardcoreMode && current.soundEffects);
+    return () => {
+      if (!appearanceCommitted.current) {
+        setHardcoreAmbienceEnabled(settings.hardcoreMode && settings.soundEffects);
+      }
+    };
+  }, [
+    current.hardcoreMode,
+    current.soundEffects,
+    ready,
+    settings.hardcoreMode,
+    settings.soundEffects,
+  ]);
 
   if (!ready) return <div className="min-h-screen bg-background" />;
   const nameChanged = current.displayName.trim() !== settings.displayName;
@@ -335,7 +351,8 @@ function SettingsPage() {
                   Effetti sonori
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Suoni retro per XP, trofei, serie e level-up.
+                  Suoni retro per XP e trofei, riff metal per i level-up e musica ambientale bassa
+                  in modalità Hardcore.
                 </p>
               </div>
             </div>
@@ -392,8 +409,8 @@ function SettingsPage() {
                 persone dotate di dignità.
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Attivandola sblocchi anche un Patchy fuori controllo. L’avatar si sceglie sempre dal
-                Profilo.
+                Attivandola sblocchi anche un Patchy fuori controllo e un sottofondo metal a basso
+                volume. Avatar e audio restano controllabili dal Profilo e da queste impostazioni.
               </p>
             </div>
           </div>

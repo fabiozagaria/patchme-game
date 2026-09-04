@@ -11,6 +11,7 @@ import { formatDate } from "@/lib/versioning";
 import { PatchyMascot, type PatchyPose } from "@/components/PatchyMascot";
 import { cosmeticById, profileEffectClass, profileFrameClass } from "@/lib/patchy-shop";
 import { EXPORT_SIZES } from "@/lib/share-image";
+import { patchSubjectLabel } from "@/lib/patch-sharing";
 
 export interface SharedPlayerProfile {
   avatar: ProfileAvatar;
@@ -108,15 +109,29 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
       ? clean.sections.filter((section) => section.shareVisible)
       : clean.sections;
     const totalItems = visibleSections.reduce((total, section) => total + section.items.length, 0);
-    const compact = orientation === "horizontal" || totalItems > 8;
+    const compact = orientation === "horizontal" || orientation === "square" || totalItems > 8;
+    const previewWidth =
+      orientation === "story"
+        ? "max-w-[15rem]"
+        : orientation === "horizontal"
+          ? "max-w-full"
+          : orientation === "square"
+            ? "max-w-[22rem]"
+            : "max-w-[20rem]";
 
     return (
       <div
         ref={ref}
         data-patchme-share-card
         data-orientation={orientation}
-        style={exporting ? { width: size.width, height: size.height } : undefined}
-        className={`surface-card flex overflow-hidden ${compact ? "p-4" : "p-5"} ${orientation === "horizontal" ? "flex-row gap-5" : "flex-col"} ${style.card} ${profileFrameClass(profile?.equippedFrameId ?? null)} ${profileEffectClass(profile?.equippedEffectId ?? null)}`}
+        style={
+          exporting
+            ? { width: size.width, height: size.height }
+            : sharing
+              ? { aspectRatio: `${size.width} / ${size.height}` }
+              : undefined
+        }
+        className={`surface-card flex overflow-hidden ${sharing && !exporting ? `mx-auto w-full ${previewWidth}` : ""} ${compact ? "p-4" : "p-5"} ${orientation === "horizontal" ? "flex-row gap-5" : "flex-col"} ${style.card} ${profileFrameClass(profile?.equippedFrameId ?? null)} ${profileEffectClass(profile?.equippedEffectId ?? null)}`}
       >
         <div
           className={`flex min-w-0 flex-1 flex-col ${orientation === "horizontal" ? "basis-2/3" : ""}`}
@@ -134,6 +149,36 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
             </div>
             <span className={`shrink-0 rounded-md px-2 py-1 text-sm font-bold ${style.badge}`}>
               {clean.version || "—"}
+            </span>
+          </div>
+
+          <div
+            className={`mt-2 flex flex-wrap items-center gap-1.5 ${compact ? "text-[0.62rem]" : "text-[0.68rem]"}`}
+          >
+            <span
+              className={`rounded-full border px-2 py-0.5 font-bold ${style.border} ${style.body}`}
+            >
+              {patchSubjectLabel(clean.subject, clean.targetName)}
+            </span>
+            <span
+              className={`rounded-full border px-2 py-0.5 font-bold ${style.border} ${style.label}`}
+            >
+              Creata da @{displayName || "username"}
+            </span>
+            <span
+              className={`rounded-full border px-2 py-0.5 font-black uppercase ${
+                clean.tone === "hardcore"
+                  ? "border-red-500/50 bg-red-500/15 text-red-300"
+                  : clean.tone === "sarcastic"
+                    ? "border-amber-500/50 bg-amber-500/15 text-amber-300"
+                    : `${style.border} ${style.label}`
+              }`}
+            >
+              {clean.tone === "hardcore"
+                ? "Hardcore"
+                : clean.tone === "sarcastic"
+                  ? "Bastardo"
+                  : "Leggero"}
             </span>
           </div>
 
@@ -187,6 +232,18 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
               {clean.status === "published" ? "Pubblicata" : "Bozza"}
             </span>
           </div>
+          {sharing ? (
+            <div className={`mt-2 text-center ${style.label}`}>
+              <p
+                className={`${compact ? "text-[0.62rem]" : "text-xs"} font-black uppercase tracking-[0.16em]`}
+              >
+                {clean.subject === "self"
+                  ? "Patcha qualcuno prima che patchino te"
+                  : "Sei stato patchato"}
+              </p>
+              <p className="mt-0.5 text-[0.58rem]">Apri PatchMe e rispondi con una contro-patch</p>
+            </div>
+          ) : null}
         </div>
 
         {profile ? (

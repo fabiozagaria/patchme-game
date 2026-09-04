@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import {
-  Coins,
   FileCheck2,
   Flame,
   Gamepad2,
@@ -10,11 +9,13 @@ import {
   Sparkles,
   Trophy,
 } from "lucide-react";
+import { BitCoin } from "@/components/BitCoin";
 import type { Patch, ProfileAvatar } from "@/lib/patch-model";
 import { usePlayerProgression } from "@/hooks/use-player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { cosmeticById, profileEffectClass, profileFrameClass } from "@/lib/patchy-shop";
 import { hardcoreCopy } from "@/lib/hardcore-copy";
+import { LevelUpCelebration } from "@/components/LevelUpCelebration";
 
 interface PlayerProfileCardProps {
   displayName: string;
@@ -50,18 +51,7 @@ export function PlayerProfileCard({
       className={`surface-card relative overflow-hidden p-4 ${profileFrameClass(equippedProfileFrameId)} ${profileEffectClass(equippedProfileEffectId)} ${levelUp ? "player-level-up" : ""}`}
       aria-labelledby="player-profile-title"
     >
-      {levelUp ? (
-        <div
-          className="level-up-banner absolute inset-x-3 top-3 z-10 rounded-xl border border-brand bg-background/95 px-3 py-2 text-center shadow-xl"
-          role="status"
-          aria-live="polite"
-        >
-          <p className="display text-2xl font-black uppercase tracking-wider text-brand">
-            Level up!
-          </p>
-          <p className="text-xs font-bold text-foreground">Nuovo titolo: {progression.title}</p>
-        </div>
-      ) : null}
+      {levelUp ? <LevelUpCelebration level={progression.level} title={progression.title} /> : null}
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
           {equippedAvatar?.imageSrc ? (
@@ -213,7 +203,7 @@ export function PlayerProfileCard({
           </span>
         </span>
         <span className="flex shrink-0 items-center gap-1 text-sm font-black text-amber-400">
-          <Coins className="size-4" aria-hidden="true" /> {bits}
+          <BitCoin className="size-4" /> {bits}
         </span>
       </Link>
       <p className="mt-2 text-center text-[0.65rem] leading-relaxed text-muted-foreground">
