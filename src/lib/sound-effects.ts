@@ -35,13 +35,9 @@ const SOUND_NOTES: Record<GameSound, readonly Note[]> = {
 
 let enabled = true;
 let audioContext: AudioContext | undefined;
-let hardcoreAmbienceRequested = false;
-let hardcoreAmbienceTimer: number | undefined;
 
 export function setSoundEffectsEnabled(next: boolean) {
   enabled = next;
-  if (!enabled) stopHardcoreAmbience();
-  else if (hardcoreAmbienceRequested) startHardcoreAmbience();
 }
 
 function scheduleSound(context: AudioContext, sound: GameSound, volume = 0.035) {
@@ -70,71 +66,6 @@ function scheduleSound(context: AudioContext, sound: GameSound, volume = 0.035) 
     oscillator.start(noteStart);
     oscillator.stop(noteEnd + 0.02);
   });
-}
-
-function scheduleHardcoreRiff(context: AudioContext) {
-  if (!enabled || !hardcoreAmbienceRequested || document.hidden) return;
-  const riff: readonly Note[] = [
-    [82, 0, 0.11],
-    [82, 0.18, 0.1],
-    [98, 0.36, 0.13],
-    [82, 0.56, 0.1],
-    [73, 0.76, 0.22],
-  ];
-  const start = context.currentTime + 0.01;
-  riff.forEach(([frequency, delay, duration], index) => {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    const noteStart = start + delay;
-    oscillator.type = index % 2 ? "square" : "sawtooth";
-    oscillator.frequency.setValueAtTime(frequency, noteStart);
-    gain.gain.setValueAtTime(0.0001, noteStart);
-    gain.gain.exponentialRampToValueAtTime(0.006, noteStart + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + duration);
-    oscillator.connect(gain);
-    gain.connect(context.destination);
-    oscillator.start(noteStart);
-    oscillator.stop(noteStart + duration + 0.02);
-  });
-}
-
-function stopHardcoreAmbience() {
-  if (hardcoreAmbienceTimer !== undefined && typeof window !== "undefined") {
-    window.clearInterval(hardcoreAmbienceTimer);
-  }
-  hardcoreAmbienceTimer = undefined;
-}
-
-function startHardcoreAmbience() {
-  if (!enabled || !hardcoreAmbienceRequested || typeof window === "undefined") return;
-  try {
-    audioContext ??= new AudioContext();
-    void audioContext.resume().then(() => {
-      if (
-        !audioContext ||
-        !enabled ||
-        !hardcoreAmbienceRequested ||
-        hardcoreAmbienceTimer !== undefined
-      )
-        return;
-      scheduleHardcoreRiff(audioContext);
-      hardcoreAmbienceTimer = window.setInterval(() => scheduleHardcoreRiff(audioContext!), 3200);
-    });
-  } catch {
-    // L'audio d'ambiente è un extra: non deve mai bloccare l'app.
-  }
-}
-
-export function setHardcoreAmbienceEnabled(next: boolean) {
-  hardcoreAmbienceRequested = next;
-  if (!next) {
-    stopHardcoreAmbience();
-    return;
-  }
-  startHardcoreAmbience();
-  if (typeof window !== "undefined" && "addEventListener" in window) {
-    window.addEventListener("pointerdown", startHardcoreAmbience, { once: true });
-  }
 }
 
 export function playGameSound(sound?: GameSound) {
