@@ -29,12 +29,12 @@ export const APP_CONFIG = {
       "Nome visualizzato separato per gli easter egg",
       "Missioni, easter egg e titoli raccolti in pannelli apribili",
       "Nuova miccia sociale al posto della domanda settimanale",
+      "Centro notifiche con aggiornamenti e storico delle attività di gioco",
     ],
   },
   links: {
     github: "https://github.com/fabiozagaria/patchme-game",
     portfolio: "https://fabio-zagaria-portfolio.vercel.app",
-    telegram: "https://t.me/patchmegame",
   },
   signature: {
     enabled: true,
