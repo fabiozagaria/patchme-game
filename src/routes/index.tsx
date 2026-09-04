@@ -112,6 +112,14 @@ function ArchivePage() {
           displayName={settings.displayName}
           patches={patches}
           avatar={settings.profileAvatar}
+          superSaiyanUnlocked={settings.unlockedAvatars.includes("superSaiyan")}
+          onUnlockSuperSaiyan={() =>
+            saveSettings({
+              ...settings,
+              profileAvatar: "superSaiyan",
+              unlockedAvatars: [...new Set([...settings.unlockedAvatars, "superSaiyan" as const])],
+            })
+          }
         />
         <div className="mt-4">
           <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
