@@ -55,6 +55,7 @@ async function waitForImages(node: HTMLElement): Promise<void> {
 export async function renderNodeToPng(node: HTMLElement): Promise<Blob> {
   await Promise.all([waitForFonts(), waitForImages(node)]);
   const computed = window.getComputedStyle(node);
+  const bounds = node.getBoundingClientRect();
   const backgroundColor =
     computed.backgroundColor && computed.backgroundColor !== "rgba(0, 0, 0, 0)"
       ? computed.backgroundColor
@@ -64,8 +65,8 @@ export async function renderNodeToPng(node: HTMLElement): Promise<Blob> {
     pixelRatio: EXPORT_SCALE,
     backgroundColor,
     cacheBust: false,
-    width: node.offsetWidth,
-    height: node.offsetHeight,
+    width: bounds.width,
+    height: bounds.height,
   });
   if (!blob) throw new Error("Immagine non generata");
   return blob;

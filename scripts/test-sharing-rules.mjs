@@ -14,6 +14,6 @@ assert.equal(parseShareRequest("1"), true, "Il flag numerico deve aprire la cond
 assert.equal(parseShareRequest(false), false, "Un flag falso non deve aprire la condivisione");
 assert.equal(parseShareRequest("false"), false, "Testo non valido non deve aprire la condivisione");
 assert.deepEqual(EXPORT_SIZES.vertical, { width: 540, height: 675, output: "1080×1350" });
-assert.deepEqual(EXPORT_SIZES.horizontal, { width: 600, height: 338, output: "1200×676" });
+assert.deepEqual(EXPORT_SIZES.horizontal, { width: 600, height: 337.5, output: "1200×675" });
 
 console.log("Condivisione: 9 controlli superati.");
