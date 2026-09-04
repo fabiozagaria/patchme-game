@@ -1,4 +1,4 @@
-import type { Patch } from "@/lib/patch-model";
+import type { Patch, PatchSubject, PatchTone, ShareTemplate } from "@/lib/patch-model";
 
 export const EXPORT_SIZES = {
   vertical: {
@@ -37,4 +37,30 @@ export function isPatchShareable(patch: Pick<Patch, "status">): boolean {
 
 export function parseShareRequest(value: unknown): boolean {
   return value === true || value === "true" || value === "1";
+}
+
+export function patchSubjectLabel(subject: PatchSubject, targetName = ""): string {
+  const target = targetName.trim();
+  if (subject === "friend")
+    return target ? `Patch dedicata a ${target}` : "Patch dedicata a un amico";
+  if (subject === "group") return target ? `Patch del gruppo ${target}` : "Patch di gruppo";
+  if (subject === "situation")
+    return target ? `Patch della situazione: ${target}` : "Patch di una situazione";
+  return "Patch personale";
+}
+
+export function createCounterPatchUrl(
+  baseUrl: string,
+  author: string,
+  tone: PatchTone,
+  template: ShareTemplate,
+): string {
+  const params = new URLSearchParams({
+    counter: "1",
+    subject: "friend",
+    target: author.slice(0, 50),
+    tone,
+    template,
+  });
+  return `${baseUrl.replace(/\/$/, "")}/patch/new?${params.toString()}`;
 }

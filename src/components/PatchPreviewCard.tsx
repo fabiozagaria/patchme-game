@@ -11,6 +11,7 @@ import { formatDate } from "@/lib/versioning";
 import { PatchyMascot, type PatchyPose } from "@/components/PatchyMascot";
 import { cosmeticById, profileEffectClass, profileFrameClass } from "@/lib/patchy-shop";
 import { EXPORT_SIZES } from "@/lib/share-image";
+import { patchSubjectLabel } from "@/lib/patch-sharing";
 
 export interface SharedPlayerProfile {
   avatar: ProfileAvatar;
@@ -151,6 +152,36 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
             </span>
           </div>
 
+          <div
+            className={`mt-2 flex flex-wrap items-center gap-1.5 ${compact ? "text-[0.62rem]" : "text-[0.68rem]"}`}
+          >
+            <span
+              className={`rounded-full border px-2 py-0.5 font-bold ${style.border} ${style.body}`}
+            >
+              {patchSubjectLabel(clean.subject, clean.targetName)}
+            </span>
+            <span
+              className={`rounded-full border px-2 py-0.5 font-bold ${style.border} ${style.label}`}
+            >
+              Creata da @{displayName || "username"}
+            </span>
+            <span
+              className={`rounded-full border px-2 py-0.5 font-black uppercase ${
+                clean.tone === "hardcore"
+                  ? "border-red-500/50 bg-red-500/15 text-red-300"
+                  : clean.tone === "sarcastic"
+                    ? "border-amber-500/50 bg-amber-500/15 text-amber-300"
+                    : `${style.border} ${style.label}`
+              }`}
+            >
+              {clean.tone === "hardcore"
+                ? "Hardcore"
+                : clean.tone === "sarcastic"
+                  ? "Bastardo"
+                  : "Leggero"}
+            </span>
+          </div>
+
           <p className={`mt-1 text-xs ${style.label}`}>{formatDate(clean.date)}</p>
 
           <div
@@ -201,6 +232,18 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
               {clean.status === "published" ? "Pubblicata" : "Bozza"}
             </span>
           </div>
+          {sharing ? (
+            <div className={`mt-2 text-center ${style.label}`}>
+              <p
+                className={`${compact ? "text-[0.62rem]" : "text-xs"} font-black uppercase tracking-[0.16em]`}
+              >
+                {clean.subject === "self"
+                  ? "Patcha qualcuno prima che patchino te"
+                  : "Sei stato patchato"}
+              </p>
+              <p className="mt-0.5 text-[0.58rem]">Apri PatchMe e rispondi con una contro-patch</p>
+            </div>
+          ) : null}
         </div>
 
         {profile ? (

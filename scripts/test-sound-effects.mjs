@@ -56,10 +56,10 @@ playGameSound("success");
 assert.equal(startedNotes, 2, "Il salvataggio deve riprodurre due note");
 
 playGameSound("level-up");
-assert.equal(startedNotes, 6, "Il level-up deve aggiungere quattro note");
+assert.equal(startedNotes, 10, "Il level-up deve riprodurre un riff metal di otto note");
 
 document.hidden = true;
 playGameSound("trophy");
-assert.equal(startedNotes, 6, "Una scheda nascosta non deve produrre audio");
+assert.equal(startedNotes, 10, "Una scheda nascosta non deve produrre audio");
 
 console.log("Effetti sonori: 4 controlli superati.");

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
-import { Coins, LockKeyhole, Palette, ShoppingBag, Sparkles } from "lucide-react";
+import { LockKeyhole, Palette, ShoppingBag, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
 } from "@/lib/progression-repository";
 import { useAppStore } from "@/state/app-store";
 import { hardcoreCopy } from "@/lib/hardcore-copy";
+import { BitCoin } from "@/components/BitCoin";
 
 export const Route = createFileRoute("/shop")({
   head: () => ({
@@ -79,7 +80,7 @@ function ShopPage() {
         backTo="/"
         action={
           <span className="flex items-center gap-1 rounded-full bg-amber-400/15 px-3 py-1.5 text-sm font-black text-amber-400">
-            <Coins className="size-4" aria-hidden="true" /> {progression.bits}
+            <BitCoin className="size-4" /> {progression.bits}
           </span>
         }
       />
@@ -162,7 +163,7 @@ function ShopPage() {
                             {KIND_LABELS[item.kind]} · {item.rarity}
                           </p>
                           <span className="flex items-center gap-1 text-sm font-black text-amber-400">
-                            <Coins className="size-4" aria-hidden="true" /> {item.price}
+                            <BitCoin className="size-4" /> {item.price}
                           </span>
                         </div>
                         <h3 className="mt-1 text-lg font-black text-foreground">{item.name}</h3>

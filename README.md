@@ -62,6 +62,11 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - condivisione nativa di immagine, messaggio e link con fallback;
 - Studio social con formati esatti per post, storie/reel, quadrato e orizzontale;
 - anteprima responsive e didascalia pronta da copiare;
+- patch dedicate a se stessi, amici, gruppi o situazioni, con destinatario facoltativo;
+- autore, tono e invito “Sei stato patchato” integrati nell'immagine;
+- suggerimenti rapidi facoltativi e link locale per creare una contro-patch;
+- moneta Bit ufficiale riutilizzata in tutta l'interfaccia;
+- level-up 3D con riff metal originale e sottofondo discreto per la modalità Hardcore;
 - esportazione e condivisione delle patch disponibili soltanto dopo la pubblicazione;
 - pulsante di condivisione rapida nell'archivio per le patch pubblicate;
 - sezione Novità e collegamento al canale Telegram;

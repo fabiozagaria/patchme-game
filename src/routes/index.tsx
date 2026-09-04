@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { APP_CONFIG, TEXTS } from "@/config/app-config";
 import { cleanPatch, type Patch } from "@/lib/patch-model";
+import { patchSubjectLabel } from "@/lib/patch-sharing";
 import { formatDate } from "@/lib/versioning";
 import { useAppStore } from "@/state/app-store";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
@@ -188,6 +189,9 @@ function ArchivePage() {
                     <p className="mt-1 text-xs text-muted-foreground">
                       {patch.version} · {formatDate(patch.date)}
                     </p>
+                    <p className="mt-1 text-xs font-semibold text-brand">
+                      {patchSubjectLabel(patch.subject, patch.targetName)}
+                    </p>
                     <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
                       {summary ||
                         hardcoreCopy(settings.hardcoreMode, "Nessun contenuto", "Il vuoto cosmico")}
@@ -244,7 +248,7 @@ function ArchivePage() {
             className="tap-safe h-12 w-full bg-brand text-base font-bold text-brand-foreground shadow-lg hover:bg-brand/90"
           >
             <Plus className="mr-1 size-5" />{" "}
-            {hardcoreCopy(settings.hardcoreMode, "Nuova patch", "Crea 'sta cazzo di patch")}
+            {hardcoreCopy(settings.hardcoreMode, "Patcha qualcuno", "Patcha qualcuno, cazzo")}
           </Button>
         </div>
       </div>

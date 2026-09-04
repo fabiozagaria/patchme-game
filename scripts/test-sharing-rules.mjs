@@ -1,5 +1,11 @@
 import assert from "node:assert/strict";
-import { EXPORT_SIZES, isPatchShareable, parseShareRequest } from "../src/lib/patch-sharing.ts";
+import {
+  createCounterPatchUrl,
+  EXPORT_SIZES,
+  isPatchShareable,
+  parseShareRequest,
+  patchSubjectLabel,
+} from "../src/lib/patch-sharing.ts";
 
 assert.equal(isPatchShareable({ status: "draft" }), false, "Una bozza non deve essere condivisa");
 assert.equal(
@@ -17,5 +23,11 @@ assert.equal(EXPORT_SIZES.vertical.output, "1080×1350");
 assert.equal(EXPORT_SIZES.story.output, "1080×1920");
 assert.equal(EXPORT_SIZES.square.output, "1080×1080");
 assert.equal(EXPORT_SIZES.horizontal.output, "1200×675");
+assert.equal(patchSubjectLabel("friend", "Francesco"), "Patch dedicata a Francesco");
+assert.equal(patchSubjectLabel("group", ""), "Patch di gruppo");
+const counterUrl = createCounterPatchUrl("https://patchme.test/", "Fabio", "sarcastic", "chaos");
+assert.match(counterUrl, /^https:\/\/patchme\.test\/patch\/new\?/);
+assert.match(counterUrl, /counter=1/);
+assert.match(counterUrl, /target=Fabio/);
 
-console.log("Condivisione: 11 controlli superati.");
+console.log("Condivisione: 16 controlli superati.");

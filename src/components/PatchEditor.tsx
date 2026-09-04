@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useBlocker, useNavigate } from "@tanstack/react-router";
-import { ChevronDown, ChevronUp, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye, EyeOff, Plus, Reply, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
@@ -14,6 +14,8 @@ import {
   createId,
   createSection,
   cleanPatch,
+  PATCH_SUBJECTS,
+  PATCH_TONES,
   type Patch,
   type PatchStatus,
 } from "@/lib/patch-model";
@@ -39,7 +41,33 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { hardcoreCopy } from "@/lib/hardcore-copy";
 
-export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNew: boolean }) {
+const QUICK_SUGGESTIONS = {
+  light: [
+    "Migliorata la stabilità generale, più o meno.",
+    "Risolto un bug che nessuno aveva il coraggio di segnalare.",
+    "Compatibilità con la sveglia ancora sperimentale.",
+  ],
+  sarcastic: [
+    "Ora risponde entro tre giorni lavorativi.",
+    "Continua a proporre programmi per poi non uscire.",
+    "Prossimo aggiornamento: trovare la voglia.",
+  ],
+  hardcore: [
+    "Prestazioni migliorate: fa schifo, ma più velocemente.",
+    "Rimosso il supporto alle decisioni intelligenti.",
+    "Bug noto: apre bocca senza leggere le patch notes.",
+  ],
+} as const;
+
+export function PatchEditor({
+  initialPatch,
+  isNew,
+  counterPatch = false,
+}: {
+  initialPatch: Patch;
+  isNew: boolean;
+  counterPatch?: boolean;
+}) {
   const navigate = useNavigate();
   const { settings, savePatch } = useAppStore();
   const [patch, setPatch] = useState<Patch>(initialPatch);
@@ -125,6 +153,26 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
       ),
     });
 
+  const applyQuickSuggestion = (text: string) => {
+    const firstSection = patch.sections[0];
+    if (!firstSection) return;
+    const emptyItem = firstSection.items.find((item) => item.text.trim().length === 0);
+    update({
+      sections: patch.sections.map((section) =>
+        section.id !== firstSection.id
+          ? section
+          : emptyItem
+            ? {
+                ...section,
+                items: section.items.map((item) =>
+                  item.id === emptyItem.id ? { ...item, text } : item,
+                ),
+              }
+            : { ...section, items: [...section.items, { id: createId(), text }] },
+      ),
+    });
+  };
+
   const persist = (status: PatchStatus) => {
     const candidate: Patch = { ...patch, status };
     const found = validatePatch(candidate, status);
@@ -189,6 +237,107 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
       />
 
       <main className="mx-auto max-w-3xl space-y-5 px-4 py-5">
+        {counterPatch ? (
+          <div className="social-seed-banner flex items-start gap-3 rounded-2xl border border-brand/40 bg-brand/10 p-4 text-foreground">
+            <Reply className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden="true" />
+            <div>
+              <p className="font-black">Modalità contro-patch attiva</p>
+              <p className="text-sm text-muted-foreground">
+                Qualcuno ti ha patchato. Ora rispondi con la stessa eleganza discutibile.
+              </p>
+            </div>
+          </div>
+        ) : null}
+
+        <section className="surface-card space-y-4 p-4" aria-labelledby="social-context-title">
+          <div className="flex items-start gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <Users aria-hidden="true" />
+            </span>
+            <div>
+              <h2 id="social-context-title" className="text-base font-black text-foreground">
+                Chi o cosa stai patchando?
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Cambia suggerimenti e immagine finale, non limita quello che puoi scrivere.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2" role="group" aria-label="Soggetto della patch">
+            {PATCH_SUBJECTS.map((subject) => (
+              <button
+                key={subject.id}
+                type="button"
+                aria-pressed={patch.subject === subject.id}
+                onClick={() =>
+                  update({
+                    subject: subject.id,
+                    targetName: subject.id === "self" ? "" : patch.targetName,
+                  })
+                }
+                className={`tap-safe rounded-xl border px-3 py-2 text-left transition-all ${patch.subject === subject.id ? "border-brand bg-brand/10 shadow-[0_0_0_1px_var(--brand)]" : "border-border bg-surface-2"}`}
+              >
+                <span className="block text-sm font-black text-foreground">{subject.label}</span>
+                <span className="block text-[0.68rem] text-muted-foreground">{subject.hint}</span>
+              </button>
+            ))}
+          </div>
+          {patch.subject !== "self" ? (
+            <div>
+              <Label htmlFor="target-name">Destinatario facoltativo</Label>
+              <Input
+                id="target-name"
+                value={patch.targetName}
+                maxLength={APP_CONFIG.limits.patchTarget}
+                placeholder={
+                  PATCH_SUBJECTS.find((subject) => subject.id === patch.subject)?.placeholder
+                }
+                onChange={(event) => update({ targetName: event.target.value })}
+                className="tap-safe mt-1.5"
+              />
+            </div>
+          ) : null}
+          <div>
+            <Label>Tono</Label>
+            <div
+              className="mt-1.5 grid grid-cols-3 gap-2"
+              role="group"
+              aria-label="Tono della patch"
+            >
+              {PATCH_TONES.map((tone) => (
+                <button
+                  key={tone.id}
+                  type="button"
+                  aria-pressed={patch.tone === tone.id}
+                  title={tone.hint}
+                  onClick={() => update({ tone: tone.id })}
+                  className={`tap-safe rounded-xl border px-2 py-2 text-xs font-bold transition-all ${patch.tone === tone.id ? "border-brand bg-brand/10 text-foreground" : "border-border bg-surface-2 text-muted-foreground"}`}
+                >
+                  {tone.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label>Suggerimenti rapidi</Label>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Tocca per aggiungerne uno oppure ignorali e scrivi liberamente.
+            </p>
+            <div className="mt-2 flex snap-x gap-2 overflow-x-auto pb-1">
+              {QUICK_SUGGESTIONS[patch.tone].map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => applyQuickSuggestion(suggestion)}
+                  className="tap-safe min-w-[13rem] snap-start rounded-xl border border-border bg-surface-2 px-3 py-2 text-left text-xs text-muted-foreground hover:border-brand/50 hover:text-foreground"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="surface-card space-y-4 p-4">
           <div>
             <Label htmlFor="title">Titolo</Label>
@@ -340,7 +489,7 @@ export function PatchEditor({ initialPatch, isNew }: { initialPatch: Patch; isNe
                           rows={2}
                           minLength={APP_CONFIG.limits.minItemText}
                           maxLength={APP_CONFIG.limits.itemText}
-                          placeholder={preset.hint}
+                          placeholder={`${preset.hint}${patch.subject === "friend" ? " dell'amico" : patch.subject === "group" ? " del gruppo" : patch.subject === "situation" ? " nella situazione" : ""}`}
                           aria-invalid={itemIsShort}
                           aria-describedby={itemIsShort ? itemErrorId : undefined}
                           onChange={(e) => setItem(section.id, item.id, e.target.value)}

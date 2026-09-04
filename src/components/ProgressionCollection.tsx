@@ -1,5 +1,6 @@
 import { Check, LockKeyhole, Medal, Trophy } from "lucide-react";
 import type { PlayerProgression } from "@/lib/player-progression";
+import { BitCoin } from "@/components/BitCoin";
 
 const MISSION_GROUPS = [
   { kind: "daily", label: "Missioni giornaliere", hint: "Si rinnovano ogni giorno" },
@@ -83,7 +84,10 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
                         {mission.completed ? (
                           <Check className="size-4" aria-label="Completata" />
                         ) : (
-                          `+${mission.rewardXp} XP · +${mission.rewardBits} Bit`
+                          <span className="flex items-center gap-1">
+                            +{mission.rewardXp} XP · +{mission.rewardBits}{" "}
+                            <BitCoin className="size-3.5" />
+                          </span>
                         )}
                       </span>
                     </li>

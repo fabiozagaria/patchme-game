@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Coins, Gift, Sparkles } from "lucide-react";
+import { Gift, Sparkles } from "lucide-react";
 import { playGameSound } from "@/lib/sound-effects";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { BitCoin } from "@/components/BitCoin";
 
 const PARTICLES = Array.from({ length: 12 }, (_, index) => index);
 
@@ -32,10 +33,7 @@ export function WelcomeGift({ open, onClose }: { open: boolean; onClose: () => v
           ))}
 
           <div className="welcome-gift-coin mx-auto" aria-hidden="true">
-            <div className="welcome-gift-coin-face">
-              <span>44</span>
-              <small>BIT</small>
-            </div>
+            <BitCoin className="welcome-gift-coin-face" />
           </div>
 
           <DialogHeader className="mt-5 items-center text-center sm:text-center">
@@ -60,7 +58,7 @@ export function WelcomeGift({ open, onClose }: { open: boolean; onClose: () => v
             onClick={onClose}
             className="tap-safe mt-5 h-12 w-full bg-brand text-base font-black text-brand-foreground shadow-[0_0_28px_color-mix(in_oklab,var(--brand)_35%,transparent)] hover:bg-brand/90"
           >
-            <Coins className="mr-2 size-5" /> Incassa il bottino
+            <BitCoin className="size-5" /> Incassa il bottino
           </Button>
         </div>
       </DialogContent>

@@ -21,7 +21,7 @@ import { useAppStore } from "@/state/app-store";
 import { useCardExport } from "@/hooks/use-card-export";
 import { EXPORT_SIZES } from "@/lib/share-image";
 import type { ShareOrientation, ShareTemplate } from "@/lib/patch-model";
-import { isPatchShareable, parseShareRequest } from "@/lib/patch-sharing";
+import { createCounterPatchUrl, isPatchShareable, parseShareRequest } from "@/lib/patch-sharing";
 import { calculatePlayerProgression } from "@/lib/player-progression";
 import {
   EMPTY_PROGRESSION_STATE,
@@ -127,11 +127,14 @@ function PatchDetailPage() {
     publishedPatches: progression.publishedPatches,
   };
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const counterPatchUrl = patch
+    ? createCounterPatchUrl(appUrl, settings.displayName, patch.tone, selectedTemplate)
+    : appUrl;
   const { nodeRef, busy, saveImage, shareImage, copyCaption } = useCardExport({
     version: patch?.version ?? "",
     title: patch?.title ?? "PatchMe",
     shareText: patch
-      ? `La mia patch ${patch.version}: ${patch.title}\n\nCrea la tua su PatchMe: ${appUrl}`
+      ? `${patch.targetName ? `${patch.targetName}, sei stato patchato.\n` : ""}${patch.title} · ${patch.version}\nCreata da @${settings.displayName}\n\nRispondi con una contro-patch: ${counterPatchUrl}`
       : `Crea la tua patch su PatchMe: ${appUrl}`,
   });
 

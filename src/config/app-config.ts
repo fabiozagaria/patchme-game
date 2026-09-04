@@ -6,7 +6,7 @@
 
 export const APP_CONFIG = {
   name: "PatchMe",
-  tagline: "Trasforma persone e momenti in patch notes",
+  tagline: "Trasforma le storie del gruppo in patch notes",
   // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
   version: "0.8.0",
   releaseChannel: "Alpha",
@@ -14,12 +14,16 @@ export const APP_CONFIG = {
     date: "4 settembre 2026",
     title: "Le tue patch sono pronte a invadere le chat.",
     items: [
-      "Nuovo Studio social più chiaro, fluido e responsive",
-      "Formati esatti per post, storie, reel, feed, chat e link",
-      "Anteprima fedele con profilo, avatar, livello, titolo e cosmetici",
-      "Didascalia social copiabile con un tocco",
+      "Patch dedicate a te, un amico, un gruppo o una situazione",
+      "Destinatario facoltativo, autore e tono visibili nell'immagine",
+      "Suggerimenti rapidi leggeri, bastardi o Hardcore",
+      "Link pronto per rispondere con una contro-patch senza account",
+      "Studio social con quattro formati esatti e didascalia copiabile",
+      "Nuova moneta Bit ufficiale in profilo, missioni e Shop",
       "Regalo di benvenuto da 44 Bit celebrato con una sorpresa 3D",
-      "Animazioni alleggerite automaticamente sui dispositivi che lo richiedono",
+      "Level-up 3D accompagnato da un breve riff metal originale",
+      "Sottofondo metal discreto e disattivabile in modalità Hardcore",
+      "Transizioni e micro-interazioni più fluide con movimento ridotto automatico",
     ],
   },
   links: {
@@ -43,6 +47,7 @@ export const APP_CONFIG = {
     itemText: 280,
     minItemText: 3,
     minDisplayName: 3,
+    patchTarget: 50,
     sectionTitle: 40,
     displayName: 40,
     dailyDisplayNameChanges: 5,

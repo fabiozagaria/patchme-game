@@ -1,14 +1,40 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { createId, createSection, type Patch } from "@/lib/patch-model";
+import {
+  createId,
+  createSection,
+  type Patch,
+  type PatchSubject,
+  type PatchTone,
+  type ShareTemplate,
+} from "@/lib/patch-model";
 import { suggestVersion } from "@/lib/versioning";
 import { useAppStore } from "@/state/app-store";
 import { PatchEditor } from "@/components/PatchEditor";
 import type { GuidedAnswer } from "@/components/GuidedPatchWizard";
 import { APP_CONFIG } from "@/config/app-config";
 import { weeklyPromptSelectionSchema, type WeeklyPromptSelection } from "@/lib/weekly-prompt";
+import { ProductTour } from "@/components/ProductTour";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
 
 export const Route = createFileRoute("/patch/new")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    counter: search.counter === true || search.counter === "1" || search.counter === "true",
+    subject: (["self", "friend", "group", "situation"] as const).includes(
+      search.subject as PatchSubject,
+    )
+      ? (search.subject as PatchSubject)
+      : "self",
+    target: typeof search.target === "string" ? search.target.slice(0, 50) : "",
+    tone: (["light", "sarcastic", "hardcore"] as const).includes(search.tone as PatchTone)
+      ? (search.tone as PatchTone)
+      : "light",
+    template: (["classic", "terminal", "rpg", "chaos"] as const).includes(
+      search.template as ShareTemplate,
+    )
+      ? (search.template as ShareTemplate)
+      : "classic",
+  }),
   head: () => ({
     meta: [
       { title: "Nuova patch — PatchMe" },
@@ -24,7 +50,8 @@ export const Route = createFileRoute("/patch/new")({
 });
 
 function NewPatchPage() {
-  const { ready, settings, patches } = useAppStore();
+  const counterSeed = Route.useSearch();
+  const { ready, settings, patches, saveSettings } = useAppStore();
   const [creationSeed, setCreationSeed] = useState<{
     guidedAnswers: GuidedAnswer[];
     weeklySelection: WeeklyPromptSelection | null;
@@ -51,6 +78,11 @@ function NewPatchPage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!counterSeed.counter || settings.shareTemplate === counterSeed.template) return;
+    saveSettings({ ...settings, shareTemplate: counterSeed.template });
+  }, [counterSeed.counter, counterSeed.template, saveSettings, settings]);
+
   const draft = useMemo<Patch>(() => {
     const now = new Date().toISOString();
     const guidedSections = (creationSeed?.guidedAnswers ?? []).map((answer) => ({
@@ -76,6 +108,9 @@ function NewPatchPage() {
       version: suggestVersion(settings.versionFormat, patches),
       date: now,
       status: "draft",
+      subject: counterSeed.subject,
+      targetName: counterSeed.target,
+      tone: counterSeed.tone,
       sections: weeklySections.length
         ? weeklySections
         : guidedSections.length
@@ -84,10 +119,19 @@ function NewPatchPage() {
       createdAt: now,
       updatedAt: now,
     };
-  }, [creationSeed, patches, settings.versionFormat]);
+  }, [counterSeed, creationSeed, patches, settings.versionFormat]);
 
   if (!ready || creationSeed === null) return <div className="min-h-screen bg-background" />;
-  if (!settings.onboarded) return <Navigate to="/" />;
+  if (!settings.productTourSeen) {
+    return <ProductTour onDone={() => saveSettings({ ...settings, productTourSeen: true })} />;
+  }
+  if (!settings.onboarded) {
+    return (
+      <OnboardingWizard
+        onComplete={(nextSettings) => saveSettings({ ...nextSettings, productTourSeen: true })}
+      />
+    );
+  }
 
-  return <PatchEditor initialPatch={draft} isNew />;
+  return <PatchEditor initialPatch={draft} isNew counterPatch={counterSeed.counter} />;
 }

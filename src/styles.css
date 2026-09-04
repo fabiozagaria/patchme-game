@@ -160,6 +160,29 @@
   min-height: 44px;
 }
 
+/* Moneta ufficiale Bit: stessa identità in ogni schermata. */
+.bit-coin {
+  aspect-ratio: 1;
+  border: 0.12em solid #92400e;
+  border-radius: 999px;
+  color: #422006;
+  background:
+    radial-gradient(circle at 30% 24%, #fff7ae 0 12%, transparent 13%),
+    radial-gradient(circle at 35% 28%, #fde68a, #facc15 52%, #b45309 100%);
+  box-shadow:
+    inset -0.12em -0.16em 0.22em #713f1266,
+    inset 0.08em 0.08em 0.15em #fff9b688,
+    0 0.12em 0.35em #facc1538;
+}
+
+.bit-coin-mark {
+  font-family: var(--font-display);
+  font-size: 0.62em;
+  font-weight: 900;
+  line-height: 1;
+  transform: skewX(-8deg);
+}
+
 /* ---- Intro firma ---- */
 @keyframes intro-slam {
   0% {
@@ -305,33 +328,9 @@
   display: flex;
   width: 100%;
   height: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 6px double #854d0e;
-  border-radius: 999px;
-  color: #422006;
-  background: radial-gradient(circle at 32% 25%, #fef08a, #facc15 48%, #a16207 100%);
-  box-shadow:
-    inset -10px -12px 18px #713f1255,
-    inset 8px 8px 14px #fff7aa88,
-    0 14px 35px #facc1544;
+  font-size: 5.5rem;
   transform-style: preserve-3d;
   animation: gift-coin-enter 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.welcome-gift-coin-face span {
-  font-family: var(--font-display);
-  font-size: 3.2rem;
-  font-weight: 900;
-  line-height: 0.8;
-}
-
-.welcome-gift-coin-face small {
-  margin-top: 0.6rem;
-  font-size: 0.75rem;
-  font-weight: 900;
-  letter-spacing: 0.28em;
 }
 
 .welcome-gift-particle {
@@ -393,6 +392,70 @@
     opacity: 1;
     transform: none;
   }
+}
+
+@keyframes level-up-emblem {
+  0% {
+    opacity: 0;
+    transform: perspective(650px) rotateX(70deg) rotateY(-180deg) scale(0.35);
+  }
+  62% {
+    opacity: 1;
+    transform: perspective(650px) rotateX(-8deg) rotateY(18deg) scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(650px) rotateX(0) rotateY(0) scale(1);
+  }
+}
+
+@keyframes level-up-overlay-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes level-up-shard {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(calc(var(--shard) * 36deg)) translateY(0) scaleY(0);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(calc(var(--shard) * 36deg)) translateY(-155px)
+      scaleY(1.7);
+  }
+}
+
+.level-up-overlay {
+  animation: level-up-overlay-enter 220ms ease-out both;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      color-mix(in oklab, var(--brand) 24%, transparent),
+      transparent 38%
+    ),
+    color-mix(in oklab, var(--background) 94%, transparent);
+}
+
+.level-up-emblem {
+  transform-style: preserve-3d;
+  animation: level-up-emblem 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.level-up-copy {
+  animation: level-up-banner 520ms cubic-bezier(0.22, 1, 0.36, 1) 420ms both;
+}
+
+.level-up-shard {
+  transform-origin: center bottom;
+  animation: level-up-shard 1.15s ease-out calc(var(--shard) * 28ms) both;
 }
 
 @keyframes xp-progress {
@@ -535,5 +598,74 @@
   .profile-effect-embers,
   .profile-effect-danger {
     animation: none;
+  }
+
+  .level-up-overlay,
+  .level-up-emblem,
+  .level-up-copy,
+  .level-up-shard {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+}
+
+/* ---- Comfort e micro-interazioni globali ---- */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+main {
+  animation: page-enter 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+button:not(:disabled),
+a.tap-safe {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 180ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+button:not(:disabled):active,
+a.tap-safe:active {
+  transform: scale(0.975);
+}
+
+.surface-card {
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+input,
+textarea {
+  scroll-margin-top: 6rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .surface-card:hover {
+    border-color: color-mix(in oklab, var(--brand) 22%, var(--border));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main,
+  button,
+  a,
+  .surface-card {
+    animation: none;
+    transition-duration: 1ms;
   }
 }
