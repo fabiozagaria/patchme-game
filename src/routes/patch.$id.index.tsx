@@ -17,7 +17,7 @@ import { useAppStore } from "@/state/app-store";
 import { useCardExport } from "@/hooks/use-card-export";
 import { EXPORT_WIDTH } from "@/lib/share-image";
 import type { ShareTemplate } from "@/lib/patch-model";
-import { isPatchShareable } from "@/lib/patch-sharing";
+import { isPatchShareable, parseShareRequest } from "@/lib/patch-sharing";
 import { AppHeader } from "@/components/AppHeader";
 import { PatchPreviewCard } from "@/components/PatchPreviewCard";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,9 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/patch/$id/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    share: parseShareRequest(search.share),
+  }),
   head: () => ({
     meta: [
       { title: "Anteprima patch — PatchMe" },
@@ -79,10 +82,11 @@ const SHARE_TEMPLATES: readonly {
 
 function PatchDetailPage() {
   const { id } = Route.useParams();
+  const { share } = Route.useSearch();
   const navigate = useNavigate();
   const { ready, patches, settings, saveSettings, deletePatch } = useAppStore();
   const [confirm, setConfirm] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(share);
   const [templateDraft, setTemplateDraft] = useState<ShareTemplate | null>(null);
   const patch = patches.find((p) => p.id === id);
   const selectedTemplate = templateDraft ?? settings.shareTemplate;
