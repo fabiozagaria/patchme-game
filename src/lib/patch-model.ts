@@ -4,6 +4,7 @@ import type { SectionCategory } from "@/config/app-config";
 export type PatchStatus = "draft" | "published";
 export type VersionFormat = "yearWeek" | "sequential" | "manual";
 export type ThemeMode = "dark" | "light" | "system";
+export type ShareOrientation = "vertical" | "horizontal";
 export type ProfileAvatar = "hello" | "thinking" | "celebrate" | "bug" | "superSaiyan";
 
 export const sectionCategorySchema = z.enum([
@@ -53,6 +54,7 @@ export const settingsSchema = z.object({
   productTourSeen: z.boolean().default(false),
   lastSeenVersion: z.string().default(""),
   shareTemplate: z.enum(["classic", "terminal", "rpg", "chaos"]).default("classic"),
+  shareOrientation: z.enum(["vertical", "horizontal"]).default("vertical"),
 });
 
 export type PatchItem = z.infer<typeof patchItemSchema>;
@@ -87,6 +89,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   productTourSeen: false,
   lastSeenVersion: "",
   shareTemplate: "classic",
+  shareOrientation: "vertical",
 };
 
 export function createId(): string {

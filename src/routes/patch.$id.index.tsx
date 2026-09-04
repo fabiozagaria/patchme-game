@@ -1,5 +1,5 @@
 import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Check,
   Download,
@@ -15,9 +15,15 @@ import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { TEXTS } from "@/config/app-config";
 import { useAppStore } from "@/state/app-store";
 import { useCardExport } from "@/hooks/use-card-export";
-import { EXPORT_WIDTH } from "@/lib/share-image";
-import type { ShareTemplate } from "@/lib/patch-model";
+import { EXPORT_SIZES } from "@/lib/share-image";
+import type { ShareOrientation, ShareTemplate } from "@/lib/patch-model";
 import { isPatchShareable, parseShareRequest } from "@/lib/patch-sharing";
+import { calculatePlayerProgression } from "@/lib/player-progression";
+import {
+  EMPTY_PROGRESSION_STATE,
+  loadProgressionState,
+  type ProgressionState,
+} from "@/lib/progression-repository";
 import { AppHeader } from "@/components/AppHeader";
 import { PatchPreviewCard } from "@/components/PatchPreviewCard";
 import { Button } from "@/components/ui/button";
@@ -88,8 +94,33 @@ function PatchDetailPage() {
   const [confirm, setConfirm] = useState(false);
   const [shareOpen, setShareOpen] = useState(share);
   const [templateDraft, setTemplateDraft] = useState<ShareTemplate | null>(null);
+  const [orientationDraft, setOrientationDraft] = useState<ShareOrientation | null>(null);
+  const [persisted, setPersisted] = useState<ProgressionState>(EMPTY_PROGRESSION_STATE);
   const patch = patches.find((p) => p.id === id);
   const selectedTemplate = templateDraft ?? settings.shareTemplate;
+  const selectedOrientation = orientationDraft ?? settings.shareOrientation;
+  const progression = useMemo(
+    () =>
+      calculatePlayerProgression(
+        patches,
+        settings.displayName,
+        persisted.completedMissionIds,
+        persisted.missionXp,
+        new Date(),
+        persisted.highestStreak,
+      ),
+    [patches, persisted, settings.displayName],
+  );
+  const sharedProfile = {
+    avatar: settings.profileAvatar,
+    equippedAvatarId: persisted.equippedAvatarId,
+    equippedFrameId: persisted.equippedProfileFrameId,
+    equippedEffectId: persisted.equippedProfileEffectId,
+    level: progression.level,
+    title: progression.title,
+    weeklyStreak: progression.weeklyStreak,
+    publishedPatches: progression.publishedPatches,
+  };
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const { nodeRef, busy, saveImage, shareImage } = useCardExport({
     version: patch?.version ?? "",
@@ -99,14 +130,27 @@ function PatchDetailPage() {
       : `Crea la tua patch su PatchMe: ${appUrl}`,
   });
 
+  useEffect(() => setPersisted(loadProgressionState()), []);
+
   if (!ready) return <div className="min-h-screen bg-background" />;
   if (!patch) return <Navigate to="/" />;
   const shareable = isPatchShareable(patch);
 
   const chooseTemplate = (template: ShareTemplate) => {
     setTemplateDraft(template);
-    if (!saveSettings({ ...settings, shareTemplate: template })) {
+    if (
+      !saveSettings({ ...settings, shareTemplate: template, shareOrientation: selectedOrientation })
+    ) {
       toast.error("Non è stato possibile ricordare il template");
+    }
+  };
+
+  const chooseOrientation = (orientation: ShareOrientation) => {
+    setOrientationDraft(orientation);
+    if (
+      !saveSettings({ ...settings, shareTemplate: selectedTemplate, shareOrientation: orientation })
+    ) {
+      toast.error("Non è stato possibile ricordare il formato");
     }
   };
 
@@ -118,6 +162,8 @@ function PatchDetailPage() {
           patch={patch}
           displayName={settings.displayName}
           template={selectedTemplate}
+          orientation={selectedOrientation}
+          profile={sharedProfile}
         />
       </main>
 
@@ -125,14 +171,17 @@ function PatchDetailPage() {
         <div
           aria-hidden="true"
           className="pointer-events-none fixed left-[-10000px] top-0"
-          style={{ width: EXPORT_WIDTH }}
+          style={{ width: EXPORT_SIZES[selectedOrientation].width }}
         >
           <PatchPreviewCard
             ref={nodeRef}
             patch={patch}
             displayName={settings.displayName}
             template={selectedTemplate}
+            orientation={selectedOrientation}
+            profile={sharedProfile}
             sharing
+            exporting
           />
         </div>
       ) : null}
@@ -211,12 +260,42 @@ function PatchDetailPage() {
 
           <div>
             <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Formato social
+            </p>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-label="Formato immagine">
+              {(["vertical", "horizontal"] as const).map((orientation) => {
+                const selected = selectedOrientation === orientation;
+                const size = EXPORT_SIZES[orientation];
+                return (
+                  <button
+                    key={orientation}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => chooseOrientation(orientation)}
+                    className={`tap-safe rounded-xl border p-3 text-left ${selected ? "border-brand bg-brand/10" : "border-border bg-surface-2"}`}
+                  >
+                    <span className="block text-sm font-semibold text-foreground">
+                      {orientation === "vertical" ? "Verticale" : "Orizzontale"}
+                    </span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {size.output} · {orientation === "vertical" ? "Post social" : "Chat e link"}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Anteprima
             </p>
             <PatchPreviewCard
               patch={patch}
               displayName={settings.displayName}
               template={selectedTemplate}
+              orientation={selectedOrientation}
+              profile={sharedProfile}
               sharing
             />
           </div>

@@ -23,6 +23,7 @@ export interface ProgressionState {
   equippedProfileBackgroundId: string | null;
   highestStreak: number;
   lastXp: number | null;
+  welcomeBitsClaimed: boolean;
 }
 
 interface StorageAdapter {
@@ -43,6 +44,7 @@ export const EMPTY_PROGRESSION_STATE: ProgressionState = {
   equippedProfileBackgroundId: null,
   highestStreak: 0,
   lastXp: null,
+  welcomeBitsClaimed: false,
 };
 
 function finiteNonNegative(value: unknown, fallback = 0): number {
@@ -91,6 +93,7 @@ function parseCurrentState(raw: string | null): ProgressionState | null {
           : null,
       highestStreak: finiteNonNegative(value.highestStreak),
       lastXp: value.lastXp === null ? null : finiteNonNegative(value.lastXp),
+      welcomeBitsClaimed: value.welcomeBitsClaimed === true,
     };
   } catch {
     return null;
@@ -158,12 +161,18 @@ export function loadProgressionState(
 ): ProgressionState {
   if (!storage) return EMPTY_PROGRESSION_STATE;
   const current = parseCurrentState(storage.getItem(PROGRESSION_STORAGE_KEY));
-  if (current) return current;
+  if (current) {
+    if (current.welcomeBitsClaimed) return current;
+    const welcomed = { ...current, bits: current.bits + 44, welcomeBitsClaimed: true };
+    saveProgressionState(welcomed, storage);
+    return welcomed;
+  }
   const migrated =
     parsePreviousState(storage.getItem(PREVIOUS_PROGRESSION_STORAGE_KEY)) ??
     readLegacyState(storage, rewardByMissionId);
-  saveProgressionState(migrated, storage);
-  return migrated;
+  const welcomed = { ...migrated, bits: migrated.bits + 44, welcomeBitsClaimed: true };
+  saveProgressionState(welcomed, storage);
+  return welcomed;
 }
 
 export function saveProgressionState(

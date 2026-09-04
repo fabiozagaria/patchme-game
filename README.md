@@ -5,7 +5,7 @@
 
 **Trasforma amici, persone e situazioni in patch notes da condividere.**
 
-[![Status](https://img.shields.io/badge/status-0.6.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+[![Status](https://img.shields.io/badge/status-0.7.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
 [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
 [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
 [![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
@@ -37,13 +37,15 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - pagina Progressione separata dall'archivio delle patch;
 - Patchy Shop con Bit e inventario di avatar, cornici ed effetti estetici;
 - pagina Profilo dedicata per equipaggiare tutti i cosmetici posseduti in un solo posto;
+- 44 Bit iniziali assegnati una sola volta a ogni profilo locale;
 - collezioni videoludiche e cosmetici vincolati ai trofei;
 - validazione minima di 3 caratteri per le voci pubblicate;
 - patch in stato bozza o pubblicata;
 - sezioni predefinite, personalizzabili e riordinabili;
 - elementi testuali multipli per ogni sezione;
 - visibilità separata delle sezioni nelle immagini condivise;
-- quattro template grafici con anteprima ed esportazione della patch come immagine;
+- quattro template grafici con anteprima ed esportazione verticale o orizzontale;
+- profilo giocatore completo nelle immagini condivise, inclusi avatar, livello, titolo e serie;
 - archivio locale con modifica ed eliminazione;
 - temi chiaro, scuro e sincronizzato con il dispositivo;
 - colori principali personalizzabili;
@@ -72,7 +74,7 @@ Il simbolo `+` rappresenta miglioramenti e nuove funzionalità, mentre i pixel d
 
 ## Stato del progetto
 
-PatchMe è attualmente in **0.6.0 Alpha**.
+PatchMe è attualmente in **0.7.0 Alpha**.
 
 Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono ancora cambiare. In questa fase il progetto viene testato con un gruppo ristretto di persone e sviluppato a partire dal loro utilizzo reale.
 

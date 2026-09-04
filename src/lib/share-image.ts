@@ -5,8 +5,10 @@
  * (basta sostituire `downloadBlob`/`shareBlob`).
  */
 import { toBlob } from "html-to-image";
+import { EXPORT_SIZES } from "@/lib/patch-sharing";
 
-export const EXPORT_WIDTH = 420;
+export { EXPORT_SIZES } from "@/lib/patch-sharing";
+
 export const EXPORT_SCALE = 2;
 
 export type ShareOutcome = "shared" | "downloaded" | "downloaded-and-copied" | "cancelled";
@@ -61,7 +63,7 @@ export async function renderNodeToPng(node: HTMLElement): Promise<Blob> {
   const blob = await toBlob(node, {
     pixelRatio: EXPORT_SCALE,
     backgroundColor,
-    cacheBust: true,
+    cacheBust: false,
     width: node.offsetWidth,
     height: node.offsetHeight,
   });
