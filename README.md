@@ -25,11 +25,11 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 
 - tutorial introduttivo accessibile con esempi e configurazione iniziale;
 - creazione libera oppure guidata tramite cinque domande;
-- domanda settimanale di Patchy, trasformabile subito in una patch e condivisibile con gli amici;
+- miccia sociale per iniziare subito una patch su un amico o sul gruppo;
 - profilo giocatore locale con livelli, XP, titoli sarcastici, serie settimanale e statistiche;
 - progressione persistita tramite repository versionato con migrazione automatica dei dati precedenti;
 - avatar base, segreti e acquistati gestiti da un solo Profilo;
-- modalità Hardcore opzionale con conferma esplicita, copy alternativo e avatar esclusivo;
+- modalità Hardcore opzionale con conferma esplicita, copy più scurrile e avatar esclusivo;
 - bonus locale al primo accesso di ogni giorno: 25 XP e 3 Bit;
 - notifiche browser facoltative quando PatchMe rileva una nuova versione al successivo avvio;
 - notifiche e animazioni per XP guadagnati e passaggi di livello;
@@ -65,8 +65,10 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - patch dedicate a se stessi, amici, gruppi o situazioni, con destinatario facoltativo;
 - autore, tono e invito “Sei stato patchato” integrati nell'immagine;
 - suggerimenti rapidi facoltativi e link locale per creare una contro-patch;
-- moneta Bit ufficiale riutilizzata in tutta l'interfaccia;
-- level-up 3D con riff metal originale e sottofondo discreto per la modalità Hardcore;
+- moneta Bit ufficiale con B cromatica, riutilizzata in tutta l'interfaccia;
+- Username stabile con primo cambio gratuito e cambi successivi da 200 Bit;
+- Nome visualizzato gratuito e separato, usato anche per gli easter egg;
+- level-up 3D con breve riff metal originale, senza sottofondo continuo;
 - esportazione e condivisione delle patch disponibili soltanto dopo la pubblicazione;
 - pulsante di condivisione rapida nell'archivio per le patch pubblicate;
 - sezione Novità e collegamento al canale Telegram;
