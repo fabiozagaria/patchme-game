@@ -22,7 +22,7 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
               Missioni e trofei
             </h2>
             <p className="text-xs text-muted-foreground">
-              Completa obiettivi, accumula XP e cerca di capire gli easter egg.
+              Completa obiettivi, accumula XP e Bit e cerca di capire gli easter egg.
             </p>
           </div>
           <span className="shrink-0 text-xs font-black text-brand">+{progression.bonusXp} XP</span>
@@ -83,7 +83,7 @@ export function ProgressionCollection({ progression }: { progression: PlayerProg
                         {mission.completed ? (
                           <Check className="size-4" aria-label="Completata" />
                         ) : (
-                          `+${mission.rewardXp}`
+                          `+${mission.rewardXp} XP · +${mission.rewardBits} Bit`
                         )}
                       </span>
                     </li>
