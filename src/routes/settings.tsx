@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import {
   BookOpen,
+  BellRing,
   Check,
   Copy,
   ExternalLink,
@@ -48,6 +49,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { hardcoreCopy } from "@/lib/hardcore-copy";
+import {
+  requestUpdateNotificationPermission,
+  supportsUpdateNotifications,
+} from "@/lib/update-notifications";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -177,6 +182,28 @@ function SettingsPage() {
     } catch {
       toast.error("Non riesco a copiare il link su questo dispositivo");
     }
+  };
+
+  const toggleUpdateNotifications = async (enabled: boolean) => {
+    if (!enabled) {
+      update({ updateNotifications: false });
+      return;
+    }
+    const permission = await requestUpdateNotificationPermission();
+    if (permission !== "granted") {
+      toast.error(
+        permission === "unsupported"
+          ? "Le notifiche browser non sono supportate su questo dispositivo"
+          : "Permesso notifiche non concesso",
+      );
+      update({ updateNotifications: false });
+      return;
+    }
+    update({
+      updateNotifications: true,
+      lastNotifiedVersion: APP_CONFIG.version,
+    });
+    enqueueSuccessNotification("Notifiche aggiornamenti attivate", { sound: "success" });
   };
 
   return (
@@ -396,6 +423,27 @@ function SettingsPage() {
             <span className="flex-1 text-sm font-medium">Novità</span>
             <Badge variant="secondary">{APP_CONFIG.version}</Badge>
           </button>
+          <div className="flex items-center justify-between gap-4 border-t border-border px-4 py-3">
+            <div className="flex min-w-0 items-start gap-3">
+              <BellRing className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden="true" />
+              <div>
+                <Label htmlFor="update-notifications" className="font-semibold">
+                  Notifiche nuove versioni
+                </Label>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Android ti avvisa quando riapri PatchMe dopo un aggiornamento. A sito
+                  completamente chiuso servirà il futuro servizio Web Push.
+                </p>
+              </div>
+            </div>
+            <Switch
+              id="update-notifications"
+              checked={current.updateNotifications}
+              disabled={!supportsUpdateNotifications()}
+              onCheckedChange={(enabled) => void toggleUpdateNotifications(enabled)}
+              aria-label="Attiva notifiche per le nuove versioni"
+            />
+          </div>
         </section>
 
         <section className="surface-card overflow-hidden">

@@ -30,6 +30,8 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - progressione persistita tramite repository versionato con migrazione automatica dei dati precedenti;
 - avatar base, segreti e acquistati gestiti da un solo Profilo;
 - modalità Hardcore opzionale con conferma esplicita, copy alternativo e avatar esclusivo;
+- bonus locale al primo accesso di ogni giorno: 25 XP e 3 Bit;
+- notifiche browser facoltative quando PatchMe rileva una nuova versione al successivo avvio;
 - notifiche e animazioni per XP guadagnati e passaggi di livello;
 - effetti sonori retro disattivabili per salvataggi, XP, trofei, serie e level-up;
 - coda delle notifiche: ogni messaggio resta visibile per cinque secondi completi;

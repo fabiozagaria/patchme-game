@@ -216,6 +216,10 @@ export function PlayerProfileCard({
           <Coins className="size-4" aria-hidden="true" /> {bits}
         </span>
       </Link>
+      <p className="mt-2 text-center text-[0.65rem] leading-relaxed text-muted-foreground">
+        I 44 Bit iniziali vengono assegnati automaticamente una sola volta a ogni profilo locale,
+        esistente o nuovo.
+      </p>
 
       {progression.publishedPatches === 0 ? (
         <p className="mt-3 text-center text-xs text-muted-foreground">

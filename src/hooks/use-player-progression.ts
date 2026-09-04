@@ -4,6 +4,8 @@ import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { calculatePlayerProgression, SUPER_SAIYAN_MISSION } from "@/lib/player-progression";
 import {
   awardMission,
+  claimDailyAccessReward,
+  DAILY_ACCESS_REWARD,
   EMPTY_PROGRESSION_STATE,
   loadProgressionState,
   saveProgressionState,
@@ -29,6 +31,7 @@ export function usePlayerProgression({
   const [streakCelebration, setStreakCelebration] = useState(false);
   const secretTapCount = useRef(0);
   const secretClaimed = useRef(false);
+  const dailyRewardXp = useRef(0);
 
   const progression = useMemo(
     () =>
@@ -63,7 +66,18 @@ export function usePlayerProgression({
 
   useEffect(() => {
     if (ready) return;
-    setPersisted(loadProgressionState(rewardByMissionId));
+    const loaded = loadProgressionState(rewardByMissionId);
+    const daily = claimDailyAccessReward(loaded);
+    if (daily.claimed) {
+      saveProgressionState(daily.state);
+      dailyRewardXp.current = DAILY_ACCESS_REWARD.xp;
+      enqueueSuccessNotification("Bonus accesso giornaliero!", {
+        description: `+${DAILY_ACCESS_REWARD.xp} XP · +${DAILY_ACCESS_REWARD.bits} Bit`,
+        sound: "xp",
+        duration: 5000,
+      });
+    }
+    setPersisted(daily.state);
     setReady(true);
   }, [ready, rewardByMissionId]);
 
@@ -147,10 +161,13 @@ export function usePlayerProgression({
     const gainedXp = progression.totalXp - previousXp;
     if (gainedXp <= 0) return;
     const previousLevel = Math.floor(previousXp / progression.xpPerLevel) + 1;
-    enqueueSuccessNotification(`+${gainedXp} XP guadagnati`, {
-      description: "Ricompensa aggiunta al profilo. Il tempo perso ora ha un valore.",
-      sound: "xp",
-    });
+    if (gainedXp !== dailyRewardXp.current) {
+      enqueueSuccessNotification(`+${gainedXp} XP guadagnati`, {
+        description: "Ricompensa aggiunta al profilo. Il tempo perso ora ha un valore.",
+        sound: "xp",
+      });
+    }
+    dailyRewardXp.current = 0;
     if (progression.level <= previousLevel) return;
 
     setLevelUp(true);

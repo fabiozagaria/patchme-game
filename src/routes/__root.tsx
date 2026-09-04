@@ -17,6 +17,7 @@ import { ThemeController } from "@/components/ThemeController";
 import { SoundEffectsController } from "@/components/SoundEffectsController";
 import { IntroSignature, shouldShowIntro } from "@/components/IntroSignature";
 import { PatchyMascot } from "@/components/PatchyMascot";
+import { UpdateNotificationController } from "@/components/UpdateNotificationController";
 
 function NotFoundComponent() {
   return (
@@ -164,6 +165,7 @@ function RootComponent() {
       <AppStoreProvider>
         <ThemeController />
         <SoundEffectsController />
+        <UpdateNotificationController />
         <AppGate>
           {/* Required: nested routes render here. */}
           <Outlet />

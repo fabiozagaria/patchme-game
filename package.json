@@ -12,6 +12,7 @@
     "test:progression-storage": "node --experimental-strip-types scripts/test-progression-repository.mjs",
     "test:sounds": "node --experimental-strip-types scripts/test-sound-effects.mjs",
     "test:sharing": "node --experimental-strip-types scripts/test-sharing-rules.mjs",
+    "test:update-notifications": "node --experimental-strip-types scripts/test-update-notifications.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

@@ -24,6 +24,7 @@ export interface ProgressionState {
   highestStreak: number;
   lastXp: number | null;
   welcomeBitsClaimed: boolean;
+  lastDailyRewardDate: string | null;
 }
 
 interface StorageAdapter {
@@ -45,7 +46,34 @@ export const EMPTY_PROGRESSION_STATE: ProgressionState = {
   highestStreak: 0,
   lastXp: null,
   welcomeBitsClaimed: false,
+  lastDailyRewardDate: null,
 };
+
+export const DAILY_ACCESS_REWARD = { xp: 25, bits: 3 } as const;
+
+function localDayKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function claimDailyAccessReward(
+  state: ProgressionState,
+  now = new Date(),
+): { state: ProgressionState; claimed: boolean } {
+  const today = localDayKey(now);
+  if (state.lastDailyRewardDate === today) return { state, claimed: false };
+  return {
+    claimed: true,
+    state: {
+      ...state,
+      missionXp: state.missionXp + DAILY_ACCESS_REWARD.xp,
+      bits: state.bits + DAILY_ACCESS_REWARD.bits,
+      lastDailyRewardDate: today,
+    },
+  };
+}
 
 function finiteNonNegative(value: unknown, fallback = 0): number {
   const numeric = Number(value);
@@ -94,6 +122,8 @@ function parseCurrentState(raw: string | null): ProgressionState | null {
       highestStreak: finiteNonNegative(value.highestStreak),
       lastXp: value.lastXp === null ? null : finiteNonNegative(value.lastXp),
       welcomeBitsClaimed: value.welcomeBitsClaimed === true,
+      lastDailyRewardDate:
+        typeof value.lastDailyRewardDate === "string" ? value.lastDailyRewardDate : null,
     };
   } catch {
     return null;
