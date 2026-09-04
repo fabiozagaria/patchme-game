@@ -71,6 +71,9 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
             placeholder="Scegli il tuo username"
             aria-invalid={Boolean(error)}
             aria-describedby={error ? "username-error" : undefined}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             onChange={(e) => setDraft({ ...draft, displayName: e.target.value })}
             className="tap-safe mt-2"
           />
@@ -79,6 +82,10 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
               {error}
             </p>
           )}
+          <p className="mt-2 text-xs text-muted-foreground">
+            Da {APP_CONFIG.limits.minDisplayName} a {APP_CONFIG.limits.displayName} caratteri, senza
+            spazi.
+          </p>
         </div>
 
         <fieldset className="surface-card p-4">
