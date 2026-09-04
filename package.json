@@ -13,6 +13,7 @@
     "test:sounds": "node --experimental-strip-types scripts/test-sound-effects.mjs",
     "test:sharing": "node --experimental-strip-types scripts/test-sharing-rules.mjs",
     "test:update-notifications": "node --experimental-strip-types scripts/test-update-notifications.mjs",
+    "test:notification-center": "node --experimental-strip-types scripts/test-notification-center.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
