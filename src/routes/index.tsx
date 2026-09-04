@@ -15,6 +15,7 @@ import { WelcomeGift } from "@/components/WelcomeGift";
 import { GuidedPatchWizard, type GuidedAnswer } from "@/components/GuidedPatchWizard";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { PlayerProfileCard } from "@/components/PlayerProfileCard";
+import { NotificationCenterButton } from "@/components/NotificationCenterButton";
 import { Button } from "@/components/ui/button";
 import { hardcoreCopy, hardcoreGreeting } from "@/lib/hardcore-copy";
 import {
@@ -95,6 +96,7 @@ function ArchivePage() {
           </p>
         </div>
         <div className="flex gap-2">
+          <NotificationCenterButton />
           <button
             type="button"
             aria-label="Ripeti tutorial"
