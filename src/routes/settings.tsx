@@ -171,13 +171,21 @@ function SettingsPage() {
             value={current.displayName}
             maxLength={APP_CONFIG.limits.displayName}
             aria-invalid={Boolean(error)}
+            aria-describedby={error ? "username-error" : "username-help"}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             onChange={(e) => update({ displayName: e.target.value })}
             className="tap-safe mt-2"
           />
-          {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
-          <p className="mt-2 text-xs text-muted-foreground">
-            Da 3 a {APP_CONFIG.limits.displayName} caratteri · {remainingNameChanges} modifiche
-            rimaste oggi. Il contatore scende solo se salvi un nome diverso.
+          {error && (
+            <p id="username-error" className="mt-2 text-xs text-destructive">
+              {error}
+            </p>
+          )}
+          <p id="username-help" className="mt-2 text-xs text-muted-foreground">
+            Da 3 a {APP_CONFIG.limits.displayName} caratteri, senza spazi · {remainingNameChanges}
+            modifiche rimaste oggi. Il contatore scende solo se salvi un nome diverso.
           </p>
         </section>
 
@@ -248,6 +256,7 @@ function SettingsPage() {
             <AvatarPicker
               value={current.profileAvatar}
               onChange={(profileAvatar) => update({ profileAvatar })}
+              unlockedAvatars={current.unlockedAvatars}
             />
           </div>
           <p className="mt-5 text-xs font-medium text-muted-foreground">Colore principale</p>
