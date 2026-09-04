@@ -605,7 +605,7 @@ export function PatchEditor({
           <DialogHeader>
             <DialogTitle>Anteprima</DialogTitle>
           </DialogHeader>
-          <PatchPreviewCard patch={patch} displayName={settings.displayName} sharing />
+          <PatchPreviewCard patch={patch} displayName={settings.username} sharing />
         </DialogContent>
       </Dialog>
 
