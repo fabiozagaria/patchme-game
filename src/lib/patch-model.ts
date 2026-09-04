@@ -47,7 +47,9 @@ export const patchSchema = z.object({
 });
 
 export const settingsSchema = z.object({
+  username: z.string().default(""),
   displayName: z.string(),
+  usernameChanges: z.number().int().nonnegative().default(0),
   versionFormat: z.enum(["yearWeek", "sequential", "manual"]),
   theme: z.enum(["dark", "light", "system"]),
   accent: z.string(),
@@ -121,7 +123,9 @@ export const ACCENTS: readonly { id: string; label: string; value: string }[] = 
 ];
 
 export const DEFAULT_SETTINGS: AppSettings = {
+  username: "",
   displayName: "",
+  usernameChanges: 0,
   versionFormat: "yearWeek",
   theme: "dark",
   accent: "oklch(0.84 0.19 128)",
