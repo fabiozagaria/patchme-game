@@ -4,7 +4,7 @@ import type { SectionCategory } from "@/config/app-config";
 export type PatchStatus = "draft" | "published";
 export type VersionFormat = "yearWeek" | "sequential" | "manual";
 export type ThemeMode = "dark" | "light" | "system";
-export type ProfileAvatar = "hello" | "thinking" | "celebrate" | "bug";
+export type ProfileAvatar = "hello" | "thinking" | "celebrate" | "bug" | "superSaiyan";
 
 export const sectionCategorySchema = z.enum([
   "news",
@@ -45,7 +45,8 @@ export const settingsSchema = z.object({
   versionFormat: z.enum(["yearWeek", "sequential", "manual"]),
   theme: z.enum(["dark", "light", "system"]),
   accent: z.string(),
-  profileAvatar: z.enum(["hello", "thinking", "celebrate", "bug"]).default("hello"),
+  profileAvatar: z.enum(["hello", "thinking", "celebrate", "bug", "superSaiyan"]).default("hello"),
+  unlockedAvatars: z.array(z.enum(["superSaiyan"])).default([]),
   soundEffects: z.boolean().default(true),
   displayNameChanges: z.array(z.string()).default([]),
   onboarded: z.boolean(),
@@ -79,6 +80,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   theme: "dark",
   accent: "oklch(0.84 0.19 128)",
   profileAvatar: "hello",
+  unlockedAvatars: [],
   soundEffects: true,
   displayNameChanges: [],
   onboarded: false,
