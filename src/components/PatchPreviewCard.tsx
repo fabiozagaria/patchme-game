@@ -104,6 +104,7 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
     const clean = cleanPatch(patch);
     const style = TEMPLATE_STYLES[template];
     const size = EXPORT_SIZES[orientation];
+    const previewRatio = size.width / size.height;
     const equippedAvatar = cosmeticById(profile?.equippedAvatarId ?? null);
     const visibleSections = sharing
       ? clean.sections.filter((section) => section.shareVisible)
@@ -128,10 +129,13 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
           exporting
             ? { width: size.width, height: size.height }
             : sharing
-              ? { aspectRatio: `${size.width} / ${size.height}` }
+              ? {
+                  aspectRatio: `${size.width} / ${size.height}`,
+                  width: `min(100%, calc(min(54dvh, 34rem) * ${previewRatio}))`,
+                }
               : undefined
         }
-        className={`surface-card flex overflow-hidden ${sharing && !exporting ? `mx-auto w-full ${previewWidth}` : ""} ${compact ? "p-4" : "p-5"} ${orientation === "horizontal" ? "flex-row gap-5" : "flex-col"} ${style.card} ${profileFrameClass(profile?.equippedFrameId ?? null)} ${profileEffectClass(profile?.equippedEffectId ?? null)}`}
+        className={`surface-card flex min-h-0 max-w-full overflow-hidden ${sharing && !exporting ? `social-preview-card mx-auto ${previewWidth}` : ""} ${compact ? "p-4" : "p-5"} ${orientation === "horizontal" ? "flex-row gap-5" : "flex-col"} ${style.card} ${profileFrameClass(profile?.equippedFrameId ?? null)} ${profileEffectClass(profile?.equippedEffectId ?? null)}`}
       >
         <div
           className={`flex min-w-0 flex-1 flex-col ${orientation === "horizontal" ? "basis-2/3" : ""}`}
