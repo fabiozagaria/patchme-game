@@ -60,7 +60,7 @@ function ProgressPage() {
         backTo="/"
       />
       <main className="mx-auto max-w-3xl px-4 py-5">
-        <ProgressionCollection progression={progression} />
+        <ProgressionCollection progression={progression} hardcoreMode={settings.hardcoreMode} />
       </main>
     </div>
   );
