@@ -196,6 +196,8 @@ export function usePlayerProgression({
     progression,
     bits: persisted.bits,
     equippedProfileFrameId: persisted.equippedProfileFrameId,
+    equippedAvatarId: persisted.equippedAvatarId,
+    equippedProfileEffectId: persisted.equippedProfileEffectId,
     levelUp,
     streakCelebration,
     handleSecretTap,

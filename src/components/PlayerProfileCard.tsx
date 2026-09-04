@@ -12,7 +12,7 @@ import {
 import type { Patch, ProfileAvatar } from "@/lib/patch-model";
 import { usePlayerProgression } from "@/hooks/use-player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
-import { profileFrameClass } from "@/lib/patchy-shop";
+import { cosmeticById, profileEffectClass, profileFrameClass } from "@/lib/patchy-shop";
 
 interface PlayerProfileCardProps {
   displayName: string;
@@ -29,12 +29,21 @@ export function PlayerProfileCard({
   superSaiyanUnlocked,
   onUnlockSuperSaiyan,
 }: PlayerProfileCardProps) {
-  const { progression, bits, equippedProfileFrameId, levelUp, streakCelebration, handleSecretTap } =
-    usePlayerProgression({ patches, displayName, superSaiyanUnlocked, onUnlockSuperSaiyan });
+  const {
+    progression,
+    bits,
+    equippedProfileFrameId,
+    equippedAvatarId,
+    equippedProfileEffectId,
+    levelUp,
+    streakCelebration,
+    handleSecretTap,
+  } = usePlayerProgression({ patches, displayName, superSaiyanUnlocked, onUnlockSuperSaiyan });
+  const equippedAvatar = cosmeticById(equippedAvatarId);
 
   return (
     <section
-      className={`surface-card relative overflow-hidden p-4 ${profileFrameClass(equippedProfileFrameId)} ${levelUp ? "player-level-up" : ""}`}
+      className={`surface-card relative overflow-hidden p-4 ${profileFrameClass(equippedProfileFrameId)} ${profileEffectClass(equippedProfileEffectId)} ${levelUp ? "player-level-up" : ""}`}
       aria-labelledby="player-profile-title"
     >
       {levelUp ? (
@@ -51,7 +60,11 @@ export function PlayerProfileCard({
       ) : null}
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
-          <PatchyMascot className="size-20 object-contain" pose={avatar} decorative />
+          {equippedAvatar?.imageSrc ? (
+            <img src={equippedAvatar.imageSrc} alt="" className="size-20 object-contain" />
+          ) : (
+            <PatchyMascot className="size-20 object-contain" pose={avatar} decorative />
+          )}
           <span className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full border-2 border-background bg-brand text-xs font-black text-brand-foreground">
             {progression.level}
           </span>

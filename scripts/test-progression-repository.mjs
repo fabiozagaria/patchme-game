@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import {
   awardMission,
   EMPTY_PROGRESSION_STATE,
+  equipCosmetic,
   equipProfileFrame,
   LEGACY_PROGRESSION_KEYS,
   loadProgressionState,
   PROGRESSION_SCHEMA_VERSION,
   purchaseCosmetic,
+  resetEquippedCosmetics,
   saveProgressionState,
 } from "../src/lib/progression-repository.ts";
 
@@ -65,7 +67,26 @@ const unequipped = equipProfileFrame(equipped.state, null);
 assert.equal(unequipped.ok, true);
 assert.equal(unequipped.state.equippedProfileFrameId, null);
 
+assert.deepEqual(equipCosmetic(EMPTY_PROGRESSION_STATE, "avatar-undead", "avatar"), {
+  ok: false,
+  reason: "not-owned",
+});
+const avatarState = {
+  ...purchased.state,
+  ownedCosmeticIds: [...purchased.state.ownedCosmeticIds, "avatar-undead", "effect-embers"],
+};
+const avatarEquipped = equipCosmetic(avatarState, "avatar-undead", "avatar");
+assert.equal(avatarEquipped.ok, true);
+assert.equal(avatarEquipped.state.equippedAvatarId, "avatar-undead");
+const effectEquipped = equipCosmetic(avatarEquipped.state, "effect-embers", "effect");
+assert.equal(effectEquipped.ok, true);
+assert.equal(effectEquipped.state.equippedProfileEffectId, "effect-embers");
+const reset = resetEquippedCosmetics(effectEquipped.state);
+assert.equal(reset.equippedAvatarId, null);
+assert.equal(reset.equippedProfileFrameId, null);
+assert.equal(reset.equippedProfileEffectId, null);
+
 assert.equal(saveProgressionState(equipped.state, legacy), true);
 assert.deepEqual(loadProgressionState(new Map(), legacy), equipped.state);
 
-console.log("Repository progressione e shop: 25 controlli superati.");
+console.log("Repository progressione e shop: 32 controlli superati.");

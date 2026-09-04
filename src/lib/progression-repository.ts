@@ -18,6 +18,8 @@ export interface ProgressionState {
   bits: number;
   ownedCosmeticIds: string[];
   equippedProfileFrameId: string | null;
+  equippedAvatarId: string | null;
+  equippedProfileEffectId: string | null;
   highestStreak: number;
   lastXp: number | null;
 }
@@ -35,6 +37,8 @@ export const EMPTY_PROGRESSION_STATE: ProgressionState = {
   bits: 0,
   ownedCosmeticIds: [],
   equippedProfileFrameId: null,
+  equippedAvatarId: null,
+  equippedProfileEffectId: null,
   highestStreak: 0,
   lastXp: null,
 };
@@ -67,6 +71,16 @@ function parseCurrentState(raw: string | null): ProgressionState | null {
         typeof value.equippedProfileFrameId === "string" &&
         ownedCosmeticIds.includes(value.equippedProfileFrameId)
           ? value.equippedProfileFrameId
+          : null,
+      equippedAvatarId:
+        typeof value.equippedAvatarId === "string" &&
+        ownedCosmeticIds.includes(value.equippedAvatarId)
+          ? value.equippedAvatarId
+          : null,
+      equippedProfileEffectId:
+        typeof value.equippedProfileEffectId === "string" &&
+        ownedCosmeticIds.includes(value.equippedProfileEffectId)
+          ? value.equippedProfileEffectId
           : null,
       highestStreak: finiteNonNegative(value.highestStreak),
       lastXp: value.lastXp === null ? null : finiteNonNegative(value.lastXp),
@@ -210,4 +224,30 @@ export function equipProfileFrame(
     return { ok: false, reason: "not-owned" };
   }
   return { ok: true, state: { ...state, equippedProfileFrameId: cosmeticId } };
+}
+
+export type CosmeticSlot = "frame" | "avatar" | "effect";
+
+export function equipCosmetic(
+  state: ProgressionState,
+  cosmeticId: string,
+  slot: CosmeticSlot,
+): ShopTransactionResult {
+  if (!state.ownedCosmeticIds.includes(cosmeticId)) return { ok: false, reason: "not-owned" };
+  const field =
+    slot === "frame"
+      ? "equippedProfileFrameId"
+      : slot === "avatar"
+        ? "equippedAvatarId"
+        : "equippedProfileEffectId";
+  return { ok: true, state: { ...state, [field]: cosmeticId } };
+}
+
+export function resetEquippedCosmetics(state: ProgressionState): ProgressionState {
+  return {
+    ...state,
+    equippedProfileFrameId: null,
+    equippedAvatarId: null,
+    equippedProfileEffectId: null,
+  };
 }

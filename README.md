@@ -35,6 +35,8 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - missioni giornaliere e settimanali rinnovabili con ricompense permanenti;
 - venti titoli sarcastici e 66 easter egg dedicati ai videogiochi leggendari;
 - pagina Progressione separata dall'archivio delle patch;
+- Patchy Shop con Bit, inventario, avatar, cornici ed effetti estetici;
+- collezioni videoludiche e cosmetici vincolati ai trofei;
 - validazione minima di 3 caratteri per le voci pubblicate;
 - patch in stato bozza o pubblicata;
 - sezioni predefinite, personalizzabili e riordinabili;

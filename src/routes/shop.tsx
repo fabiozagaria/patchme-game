@@ -1,15 +1,21 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { Check, Coins, LockKeyhole, ShoppingBag, Sparkles } from "lucide-react";
+import { Check, Coins, LockKeyhole, RotateCcw, ShoppingBag, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
-import { SHOP_COSMETICS } from "@/lib/patchy-shop";
+import {
+  equippedCosmeticId,
+  SHOP_COLLECTIONS,
+  SHOP_COSMETICS,
+  type ShopCosmetic,
+} from "@/lib/patchy-shop";
 import {
   EMPTY_PROGRESSION_STATE,
-  equipProfileFrame,
+  equipCosmetic,
   loadProgressionState,
   purchaseCosmetic,
+  resetEquippedCosmetics,
   saveProgressionState,
   type ProgressionState,
 } from "@/lib/progression-repository";
@@ -25,6 +31,8 @@ export const Route = createFileRoute("/shop")({
   component: ShopPage,
 });
 
+const KIND_LABELS = { avatar: "Avatar", frame: "Cornice", effect: "Effetto" } as const;
+
 function ShopPage() {
   const { ready, settings } = useAppStore();
   const [progression, setProgression] = useState<ProgressionState>(EMPTY_PROGRESSION_STATE);
@@ -37,8 +45,15 @@ function ShopPage() {
     setProgression(next);
   };
 
-  const buy = (id: string, name: string, price: number) => {
-    const result = purchaseCosmetic(progression, id, price);
+  const buy = (item: ShopCosmetic) => {
+    if (
+      item.requiredMissionId &&
+      !progression.completedMissionIds.includes(item.requiredMissionId)
+    ) {
+      setMessage(`Prima completa il trofeo: ${item.requirementLabel}.`);
+      return;
+    }
+    const result = purchaseCosmetic(progression, item.id, item.price);
     if (!result.ok) {
       setMessage(
         result.reason === "insufficient-bits"
@@ -48,19 +63,24 @@ function ShopPage() {
       return;
     }
     commit(result.state);
-    setMessage(`${name} aggiunto all'inventario.`);
-    enqueueSuccessNotification(`${name} acquistato`, {
-      description: `-${price} Bit · Ora puoi equipaggiarlo`,
+    setMessage(`${item.name} aggiunto all'inventario.`);
+    enqueueSuccessNotification(`${item.name} acquistato`, {
+      description: `-${item.price} Bit · Ora puoi equipaggiarlo`,
       sound: "trophy",
     });
   };
 
-  const equip = (id: string | null, name: string) => {
-    const result = equipProfileFrame(progression, id);
+  const equip = (item: ShopCosmetic) => {
+    const result = equipCosmetic(progression, item.id, item.kind);
     if (!result.ok) return;
     commit(result.state);
-    setMessage(`${name} equipaggiato.`);
-    enqueueSuccessNotification(`${name} equipaggiato`, { sound: "xp" });
+    setMessage(`${item.name} equipaggiato.`);
+    enqueueSuccessNotification(`${item.name} equipaggiato`, { sound: "xp" });
+  };
+
+  const resetAppearance = () => {
+    commit(resetEquippedCosmetics(progression));
+    setMessage("Aspetto base ripristinato.");
   };
 
   if (!ready) return <div className="min-h-screen bg-background" />;
@@ -84,16 +104,19 @@ function ShopPage() {
             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-amber-400/15 text-amber-400">
               <ShoppingBag aria-hidden="true" />
             </span>
-            <div>
+            <div className="min-w-0 flex-1">
               <h2 id="shop-title" className="text-xl font-black uppercase text-foreground">
                 Negozio cosmetico
               </h2>
               <p className="text-sm text-muted-foreground">
-                Ottieni Bit completando missioni ed easter egg. Gli acquisti cambiano solo l'aspetto
-                e non danno vantaggi.
+                Avatar, cornici ed effetti coordinati. I cosmetici non danno vantaggi; alcuni
+                richiedono un trofeo prima dell'acquisto.
               </p>
             </div>
           </div>
+          <Button variant="outline" size="sm" className="mt-3" onClick={resetAppearance}>
+            <RotateCcw className="mr-2 size-4" /> Ripristina aspetto base
+          </Button>
           {message ? (
             <p
               role="status"
@@ -104,80 +127,101 @@ function ShopPage() {
           ) : null}
         </section>
 
-        <section className="mt-4 grid gap-3 sm:grid-cols-2" aria-label="Cornici disponibili">
-          <article
-            className={`surface-card p-4 ${progression.equippedProfileFrameId === null ? "ring-2 ring-brand" : ""}`}
-          >
-            <p className="text-xs font-black uppercase text-muted-foreground">Di serie</p>
-            <h3 className="mt-1 text-lg font-black text-foreground">Telaio originale</h3>
-            <p className="mt-1 min-h-10 text-sm text-muted-foreground">
-              Sobrio, gratuito e privo di microtransazioni.
-            </p>
-            <Button
-              className="mt-4 w-full"
-              variant={progression.equippedProfileFrameId === null ? "secondary" : "outline"}
-              disabled={progression.equippedProfileFrameId === null}
-              onClick={() => equip(null, "Telaio originale")}
-            >
-              {progression.equippedProfileFrameId === null ? (
-                <>
-                  <Check className="mr-2 size-4" /> Equipaggiato
-                </>
-              ) : (
-                "Equipaggia"
-              )}
-            </Button>
-          </article>
-
-          {SHOP_COSMETICS.map((item) => {
-            const owned = progression.ownedCosmeticIds.includes(item.id);
-            const equipped = progression.equippedProfileFrameId === item.id;
+        <div className="mt-6 space-y-7">
+          {SHOP_COLLECTIONS.map((collection) => {
+            const items = SHOP_COSMETICS.filter((item) => item.collection === collection);
             return (
-              <article
-                key={item.id}
-                className={`surface-card p-4 ${item.previewClass} ${equipped ? "ring-2 ring-brand" : ""}`}
+              <section
+                key={collection}
+                aria-labelledby={`collection-${collection.replaceAll(" ", "-")}`}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-black uppercase text-brand">{item.rarity}</p>
-                  <span className="flex items-center gap-1 text-sm font-black text-amber-400">
-                    <Coins className="size-4" /> {item.price}
-                  </span>
+                <h2
+                  id={`collection-${collection.replaceAll(" ", "-")}`}
+                  className="display text-xl font-black uppercase text-foreground"
+                >
+                  Collezione {collection}
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  Combina avatar, cornice ed effetto come preferisci.
+                </p>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {items.map((item) => {
+                    const owned = progression.ownedCosmeticIds.includes(item.id);
+                    const equipped = equippedCosmeticId(progression, item.kind) === item.id;
+                    const requirementMet =
+                      !item.requiredMissionId ||
+                      progression.completedMissionIds.includes(item.requiredMissionId);
+                    const affordable = progression.bits >= item.price;
+                    return (
+                      <article
+                        key={item.id}
+                        className={`surface-card overflow-hidden p-4 ${item.kind !== "avatar" ? (item.previewClass ?? "") : ""} ${equipped ? "ring-2 ring-brand" : ""}`}
+                      >
+                        {item.imageSrc ? (
+                          <div className="mb-3 flex h-40 items-center justify-center rounded-xl bg-surface-2">
+                            <img
+                              src={item.imageSrc}
+                              alt={item.name}
+                              className="h-40 w-full object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                        ) : null}
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-black uppercase text-brand">
+                            {KIND_LABELS[item.kind]} · {item.rarity}
+                          </p>
+                          <span className="flex items-center gap-1 text-sm font-black text-amber-400">
+                            <Coins className="size-4" aria-hidden="true" /> {item.price}
+                          </span>
+                        </div>
+                        <h3 className="mt-1 text-lg font-black text-foreground">{item.name}</h3>
+                        <p className="mt-1 min-h-10 text-sm text-muted-foreground">
+                          {item.description}
+                        </p>
+                        {!requirementMet ? (
+                          <p className="mt-2 flex items-start gap-1.5 text-xs font-bold text-amber-400">
+                            <LockKeyhole className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />{" "}
+                            Trofeo richiesto: {item.requirementLabel}
+                          </p>
+                        ) : null}
+                        {owned ? (
+                          <Button
+                            className="mt-4 w-full"
+                            variant={equipped ? "secondary" : "outline"}
+                            disabled={equipped}
+                            onClick={() => equip(item)}
+                          >
+                            {equipped ? (
+                              <>
+                                <Check className="mr-2 size-4" /> Equipaggiato
+                              </>
+                            ) : (
+                              "Equipaggia"
+                            )}
+                          </Button>
+                        ) : (
+                          <Button
+                            className="mt-4 w-full"
+                            disabled={!requirementMet || !affordable}
+                            onClick={() => buy(item)}
+                          >
+                            {!requirementMet || !affordable ? (
+                              <LockKeyhole className="mr-2 size-4" />
+                            ) : (
+                              <Sparkles className="mr-2 size-4" />
+                            )}{" "}
+                            Compra
+                          </Button>
+                        )}
+                      </article>
+                    );
+                  })}
                 </div>
-                <h3 className="mt-1 text-lg font-black text-foreground">{item.name}</h3>
-                <p className="mt-1 min-h-10 text-sm text-muted-foreground">{item.description}</p>
-                {owned ? (
-                  <Button
-                    className="mt-4 w-full"
-                    variant={equipped ? "secondary" : "outline"}
-                    disabled={equipped}
-                    onClick={() => equip(item.id, item.name)}
-                  >
-                    {equipped ? (
-                      <>
-                        <Check className="mr-2 size-4" /> Equipaggiato
-                      </>
-                    ) : (
-                      "Equipaggia"
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    className="mt-4 w-full"
-                    disabled={progression.bits < item.price}
-                    onClick={() => buy(item.id, item.name, item.price)}
-                  >
-                    {progression.bits < item.price ? (
-                      <LockKeyhole className="mr-2 size-4" />
-                    ) : (
-                      <Sparkles className="mr-2 size-4" />
-                    )}{" "}
-                    Compra
-                  </Button>
-                )}
-              </article>
+              </section>
             );
           })}
-        </section>
+        </div>
       </main>
     </div>
   );
