@@ -1,8 +1,18 @@
 import { Link } from "@tanstack/react-router";
-import { FileCheck2, Flame, Gamepad2, ListChecks, Sparkles, Trophy } from "lucide-react";
+import {
+  Coins,
+  FileCheck2,
+  Flame,
+  Gamepad2,
+  ListChecks,
+  ShoppingBag,
+  Sparkles,
+  Trophy,
+} from "lucide-react";
 import type { Patch, ProfileAvatar } from "@/lib/patch-model";
 import { usePlayerProgression } from "@/hooks/use-player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
+import { profileFrameClass } from "@/lib/patchy-shop";
 
 interface PlayerProfileCardProps {
   displayName: string;
@@ -19,16 +29,12 @@ export function PlayerProfileCard({
   superSaiyanUnlocked,
   onUnlockSuperSaiyan,
 }: PlayerProfileCardProps) {
-  const { progression, levelUp, streakCelebration, handleSecretTap } = usePlayerProgression({
-    patches,
-    displayName,
-    superSaiyanUnlocked,
-    onUnlockSuperSaiyan,
-  });
+  const { progression, bits, equippedProfileFrameId, levelUp, streakCelebration, handleSecretTap } =
+    usePlayerProgression({ patches, displayName, superSaiyanUnlocked, onUnlockSuperSaiyan });
 
   return (
     <section
-      className={`surface-card relative overflow-hidden p-4 ${levelUp ? "player-level-up" : ""}`}
+      className={`surface-card relative overflow-hidden p-4 ${profileFrameClass(equippedProfileFrameId)} ${levelUp ? "player-level-up" : ""}`}
       aria-labelledby="player-profile-title"
     >
       {levelUp ? (
@@ -138,6 +144,22 @@ export function PlayerProfileCard({
         <span className="shrink-0 text-xs font-black text-brand">
           {progression.missions.filter((mission) => mission.completed).length}/
           {progression.missions.length}
+        </span>
+      </Link>
+
+      <Link
+        to="/shop"
+        className="tap-safe mt-3 flex items-center gap-3 rounded-xl border border-amber-400/35 bg-amber-400/10 px-3 py-2.5 text-foreground transition-colors hover:bg-amber-400/15"
+      >
+        <ShoppingBag className="size-5 shrink-0 text-amber-400" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-black">Patchy Shop</span>
+          <span className="block text-xs text-muted-foreground">
+            Spendi i Bit in cosmetici inutilmente belli
+          </span>
+        </span>
+        <span className="flex shrink-0 items-center gap-1 text-sm font-black text-amber-400">
+          <Coins className="size-4" aria-hidden="true" /> {bits}
         </span>
       </Link>
 
