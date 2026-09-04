@@ -24,7 +24,7 @@ const POSES: Record<PatchyPose, { src: string; alt: string }> = {
     alt: "Patchy ha trovato un bug",
   },
   superSaiyan: {
-    src: "/assets/patchy-super-saiyan.png",
+    src: "/assets/patchy-super-saiyan.webp",
     alt: "Patchy nella sua forma dorata definitiva",
   },
 };
