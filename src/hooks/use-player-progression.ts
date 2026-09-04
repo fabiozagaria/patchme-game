@@ -109,9 +109,13 @@ export function usePlayerProgression({
         duration: 5000,
       },
     );
+  }, [persisted.highestStreak, persisted.lastXp, progression.weeklyStreak, ready]);
+
+  useEffect(() => {
+    if (!streakCelebration) return;
     const timer = window.setTimeout(() => setStreakCelebration(false), 3600);
     return () => window.clearTimeout(timer);
-  }, [persisted.highestStreak, persisted.lastXp, progression.weeklyStreak, ready]);
+  }, [streakCelebration]);
 
   useEffect(() => {
     if (!ready || persisted.lastXp === progression.totalXp) return;
@@ -134,9 +138,13 @@ export function usePlayerProgression({
       sound: "level-up",
       duration: 5000,
     });
+  }, [persisted.lastXp, progression, ready]);
+
+  useEffect(() => {
+    if (!levelUp) return;
     const timer = window.setTimeout(() => setLevelUp(false), 3800);
     return () => window.clearTimeout(timer);
-  }, [persisted.lastXp, progression, ready]);
+  }, [levelUp]);
 
   const handleSecretTap = () => {
     if (!ready || superSaiyanUnlocked || secretClaimed.current) return;
