@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import {
   awardMission,
+  claimDailyAccessReward,
+  DAILY_ACCESS_REWARD,
   EMPTY_PROGRESSION_STATE,
   equipCosmetic,
   equipProfileFrame,
@@ -34,6 +36,23 @@ assert.equal(migrated.bits, 44);
 assert.equal(migrated.welcomeBitsClaimed, true);
 assert.equal(migrated.highestStreak, 3);
 assert.equal(migrated.lastXp, 150);
+assert.equal(migrated.lastDailyRewardDate, null);
+
+const firstDaily = claimDailyAccessReward(migrated, new Date(2026, 8, 4, 9));
+assert.equal(firstDaily.claimed, true);
+assert.equal(firstDaily.state.missionXp, migrated.missionXp + DAILY_ACCESS_REWARD.xp);
+assert.equal(firstDaily.state.bits, migrated.bits + DAILY_ACCESS_REWARD.bits);
+assert.equal(firstDaily.state.lastDailyRewardDate, "2026-09-04");
+assert.equal(
+  claimDailyAccessReward(firstDaily.state, new Date(2026, 8, 4, 23, 59)).claimed,
+  false,
+  "Il bonus non deve essere duplicato nello stesso giorno",
+);
+assert.equal(
+  claimDailyAccessReward(firstDaily.state, new Date(2026, 8, 5, 0, 1)).claimed,
+  true,
+  "Il bonus deve tornare disponibile il giorno successivo",
+);
 
 const retroactive = awardMission(migrated, "first", 50, 10);
 assert.equal(retroactive.missionXp, 50, "Gli XP già riscossi non vanno duplicati");
@@ -106,4 +125,4 @@ assert.equal(
   "I 44 Bit iniziali devono essere assegnati una volta",
 );
 
-console.log("Repository progressione e shop: 38 controlli superati.");
+console.log("Repository progressione, shop e bonus giornaliero: 45 controlli superati.");
