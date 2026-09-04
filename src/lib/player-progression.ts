@@ -17,6 +17,7 @@ export interface PlayerMission {
   title: string;
   description: string;
   rewardXp: number;
+  rewardBits: number;
   completed: boolean;
   secret?: boolean;
   hiddenUntilCompleted?: boolean;
@@ -527,6 +528,7 @@ function missionProgress(
     title,
     description,
     rewardXp,
+    rewardBits: Math.max(5, Math.floor(rewardXp / (kind === "secret" ? 10 : 15))),
     completed: condition || completed.has(id),
     secret: kind === "secret",
     hiddenUntilCompleted,

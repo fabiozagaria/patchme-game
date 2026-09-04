@@ -16,7 +16,9 @@ export function ProfileAppearancePreview({
           Anteprima profilo
         </p>
         <p className="truncate font-bold text-foreground">@{username.trim() || "username"}</p>
-        <p className="text-xs text-muted-foreground">Tema, colore e avatar cambiano subito.</p>
+        <p className="text-xs text-muted-foreground">
+          Tema e colore cambiano subito. Gestisci gli avatar dal Profilo.
+        </p>
       </div>
     </div>
   );

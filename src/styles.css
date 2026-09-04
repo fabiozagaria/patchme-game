@@ -317,6 +317,73 @@
   animation: streak-flame 460ms ease-in-out 5;
 }
 
+.profile-frame-arcade {
+  box-shadow:
+    inset 0 0 0 2px #22d3ee,
+    0 0 20px #d946ef55;
+}
+.profile-frame-mushroom {
+  border-color: #ef4444;
+  box-shadow: inset 0 -5px 0 #22c55e;
+}
+.profile-frame-bonfire {
+  border-color: #fb923c;
+  box-shadow: 0 0 24px #f9731645;
+}
+.profile-frame-wasteland {
+  border-color: #a3e635;
+  box-shadow: inset 0 0 22px #84cc1625;
+}
+.profile-frame-red-ring {
+  border-color: #dc2626;
+  box-shadow:
+    0 0 30px #dc262655,
+    inset 0 0 15px #7f1d1d55;
+}
+.profile-frame-golden-warrior {
+  border-color: #facc15;
+  box-shadow:
+    0 0 34px #facc1566,
+    inset 0 0 20px #f59e0b33;
+}
+
+.profile-frame-survival {
+  border-color: #0f766e;
+  box-shadow:
+    inset 0 0 0 2px #134e4a,
+    0 0 22px #dc262644;
+}
+
+.profile-effect-golden-warrior {
+  animation: cosmetic-golden-pulse 1.8s ease-in-out infinite;
+}
+.profile-effect-embers {
+  animation: cosmetic-embers 2.4s ease-in-out infinite;
+}
+.profile-effect-danger {
+  animation: cosmetic-danger 1.25s steps(2, end) infinite;
+}
+
+@keyframes cosmetic-golden-pulse {
+  50% {
+    filter: drop-shadow(0 0 12px #facc15);
+  }
+}
+@keyframes cosmetic-embers {
+  50% {
+    box-shadow:
+      0 0 26px #f9731655,
+      inset 0 -10px 20px #7c2d1233;
+  }
+}
+@keyframes cosmetic-danger {
+  50% {
+    box-shadow:
+      0 0 26px #dc262666,
+      inset 0 0 18px #06b6d433;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .player-level-up,
   .level-up-banner,
@@ -329,5 +396,11 @@
   .streak-flame {
     animation-duration: 1ms;
     animation-iteration-count: 1;
+  }
+
+  .profile-effect-golden-warrior,
+  .profile-effect-embers,
+  .profile-effect-danger {
+    animation: none;
   }
 }

@@ -16,6 +16,7 @@ import { WeeklyPromptCard } from "@/components/WeeklyPromptCard";
 import { PlayerProfileCard } from "@/components/PlayerProfileCard";
 import type { WeeklyPromptSelection } from "@/lib/weekly-prompt";
 import { Button } from "@/components/ui/button";
+import { hardcoreCopy, hardcoreGreeting } from "@/lib/hardcore-copy";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -88,9 +89,15 @@ function ArchivePage() {
             {APP_CONFIG.name}
           </p>
           <h1 className="mt-1 truncate text-2xl font-extrabold uppercase text-foreground">
-            Ciao {settings.displayName || "tu"}
+            {hardcoreGreeting(settings.hardcoreMode, settings.displayName)}
           </h1>
-          <p className="text-sm text-muted-foreground">{APP_CONFIG.tagline}</p>
+          <p className="text-sm text-muted-foreground">
+            {hardcoreCopy(
+              settings.hardcoreMode,
+              APP_CONFIG.tagline,
+              "Trasforma la tua settimana di merda in patch notes. Tanto ormai è andata.",
+            )}
+          </p>
         </div>
         <Link
           to="/settings"
@@ -113,6 +120,7 @@ function ArchivePage() {
           patches={patches}
           avatar={settings.profileAvatar}
           superSaiyanUnlocked={settings.unlockedAvatars.includes("superSaiyan")}
+          hardcoreMode={settings.hardcoreMode}
           onUnlockSuperSaiyan={() =>
             saveSettings({
               ...settings,
@@ -122,14 +130,24 @@ function ArchivePage() {
           }
         />
         <div className="mt-4">
-          <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
+          <WeeklyPromptCard onCreatePatch={startWeeklyPatch} hardcoreMode={settings.hardcoreMode} />
         </div>
         {patches.length === 0 ? (
           <div className="surface-card mt-4 p-8 text-center">
             <PatchyMascot className="mx-auto mb-2 size-40 object-contain" pose="thinking" />
-            <h2 className="text-lg font-semibold text-foreground">{TEXTS.emptyArchiveTitle}</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                TEXTS.emptyArchiveTitle,
+                "Archivio vuoto. Che sorpresa.",
+              )}
+            </h2>
             <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
-              {TEXTS.emptyArchiveBody}
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                TEXTS.emptyArchiveBody,
+                "Non hai pubblicato un cazzo. Crea almeno una patch e prova a renderti utile.",
+              )}
             </p>
           </div>
         ) : (
@@ -157,14 +175,21 @@ function ArchivePage() {
                             : "border border-border text-muted-foreground"
                         }`}
                       >
-                        {patch.status === "published" ? "Pubblicata" : "Bozza"}
+                        {patch.status === "published"
+                          ? hardcoreCopy(
+                              settings.hardcoreMode,
+                              "Pubblicata",
+                              "Pubblicata, miracolosamente",
+                            )
+                          : hardcoreCopy(settings.hardcoreMode, "Bozza", "Bozza mezza morta")}
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {patch.version} · {formatDate(patch.date)}
                     </p>
                     <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                      {summary || "Nessun contenuto"}
+                      {summary ||
+                        hardcoreCopy(settings.hardcoreMode, "Nessun contenuto", "Il vuoto cosmico")}
                     </p>
                   </Link>
                   <div className="mt-3 flex flex-wrap justify-end gap-1">
@@ -181,7 +206,8 @@ function ArchivePage() {
                           })
                         }
                       >
-                        <Share2 className="mr-1 size-4" /> Condividi
+                        <Share2 className="mr-1 size-4" />{" "}
+                        {hardcoreCopy(settings.hardcoreMode, "Condividi", "Spargi il danno")}
                       </Button>
                     ) : null}
                     <Button
@@ -190,7 +216,8 @@ function ArchivePage() {
                       className="tap-safe"
                       onClick={() => navigate({ to: "/patch/$id/edit", params: { id: patch.id } })}
                     >
-                      <Pencil className="mr-1 size-4" /> Modifica
+                      <Pencil className="mr-1 size-4" />{" "}
+                      {hardcoreCopy(settings.hardcoreMode, "Modifica", "Rattoppa")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -198,7 +225,8 @@ function ArchivePage() {
                       className="tap-safe text-muted-foreground hover:text-destructive"
                       onClick={() => setPendingDelete(patch)}
                     >
-                      <Trash2 className="mr-1 size-4" /> Elimina
+                      <Trash2 className="mr-1 size-4" />{" "}
+                      {hardcoreCopy(settings.hardcoreMode, "Elimina", "Falla sparire")}
                     </Button>
                   </div>
                 </li>
@@ -214,7 +242,8 @@ function ArchivePage() {
             onClick={() => setCreateChoice(true)}
             className="tap-safe h-12 w-full bg-brand text-base font-bold text-brand-foreground shadow-lg hover:bg-brand/90"
           >
-            <Plus className="mr-1 size-5" /> Nuova patch
+            <Plus className="mr-1 size-5" />{" "}
+            {hardcoreCopy(settings.hardcoreMode, "Nuova patch", "Crea 'sta cazzo di patch")}
           </Button>
         </div>
       </div>
@@ -225,11 +254,25 @@ function ArchivePage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Eliminare “{pendingDelete?.title}”?</AlertDialogTitle>
-            <AlertDialogDescription>{TEXTS.deleteConfirm}</AlertDialogDescription>
+            <AlertDialogTitle>
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                `Eliminare “${pendingDelete?.title}”?`,
+                `Buttiamo nel cesso “${pendingDelete?.title}”?`,
+              )}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                TEXTS.deleteConfirm,
+                "Poi non venire a piangere: questa roba sparisce davvero.",
+              )}
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annulla</AlertDialogCancel>
+            <AlertDialogCancel>
+              {hardcoreCopy(settings.hardcoreMode, "Annulla", "Mi sono cagato sotto")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (pendingDelete) {
@@ -242,7 +285,7 @@ function ArchivePage() {
                 setPendingDelete(null);
               }}
             >
-              Elimina
+              {hardcoreCopy(settings.hardcoreMode, "Elimina", "Elimina davvero")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -251,9 +294,19 @@ function ArchivePage() {
       <AlertDialog open={createChoice} onOpenChange={setCreateChoice}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Come vuoi creare la patch?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                "Come vuoi creare la patch?",
+                "Quanto aiuto ti serve per combinare qualcosa?",
+              )}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Puoi rispondere a cinque domande oppure partire dall'editor vuoto.
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                "Puoi rispondere a cinque domande oppure partire dall'editor vuoto.",
+                "Cinque domande per chi ha il cervello in buffering, oppure editor vuoto per gli eroi.",
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="grid gap-2">
@@ -264,14 +317,14 @@ function ArchivePage() {
               }}
               className="tap-safe bg-brand text-brand-foreground"
             >
-              Creazione guidata
+              {hardcoreCopy(settings.hardcoreMode, "Creazione guidata", "Guidami, sono perso")}
             </Button>
             <Button
               variant="outline"
               onClick={() => navigate({ to: "/patch/new" })}
               className="tap-safe"
             >
-              Crea liberamente
+              {hardcoreCopy(settings.hardcoreMode, "Crea liberamente", "Lasciami fare danni")}
             </Button>
           </div>
         </AlertDialogContent>

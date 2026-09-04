@@ -1,8 +1,20 @@
 import { Link } from "@tanstack/react-router";
-import { FileCheck2, Flame, Gamepad2, ListChecks, Sparkles, Trophy } from "lucide-react";
+import {
+  Coins,
+  FileCheck2,
+  Flame,
+  Gamepad2,
+  ListChecks,
+  Palette,
+  ShoppingBag,
+  Sparkles,
+  Trophy,
+} from "lucide-react";
 import type { Patch, ProfileAvatar } from "@/lib/patch-model";
 import { usePlayerProgression } from "@/hooks/use-player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
+import { cosmeticById, profileEffectClass, profileFrameClass } from "@/lib/patchy-shop";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 interface PlayerProfileCardProps {
   displayName: string;
@@ -10,6 +22,7 @@ interface PlayerProfileCardProps {
   avatar: ProfileAvatar;
   superSaiyanUnlocked: boolean;
   onUnlockSuperSaiyan: () => boolean;
+  hardcoreMode?: boolean;
 }
 
 export function PlayerProfileCard({
@@ -18,17 +31,23 @@ export function PlayerProfileCard({
   avatar,
   superSaiyanUnlocked,
   onUnlockSuperSaiyan,
+  hardcoreMode = false,
 }: PlayerProfileCardProps) {
-  const { progression, levelUp, streakCelebration, handleSecretTap } = usePlayerProgression({
-    patches,
-    displayName,
-    superSaiyanUnlocked,
-    onUnlockSuperSaiyan,
-  });
+  const {
+    progression,
+    bits,
+    equippedProfileFrameId,
+    equippedAvatarId,
+    equippedProfileEffectId,
+    levelUp,
+    streakCelebration,
+    handleSecretTap,
+  } = usePlayerProgression({ patches, displayName, superSaiyanUnlocked, onUnlockSuperSaiyan });
+  const equippedAvatar = cosmeticById(equippedAvatarId);
 
   return (
     <section
-      className={`surface-card relative overflow-hidden p-4 ${levelUp ? "player-level-up" : ""}`}
+      className={`surface-card relative overflow-hidden p-4 ${profileFrameClass(equippedProfileFrameId)} ${profileEffectClass(equippedProfileEffectId)} ${levelUp ? "player-level-up" : ""}`}
       aria-labelledby="player-profile-title"
     >
       {levelUp ? (
@@ -45,13 +64,19 @@ export function PlayerProfileCard({
       ) : null}
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
-          <PatchyMascot className="size-20 object-contain" pose={avatar} decorative />
+          {equippedAvatar?.imageSrc ? (
+            <img src={equippedAvatar.imageSrc} alt="" className="size-20 object-contain" />
+          ) : (
+            <PatchyMascot className="size-20 object-contain" pose={avatar} decorative />
+          )}
           <span className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full border-2 border-background bg-brand text-xs font-black text-brand-foreground">
             {progression.level}
           </span>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold uppercase tracking-wider text-brand">Profilo giocatore</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">
+            {hardcoreCopy(hardcoreMode, "Profilo giocatore", "Scheda del disagiato")}
+          </p>
           <h2 id="player-profile-title" className="truncate text-xl font-extrabold text-foreground">
             {displayName || "Giocatore"} · Livello {progression.level}
           </h2>
@@ -97,7 +122,7 @@ export function PlayerProfileCard({
         <div className="rounded-lg border border-border bg-surface-2 p-2">
           <FileCheck2 className="mx-auto size-4 text-brand" aria-hidden="true" />
           <dt className="mt-1 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-            Pubblicate
+            {hardcoreCopy(hardcoreMode, "Pubblicate", "Danni pubblicati")}
           </dt>
           <dd className="text-lg font-black text-foreground">{progression.publishedPatches}</dd>
         </div>
@@ -111,28 +136,57 @@ export function PlayerProfileCard({
             aria-hidden="true"
           />
           <dt className="mt-1 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-            Serie
+            {hardcoreCopy(hardcoreMode, "Serie", "Ossessione")}
           </dt>
           <dd className="text-lg font-black text-foreground">{progression.weeklyStreak}</dd>
         </div>
         <div className="rounded-lg border border-border bg-surface-2 p-2">
           <ListChecks className="mx-auto size-4 text-brand" aria-hidden="true" />
           <dt className="mt-1 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-            Voci
+            {hardcoreCopy(hardcoreMode, "Voci", "Stronzate scritte")}
           </dt>
           <dd className="text-lg font-black text-foreground">{progression.totalItems}</dd>
         </div>
       </dl>
 
       <Link
-        to="/progress"
+        to="/profile"
         className="tap-safe mt-4 flex items-center gap-3 rounded-xl border border-brand/35 bg-brand/10 px-3 py-2.5 text-foreground transition-colors hover:bg-brand/15"
+      >
+        <Palette className="size-5 shrink-0 text-brand" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-black">
+            {hardcoreCopy(hardcoreMode, "Personalizza profilo", "Rifatti la faccia")}
+          </span>
+          <span className="block text-xs text-muted-foreground">
+            {hardcoreCopy(
+              hardcoreMode,
+              "Scegli avatar, cornice, effetto e futuri sfondi",
+              "Avatar, cornici e altra roba inutile ma figa",
+            )}
+          </span>
+        </span>
+      </Link>
+
+      <Link
+        to="/progress"
+        className="tap-safe mt-3 flex items-center gap-3 rounded-xl border border-brand/35 bg-brand/10 px-3 py-2.5 text-foreground transition-colors hover:bg-brand/15"
       >
         <Gamepad2 className="size-5 shrink-0 text-brand" aria-hidden="true" />
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-black">Titoli, missioni e trofei</span>
+          <span className="block text-sm font-black">
+            {hardcoreCopy(
+              hardcoreMode,
+              "Titoli, missioni e trofei",
+              "Missioni per chi non ha un cazzo da fare",
+            )}
+          </span>
           <span className="block text-xs text-muted-foreground">
-            Apri la raccolta senza perdere di vista le patch
+            {hardcoreCopy(
+              hardcoreMode,
+              "Apri la raccolta senza perdere di vista le patch",
+              "Controlla quanto tempo hai già sprecato",
+            )}
           </span>
         </span>
         <span className="shrink-0 text-xs font-black text-brand">
@@ -141,9 +195,35 @@ export function PlayerProfileCard({
         </span>
       </Link>
 
+      <Link
+        to="/shop"
+        className="tap-safe mt-3 flex items-center gap-3 rounded-xl border border-amber-400/35 bg-amber-400/10 px-3 py-2.5 text-foreground transition-colors hover:bg-amber-400/15"
+      >
+        <ShoppingBag className="size-5 shrink-0 text-amber-400" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-black">
+            {hardcoreCopy(hardcoreMode, "Patchy Shop", "Emporio delle minchiate")}
+          </span>
+          <span className="block text-xs text-muted-foreground">
+            {hardcoreCopy(
+              hardcoreMode,
+              "Spendi i Bit in cosmetici inutilmente belli",
+              "Brucia Bit per sembrare meno anonimo",
+            )}
+          </span>
+        </span>
+        <span className="flex shrink-0 items-center gap-1 text-sm font-black text-amber-400">
+          <Coins className="size-4" aria-hidden="true" /> {bits}
+        </span>
+      </Link>
+
       {progression.publishedPatches === 0 ? (
         <p className="mt-3 text-center text-xs text-muted-foreground">
-          Pubblica la prima patch per guadagnare XP e iniziare la tua serie.
+          {hardcoreCopy(
+            hardcoreMode,
+            "Pubblica la prima patch per guadagnare XP e iniziare la tua serie.",
+            "Pubblica qualcosa, scansafatiche: gli XP non si materializzano da soli.",
+          )}
         </p>
       ) : null}
     </section>

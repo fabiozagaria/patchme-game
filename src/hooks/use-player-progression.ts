@@ -51,6 +51,7 @@ export function usePlayerProgression({
     [progression.missions],
   );
   const completedMissionKey = completedMissionIds.join(",");
+  const claimedBitRewardKey = persisted.claimedBitRewardMissionIds.join(",");
 
   const updatePersisted = (updater: (current: ProgressionState) => ProgressionState) => {
     setPersisted((current) => {
@@ -69,25 +70,45 @@ export function usePlayerProgression({
   useEffect(() => {
     if (!ready) return;
     const saved = new Set(persisted.completedMissionIds);
+    const bitRewardsClaimed = new Set(persisted.claimedBitRewardMissionIds);
     const newlyCompleted = progression.missions.filter(
       (mission) => mission.completed && !saved.has(mission.id),
     );
-    if (newlyCompleted.length === 0) return;
+    const missingBitRewards = progression.missions.filter(
+      (mission) => mission.completed && !bitRewardsClaimed.has(mission.id),
+    );
+    if (newlyCompleted.length === 0 && missingBitRewards.length === 0) return;
 
     updatePersisted((current) =>
-      newlyCompleted.reduce(
-        (next, mission) => awardMission(next, mission.id, mission.rewardXp),
+      missingBitRewards.reduce(
+        (next, mission) => awardMission(next, mission.id, mission.rewardXp, mission.rewardBits),
         current,
       ),
     );
     newlyCompleted.forEach((mission) =>
       enqueueSuccessNotification(`Trofeo sbloccato: ${mission.title}`, {
-        description: `Missione completata · +${mission.rewardXp} XP`,
+        description: `Missione completata · +${mission.rewardXp} XP · +${mission.rewardBits} Bit`,
         sound: "trophy",
         duration: 5000,
       }),
     );
-  }, [completedMissionKey, persisted.completedMissionIds, progression.missions, ready]);
+    const retroactiveBits = missingBitRewards
+      .filter((mission) => saved.has(mission.id))
+      .reduce((total, mission) => total + mission.rewardBits, 0);
+    if (retroactiveBits > 0) {
+      enqueueSuccessNotification(`+${retroactiveBits} Bit retroattivi`, {
+        description: "Ricompense recuperate dalle missioni che avevi già completato.",
+        sound: "xp",
+      });
+    }
+  }, [
+    claimedBitRewardKey,
+    completedMissionKey,
+    persisted.completedMissionIds,
+    persisted.claimedBitRewardMissionIds,
+    progression.missions,
+    ready,
+  ]);
 
   useEffect(() => {
     if (!ready || progression.weeklyStreak <= persisted.highestStreak) return;
@@ -157,7 +178,12 @@ export function usePlayerProgression({
     }
 
     updatePersisted((current) =>
-      awardMission(current, SUPER_SAIYAN_MISSION.id, SUPER_SAIYAN_MISSION.rewardXp),
+      awardMission(
+        current,
+        SUPER_SAIYAN_MISSION.id,
+        SUPER_SAIYAN_MISSION.rewardXp,
+        Math.floor(SUPER_SAIYAN_MISSION.rewardXp / 10),
+      ),
     );
     enqueueSuccessNotification("FORMA DORATA SBLOCCATA!", {
       description: `Patchy ha superato il limite · +${SUPER_SAIYAN_MISSION.rewardXp} XP`,
@@ -166,5 +192,14 @@ export function usePlayerProgression({
     });
   };
 
-  return { progression, levelUp, streakCelebration, handleSecretTap };
+  return {
+    progression,
+    bits: persisted.bits,
+    equippedProfileFrameId: persisted.equippedProfileFrameId,
+    equippedAvatarId: persisted.equippedAvatarId,
+    equippedProfileEffectId: persisted.equippedProfileEffectId,
+    levelUp,
+    streakCelebration,
+    handleSecretTap,
+  };
 }

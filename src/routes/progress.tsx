@@ -9,6 +9,7 @@ import {
   type ProgressionState,
 } from "@/lib/progression-repository";
 import { useAppStore } from "@/state/app-store";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -49,7 +50,15 @@ function ProgressPage() {
 
   return (
     <div className="min-h-screen bg-background pb-12">
-      <AppHeader title="Progressione" subtitle={`Livello ${progression.level}`} backTo="/" />
+      <AppHeader
+        title={hardcoreCopy(settings.hardcoreMode, "Progressione", "Quanto tempo hai buttato")}
+        subtitle={hardcoreCopy(
+          settings.hardcoreMode,
+          `Livello ${progression.level}`,
+          `Livello ${progression.level}, fenomeno`,
+        )}
+        backTo="/"
+      />
       <main className="mx-auto max-w-3xl px-4 py-5">
         <ProgressionCollection progression={progression} />
       </main>

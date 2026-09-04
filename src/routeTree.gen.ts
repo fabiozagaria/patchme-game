@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as PatchNewRouteImport } from './routes/patch.new'
 import { Route as PatchIdIndexRouteImport } from './routes/patch.$id.index'
 import { Route as PatchIdEditRouteImport } from './routes/patch.$id.edit'
@@ -20,9 +23,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgressRoute = ProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatchNewRoute = PatchNewRouteImport.update({
@@ -43,14 +61,20 @@ const PatchIdEditRoute = PatchIdEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/settings': typeof SettingsRoute
+  '/shop': typeof ShopRoute
   '/patch/new': typeof PatchNewRoute
   '/patch/$id/edit': typeof PatchIdEditRoute
   '/patch/$id/': typeof PatchIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/settings': typeof SettingsRoute
+  '/shop': typeof ShopRoute
   '/patch/new': typeof PatchNewRoute
   '/patch/$id/edit': typeof PatchIdEditRoute
   '/patch/$id': typeof PatchIdIndexRoute
@@ -58,7 +82,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/settings': typeof SettingsRoute
+  '/shop': typeof ShopRoute
   '/patch/new': typeof PatchNewRoute
   '/patch/$id/edit': typeof PatchIdEditRoute
   '/patch/$id/': typeof PatchIdIndexRoute
@@ -66,13 +93,31 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/settings' | '/patch/new' | '/patch/$id/edit' | '/patch/$id/'
+    | '/'
+    | '/profile'
+    | '/progress'
+    | '/settings'
+    | '/shop'
+    | '/patch/new'
+    | '/patch/$id/edit'
+    | '/patch/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/settings' | '/patch/new' | '/patch/$id/edit' | '/patch/$id'
+  to:
+    | '/'
+    | '/profile'
+    | '/progress'
+    | '/settings'
+    | '/shop'
+    | '/patch/new'
+    | '/patch/$id/edit'
+    | '/patch/$id'
   id:
     | '__root__'
     | '/'
+    | '/profile'
+    | '/progress'
     | '/settings'
+    | '/shop'
     | '/patch/new'
     | '/patch/$id/edit'
     | '/patch/$id/'
@@ -80,7 +125,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProfileRoute: typeof ProfileRoute
+  ProgressRoute: typeof ProgressRoute
   SettingsRoute: typeof SettingsRoute
+  ShopRoute: typeof ShopRoute
   PatchNewRoute: typeof PatchNewRoute
   PatchIdEditRoute: typeof PatchIdEditRoute
   PatchIdIndexRoute: typeof PatchIdIndexRoute
@@ -95,11 +143,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/progress': {
+      id: '/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/patch/new': {
@@ -128,7 +197,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProfileRoute: ProfileRoute,
+  ProgressRoute: ProgressRoute,
   SettingsRoute: SettingsRoute,
+  ShopRoute: ShopRoute,
   PatchNewRoute: PatchNewRoute,
   PatchIdEditRoute: PatchIdEditRoute,
   PatchIdIndexRoute: PatchIdIndexRoute,

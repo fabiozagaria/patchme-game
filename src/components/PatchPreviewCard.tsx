@@ -1,14 +1,36 @@
 import { forwardRef } from "react";
 import { APP_CONFIG, presetFor } from "@/config/app-config";
-import { cleanPatch, type Patch, type ShareTemplate } from "@/lib/patch-model";
+import {
+  cleanPatch,
+  type Patch,
+  type ProfileAvatar,
+  type ShareOrientation,
+  type ShareTemplate,
+} from "@/lib/patch-model";
 import { formatDate } from "@/lib/versioning";
 import { PatchyMascot, type PatchyPose } from "@/components/PatchyMascot";
+import { cosmeticById, profileEffectClass, profileFrameClass } from "@/lib/patchy-shop";
+import { EXPORT_SIZES } from "@/lib/share-image";
+
+export interface SharedPlayerProfile {
+  avatar: ProfileAvatar;
+  equippedAvatarId: string | null;
+  equippedFrameId: string | null;
+  equippedEffectId: string | null;
+  level: number;
+  title: string;
+  weeklyStreak: number;
+  publishedPatches: number;
+}
 
 interface PatchPreviewCardProps {
   patch: Patch;
   displayName: string;
   sharing?: boolean;
   template?: ShareTemplate;
+  orientation?: ShareOrientation;
+  profile?: SharedPlayerProfile;
+  exporting?: boolean;
 }
 
 const TEMPLATE_STYLES: Record<
@@ -66,83 +88,152 @@ const TEMPLATE_STYLES: Record<
  * futura esportazione immagine (nessuna dipendenza aggiuntiva per ora).
  */
 export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps>(
-  function PatchPreviewCard({ patch, displayName, sharing = false, template = "classic" }, ref) {
+  function PatchPreviewCard(
+    {
+      patch,
+      displayName,
+      sharing = false,
+      template = "classic",
+      orientation = "vertical",
+      profile,
+      exporting = false,
+    },
+    ref,
+  ) {
     const clean = cleanPatch(patch);
     const style = TEMPLATE_STYLES[template];
+    const size = EXPORT_SIZES[orientation];
+    const equippedAvatar = cosmeticById(profile?.equippedAvatarId ?? null);
     const visibleSections = sharing
       ? clean.sections.filter((section) => section.shareVisible)
       : clean.sections;
+    const totalItems = visibleSections.reduce((total, section) => total + section.items.length, 0);
+    const compact = orientation === "horizontal" || totalItems > 8;
 
     return (
       <div
         ref={ref}
         data-patchme-share-card
-        className={`surface-card overflow-hidden p-5 ${style.card}`}
+        data-orientation={orientation}
+        style={exporting ? { width: size.width, height: size.height } : undefined}
+        className={`surface-card flex overflow-hidden ${compact ? "p-4" : "p-5"} ${orientation === "horizontal" ? "flex-row gap-5" : "flex-col"} ${style.card} ${profileFrameClass(profile?.equippedFrameId ?? null)} ${profileEffectClass(profile?.equippedEffectId ?? null)}`}
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className={`text-xs font-medium uppercase tracking-widest ${style.label}`}>
-              {displayName || "Patch personali"}
-            </p>
-            <h2
-              className={`display mt-1 text-2xl font-extrabold uppercase leading-tight ${style.title}`}
-            >
-              {clean.title || "Senza titolo"}
-            </h2>
+        <div
+          className={`flex min-w-0 flex-1 flex-col ${orientation === "horizontal" ? "basis-2/3" : ""}`}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className={`text-xs font-medium uppercase tracking-widest ${style.label}`}>
+                Patch notes di @{displayName || "username"}
+              </p>
+              <h2
+                className={`display mt-1 font-extrabold uppercase leading-tight ${compact ? "text-xl" : "text-2xl"} ${style.title}`}
+              >
+                {clean.title || "Senza titolo"}
+              </h2>
+            </div>
+            <span className={`shrink-0 rounded-md px-2 py-1 text-sm font-bold ${style.badge}`}>
+              {clean.version || "—"}
+            </span>
           </div>
-          <span className={`shrink-0 rounded-md px-2 py-1 text-sm font-bold ${style.badge}`}>
-            {clean.version || "—"}
-          </span>
-        </div>
 
-        <p className={`mt-1 text-xs ${style.label}`}>{formatDate(clean.date)}</p>
+          <p className={`mt-1 text-xs ${style.label}`}>{formatDate(clean.date)}</p>
 
-        <div className="mt-5 space-y-5">
-          {visibleSections.length === 0 && (
-            <p className="text-sm text-muted-foreground">
-              Nessuna sezione compilata: aggiungi almeno un elemento.
-            </p>
-          )}
-          {visibleSections.map((section) => {
-            const preset = presetFor(section.category);
-            return (
-              <section key={section.id}>
-                <div className="flex items-center gap-2">
-                  <span
-                    aria-hidden="true"
-                    className="size-2 rounded-full"
-                    style={{ backgroundColor: `var(--${preset.token})` }}
-                  />
-                  <h3
-                    className="text-sm font-semibold uppercase tracking-wide"
-                    style={{ color: `var(--${preset.token})` }}
-                  >
-                    {section.title || preset.label}
-                  </h3>
-                </div>
-                <ul className="mt-2 space-y-1.5 border-l border-border pl-4">
-                  {section.items.map((item) => (
-                    <li key={item.id} className={`text-sm leading-relaxed ${style.body}`}>
-                      {item.text}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          })}
-        </div>
+          <div
+            className={`mt-4 min-h-0 flex-1 content-start gap-x-4 gap-y-3 overflow-hidden ${orientation === "horizontal" || totalItems > 10 ? "grid grid-cols-2" : "space-y-4"}`}
+          >
+            {visibleSections.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Nessuna sezione compilata: aggiungi almeno un elemento.
+              </p>
+            ) : null}
+            {visibleSections.map((section) => {
+              const preset = presetFor(section.category);
+              return (
+                <section key={section.id} className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span
+                      aria-hidden="true"
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: `var(--${preset.token})` }}
+                    />
+                    <h3
+                      className={`${compact ? "text-xs" : "text-sm"} truncate font-semibold uppercase tracking-wide`}
+                      style={{ color: `var(--${preset.token})` }}
+                    >
+                      {section.title || preset.label}
+                    </h3>
+                  </div>
+                  <ul className="mt-1.5 space-y-1 border-l border-border pl-3">
+                    {section.items.map((item) => (
+                      <li
+                        key={item.id}
+                        className={`${compact ? "text-xs leading-snug" : "text-sm leading-relaxed"} ${style.body}`}
+                      >
+                        {item.text}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            })}
+          </div>
 
-        <div className={`mt-6 flex items-end justify-between border-t pt-3 ${style.border}`}>
-          <div className="flex items-center gap-2">
-            <PatchyMascot className="size-12 object-contain" pose={style.pose} decorative />
+          <div className={`mt-3 flex items-end justify-between border-t pt-2 ${style.border}`}>
             <span className="display text-xs font-extrabold uppercase tracking-[0.2em] text-brand">
               {APP_CONFIG.name}
             </span>
+            <span className={`text-[10px] uppercase tracking-wide ${style.label}`}>
+              {clean.status === "published" ? "Pubblicata" : "Bozza"}
+            </span>
           </div>
-          <span className={`text-[11px] uppercase tracking-wide ${style.label}`}>
-            {clean.status === "published" ? "Pubblicata" : "Bozza"}
-          </span>
         </div>
+
+        {profile ? (
+          <aside
+            className={`${orientation === "horizontal" ? "w-44 shrink-0 border-l pl-4" : "mt-3 border-t pt-3"} ${style.border}`}
+            aria-label="Profilo giocatore"
+          >
+            <div
+              className={`flex items-center ${orientation === "horizontal" ? "flex-col text-center" : "gap-3"}`}
+            >
+              <div className="relative shrink-0">
+                {equippedAvatar?.imageSrc ? (
+                  <img
+                    src={equippedAvatar.imageSrc}
+                    alt=""
+                    className={`${orientation === "horizontal" ? "size-20" : "size-14"} object-contain`}
+                  />
+                ) : (
+                  <PatchyMascot
+                    className={`${orientation === "horizontal" ? "size-20" : "size-14"} object-contain`}
+                    pose={profile.avatar ?? style.pose}
+                    decorative
+                  />
+                )}
+                <span className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-background bg-brand text-[0.65rem] font-black text-brand-foreground">
+                  {profile.level}
+                </span>
+              </div>
+              <div className={`min-w-0 ${orientation === "horizontal" ? "mt-2" : "flex-1"}`}>
+                <p className={`truncate text-sm font-black ${style.body}`}>@{displayName}</p>
+                <p className={`mt-0.5 text-[0.65rem] font-semibold leading-tight ${style.label}`}>
+                  {profile.title}
+                </p>
+              </div>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+              <div className="rounded-lg bg-black/10 p-1.5">
+                <p className={`text-base font-black ${style.body}`}>{profile.weeklyStreak}</p>
+                <p className={`text-[0.58rem] uppercase ${style.label}`}>Serie</p>
+              </div>
+              <div className="rounded-lg bg-black/10 p-1.5">
+                <p className={`text-base font-black ${style.body}`}>{profile.publishedPatches}</p>
+                <p className={`text-[0.58rem] uppercase ${style.label}`}>Patch</p>
+              </div>
+            </div>
+          </aside>
+        ) : null}
       </div>
     );
   },

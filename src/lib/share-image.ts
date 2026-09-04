@@ -5,8 +5,10 @@
  * (basta sostituire `downloadBlob`/`shareBlob`).
  */
 import { toBlob } from "html-to-image";
+import { EXPORT_SIZES } from "@/lib/patch-sharing";
 
-export const EXPORT_WIDTH = 420;
+export { EXPORT_SIZES } from "@/lib/patch-sharing";
+
 export const EXPORT_SCALE = 2;
 
 export type ShareOutcome = "shared" | "downloaded" | "downloaded-and-copied" | "cancelled";
@@ -53,6 +55,7 @@ async function waitForImages(node: HTMLElement): Promise<void> {
 export async function renderNodeToPng(node: HTMLElement): Promise<Blob> {
   await Promise.all([waitForFonts(), waitForImages(node)]);
   const computed = window.getComputedStyle(node);
+  const bounds = node.getBoundingClientRect();
   const backgroundColor =
     computed.backgroundColor && computed.backgroundColor !== "rgba(0, 0, 0, 0)"
       ? computed.backgroundColor
@@ -61,9 +64,9 @@ export async function renderNodeToPng(node: HTMLElement): Promise<Blob> {
   const blob = await toBlob(node, {
     pixelRatio: EXPORT_SCALE,
     backgroundColor,
-    cacheBust: true,
-    width: node.offsetWidth,
-    height: node.offsetHeight,
+    cacheBust: false,
+    width: bounds.width,
+    height: bounds.height,
   });
   if (!blob) throw new Error("Immagine non generata");
   return blob;
