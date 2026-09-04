@@ -1,6 +1,15 @@
 import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Download, Loader2, Palette, Pencil, Share2, Trash2 } from "lucide-react";
+import {
+  Check,
+  Download,
+  Loader2,
+  LockKeyhole,
+  Palette,
+  Pencil,
+  Share2,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { TEXTS } from "@/config/app-config";
@@ -8,6 +17,7 @@ import { useAppStore } from "@/state/app-store";
 import { useCardExport } from "@/hooks/use-card-export";
 import { EXPORT_WIDTH } from "@/lib/share-image";
 import type { ShareTemplate } from "@/lib/patch-model";
+import { isPatchShareable } from "@/lib/patch-sharing";
 import { AppHeader } from "@/components/AppHeader";
 import { PatchPreviewCard } from "@/components/PatchPreviewCard";
 import { Button } from "@/components/ui/button";
@@ -87,6 +97,7 @@ function PatchDetailPage() {
 
   if (!ready) return <div className="min-h-screen bg-background" />;
   if (!patch) return <Navigate to="/" />;
+  const shareable = isPatchShareable(patch);
 
   const chooseTemplate = (template: ShareTemplate) => {
     setTemplateDraft(template);
@@ -106,29 +117,39 @@ function PatchDetailPage() {
         />
       </main>
 
-      {/* Nodo dedicato alla cattura: larghezza logica fissa, fuori schermo. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed left-[-10000px] top-0"
-        style={{ width: EXPORT_WIDTH }}
-      >
-        <PatchPreviewCard
-          ref={nodeRef}
-          patch={patch}
-          displayName={settings.displayName}
-          template={selectedTemplate}
-          sharing
-        />
-      </div>
+      {shareable ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed left-[-10000px] top-0"
+          style={{ width: EXPORT_WIDTH }}
+        >
+          <PatchPreviewCard
+            ref={nodeRef}
+            patch={patch}
+            displayName={settings.displayName}
+            template={selectedTemplate}
+            sharing
+          />
+        </div>
+      ) : null}
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
         <div className="mx-auto flex max-w-md flex-col gap-2">
-          <Button
-            className="tap-safe h-12 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
-            onClick={() => setShareOpen(true)}
-          >
-            <Palette className="mr-2 size-4" /> Personalizza e condividi
-          </Button>
+          {shareable ? (
+            <Button
+              className="tap-safe h-12 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
+              onClick={() => setShareOpen(true)}
+            >
+              <Palette className="mr-2 size-4" /> Personalizza e condividi
+            </Button>
+          ) : (
+            <Button
+              className="tap-safe h-12 bg-brand font-semibold text-brand-foreground hover:bg-brand/90"
+              onClick={() => navigate({ to: "/patch/$id/edit", params: { id: patch.id } })}
+            >
+              <LockKeyhole className="mr-2 size-4" /> Pubblica per condividere
+            </Button>
+          )}
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -147,7 +168,7 @@ function PatchDetailPage() {
         </div>
       </div>
 
-      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+      <Dialog open={shareable && shareOpen} onOpenChange={setShareOpen}>
         <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Scegli lo stile della patch</DialogTitle>
