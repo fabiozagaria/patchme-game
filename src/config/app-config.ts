@@ -8,11 +8,11 @@ export const APP_CONFIG = {
   name: "PatchMe",
   tagline: "Trasforma persone e momenti in patch notes",
   // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
-  version: "0.5.0",
+  version: "0.6.0",
   releaseChannel: "Alpha",
   changelog: {
-    date: "3 settembre 2026",
-    title: "Le tue patch ora fanno evolvere un profilo giocatore.",
+    date: "4 settembre 2026",
+    title: "PatchMe ora suona e segue un flusso più coerente.",
     items: [
       "Profilo giocatore locale con livello e titolo",
       "XP guadagnati pubblicando patch e aggiungendo contenuti",
@@ -32,6 +32,7 @@ export const APP_CONFIG = {
       "Notifiche XP corrette per missioni ed easter egg",
       "Effetti sonori retro per salvataggi, XP, trofei, serie e level-up",
       "Le serie conquistate non si azzerano eliminando le patch",
+      "Condivisione disponibile soltanto dopo la pubblicazione",
       "Nome utente da 3 caratteri e massimo 5 modifiche al giorno",
       "Nuovi colori e avatar di Patchy personalizzabili",
       "Anteprima immediata di tema, colore e avatar prima del salvataggio",
