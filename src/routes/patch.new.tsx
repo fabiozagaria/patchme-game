@@ -129,7 +129,13 @@ function NewPatchPage() {
   if (!settings.onboarded) {
     return (
       <OnboardingWizard
-        onComplete={(nextSettings) => saveSettings({ ...nextSettings, productTourSeen: true })}
+        onComplete={(nextSettings) =>
+          saveSettings({
+            ...nextSettings,
+            productTourSeen: true,
+            shareTemplate: counterSeed.counter ? counterSeed.template : nextSettings.shareTemplate,
+          })
+        }
       />
     );
   }
