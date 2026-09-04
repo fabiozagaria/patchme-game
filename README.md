@@ -8,9 +8,8 @@
 [![Status](https://img.shields.io/badge/status-0.7.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
 [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
 [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
-[![Telegram](https://img.shields.io/badge/Telegram-@patchmegame-26A5E4?style=flat-square&logo=telegram&logoColor=ffffff)](https://t.me/patchmegame)
 
-[Prova PatchMe](https://patchme-fabiozagariadev.vercel.app) · [Aggiornamenti Telegram](https://t.me/patchmegame)
+[Prova PatchMe](https://patchme-fabiozagariadev.vercel.app)
 </div>
 
 ## Cos'è PatchMe
@@ -71,7 +70,7 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - level-up 3D con breve riff metal originale, senza sottofondo continuo;
 - esportazione e condivisione delle patch disponibili soltanto dopo la pubblicazione;
 - pulsante di condivisione rapida nell'archivio per le patch pubblicate;
-- sezione Novità e collegamento al canale Telegram;
+- centro notifiche locale con aggiornamenti correnti e passati, attività di gioco e timestamp;
 - popup-regalo animato per celebrare i 44 Bit iniziali dopo le Novità;
 - PWA installabile con icone dedicate;
 - interfaccia responsive e ottimizzata per smartphone.
