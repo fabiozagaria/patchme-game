@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Settings, Share2, Trash2, Pencil } from "lucide-react";
+import { HelpCircle, Plus, Settings, Share2, Swords, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { APP_CONFIG, TEXTS } from "@/config/app-config";
@@ -14,9 +14,7 @@ import { UpdateNotice } from "@/components/UpdateNotice";
 import { WelcomeGift } from "@/components/WelcomeGift";
 import { GuidedPatchWizard, type GuidedAnswer } from "@/components/GuidedPatchWizard";
 import { PatchyMascot } from "@/components/PatchyMascot";
-import { WeeklyPromptCard } from "@/components/WeeklyPromptCard";
 import { PlayerProfileCard } from "@/components/PlayerProfileCard";
-import type { WeeklyPromptSelection } from "@/lib/weekly-prompt";
 import { Button } from "@/components/ui/button";
 import { hardcoreCopy, hardcoreGreeting } from "@/lib/hardcore-copy";
 import {
@@ -78,11 +76,6 @@ function ArchivePage() {
     navigate({ to: "/patch/new" });
   };
 
-  const startWeeklyPatch = (selection: WeeklyPromptSelection) => {
-    window.sessionStorage.setItem(APP_CONFIG.storageKeys.weeklyDraft, JSON.stringify(selection));
-    navigate({ to: "/patch/new" });
-  };
-
   return (
     <div className="min-h-screen bg-background pb-28">
       <header className="mx-auto flex max-w-3xl items-start justify-between gap-3 px-4 pb-2 pt-8">
@@ -101,13 +94,23 @@ function ArchivePage() {
             )}
           </p>
         </div>
-        <Link
-          to="/settings"
-          aria-label="Impostazioni"
-          className="tap-safe flex w-11 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground"
-        >
-          <Settings className="size-5" />
-        </Link>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            aria-label="Ripeti tutorial"
+            onClick={() => saveSettings({ ...settings, productTourSeen: false })}
+            className="tap-safe flex w-11 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground"
+          >
+            <HelpCircle className="size-5" />
+          </button>
+          <Link
+            to="/settings"
+            aria-label="Impostazioni"
+            className="tap-safe flex w-11 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground"
+          >
+            <Settings className="size-5" />
+          </Link>
+        </div>
       </header>
 
       {!canPersist && (
@@ -118,6 +121,7 @@ function ArchivePage() {
 
       <main className="mx-auto max-w-3xl px-4 py-4">
         <PlayerProfileCard
+          username={settings.username}
           displayName={settings.displayName}
           patches={patches}
           avatar={settings.profileAvatar}
@@ -131,9 +135,72 @@ function ArchivePage() {
             })
           }
         />
-        <div className="mt-4">
-          <WeeklyPromptCard onCreatePatch={startWeeklyPatch} hardcoreMode={settings.hardcoreMode} />
-        </div>
+        <section className="surface-card mt-4 overflow-hidden border-brand/30 p-4">
+          <div className="flex items-start gap-3">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <Swords aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-xs font-black uppercase tracking-wider text-brand">
+                {hardcoreCopy(
+                  settings.hardcoreMode,
+                  "Miccia sociale",
+                  "Innesca il prossimo casino",
+                )}
+              </p>
+              <h2 className="text-lg font-black text-foreground">
+                {hardcoreCopy(
+                  settings.hardcoreMode,
+                  "Il gruppo non si patcha da solo",
+                  "Quale coglione patchiamo oggi?",
+                )}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {hardcoreCopy(
+                  settings.hardcoreMode,
+                  "Crea una patch su qualcuno e mandagliela: la risposta può diventare una contro-patch.",
+                  "Scegli una vittima, scrivi la stronzata e scatena la contro-patch.",
+                )}
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <Button
+              variant="outline"
+              onClick={() =>
+                navigate({
+                  to: "/patch/new",
+                  search: {
+                    counter: false,
+                    subject: "friend",
+                    target: "",
+                    tone: settings.hardcoreMode ? "hardcore" : "sarcastic",
+                    template: settings.shareTemplate,
+                  },
+                })
+              }
+            >
+              Patcha un amico
+            </Button>
+            <Button
+              className="bg-brand text-brand-foreground"
+              onClick={() =>
+                navigate({
+                  to: "/patch/new",
+                  search: {
+                    counter: false,
+                    subject: "group",
+                    target: "",
+                    tone: settings.hardcoreMode ? "hardcore" : "light",
+                    template: settings.shareTemplate,
+                  },
+                })
+              }
+            >
+              Patcha il gruppo
+            </Button>
+          </div>
+        </section>
         {patches.length === 0 ? (
           <div className="surface-card mt-4 p-8 text-center">
             <PatchyMascot className="mx-auto mb-2 size-40 object-contain" pose="thinking" />
