@@ -7,7 +7,7 @@ import {
   type ThemeMode,
   type VersionFormat,
 } from "@/lib/patch-model";
-import { validateDisplayName } from "@/lib/validation";
+import { validateDisplayName, validateUsername } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,20 +29,28 @@ const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
 
 export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSettings) => void }) {
   const [draft, setDraft] = useState<AppSettings>({ ...DEFAULT_SETTINGS });
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [usernameError, setUsernameError] = useState<string | undefined>(undefined);
+  const [displayNameError, setDisplayNameError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     applyAppearance(draft.theme, draft.accent);
   }, [draft.accent, draft.theme]);
 
   const submit = () => {
-    const nameError = validateDisplayName(draft.displayName);
-    setError(nameError);
-    if (nameError) {
-      focusValidationError("#username");
+    const nextUsernameError = validateUsername(draft.username);
+    const nextDisplayNameError = validateDisplayName(draft.displayName);
+    setUsernameError(nextUsernameError);
+    setDisplayNameError(nextDisplayNameError);
+    if (nextUsernameError || nextDisplayNameError) {
+      focusValidationError(nextUsernameError ? "#username" : "#display-name");
       return;
     }
-    onComplete({ ...draft, displayName: draft.displayName.trim(), onboarded: true });
+    onComplete({
+      ...draft,
+      username: draft.username.trim(),
+      displayName: draft.displayName.trim(),
+      onboarded: true,
+    });
   };
 
   return (
@@ -58,32 +66,63 @@ export function OnboardingWizard({ onComplete }: { onComplete: (settings: AppSet
       </p>
 
       <div className="mt-8 space-y-6">
-        <ProfileAppearancePreview avatar={draft.profileAvatar} username={draft.displayName} />
+        <ProfileAppearancePreview avatar={draft.profileAvatar} username={draft.username} />
         <div className="surface-card p-4">
           <Label htmlFor="username" className="text-sm font-semibold">
             Username
           </Label>
           <Input
             id="username"
-            value={draft.displayName}
+            value={draft.username}
             maxLength={APP_CONFIG.limits.displayName}
             placeholder="Scegli il tuo username"
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? "username-error" : undefined}
+            aria-invalid={Boolean(usernameError)}
+            aria-describedby={usernameError ? "username-error" : undefined}
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            onChange={(e) => setDraft({ ...draft, displayName: e.target.value })}
+            onChange={(e) => {
+              const username = e.target.value;
+              setDraft({
+                ...draft,
+                username,
+                displayName: draft.displayName === draft.username ? username : draft.displayName,
+              });
+            }}
             className="tap-safe mt-2"
           />
-          {error && (
+          {usernameError && (
             <p id="username-error" className="mt-2 text-xs text-destructive">
-              {error}
+              {usernameError}
             </p>
           )}
           <p className="mt-2 text-xs text-muted-foreground">
             Da {APP_CONFIG.limits.minDisplayName} a {APP_CONFIG.limits.displayName} caratteri, senza
             spazi.
+          </p>
+        </div>
+
+        <div className="surface-card p-4">
+          <Label htmlFor="display-name" className="text-sm font-semibold">
+            Nome visualizzato
+          </Label>
+          <Input
+            id="display-name"
+            value={draft.displayName}
+            maxLength={APP_CONFIG.limits.displayName}
+            placeholder="Come vuoi essere chiamato"
+            aria-invalid={Boolean(displayNameError)}
+            aria-describedby={displayNameError ? "display-name-error" : "display-name-help"}
+            onChange={(e) => setDraft({ ...draft, displayName: e.target.value })}
+            className="tap-safe mt-2"
+          />
+          {displayNameError ? (
+            <p id="display-name-error" className="mt-2 text-xs text-destructive">
+              {displayNameError}
+            </p>
+          ) : null}
+          <p id="display-name-help" className="mt-2 text-xs text-muted-foreground">
+            Può contenere spazi e puoi cambiarlo gratis. Alcuni nomi nascondono easter egg.
           </p>
         </div>
 
