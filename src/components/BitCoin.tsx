@@ -13,7 +13,7 @@ export function BitCoin({
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : "Bit"}
     >
-      <span className="bit-coin-mark">P</span>
+      <span className="bit-coin-mark">B</span>
     </span>
   );
 }
