@@ -14,6 +14,7 @@ import type { Patch, ProfileAvatar } from "@/lib/patch-model";
 import { usePlayerProgression } from "@/hooks/use-player-progression";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { cosmeticById, profileEffectClass, profileFrameClass } from "@/lib/patchy-shop";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 
 interface PlayerProfileCardProps {
   displayName: string;
@@ -21,6 +22,7 @@ interface PlayerProfileCardProps {
   avatar: ProfileAvatar;
   superSaiyanUnlocked: boolean;
   onUnlockSuperSaiyan: () => boolean;
+  hardcoreMode?: boolean;
 }
 
 export function PlayerProfileCard({
@@ -29,6 +31,7 @@ export function PlayerProfileCard({
   avatar,
   superSaiyanUnlocked,
   onUnlockSuperSaiyan,
+  hardcoreMode = false,
 }: PlayerProfileCardProps) {
   const {
     progression,
@@ -71,7 +74,9 @@ export function PlayerProfileCard({
           </span>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold uppercase tracking-wider text-brand">Profilo giocatore</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">
+            {hardcoreCopy(hardcoreMode, "Profilo giocatore", "Scheda del disagiato")}
+          </p>
           <h2 id="player-profile-title" className="truncate text-xl font-extrabold text-foreground">
             {displayName || "Giocatore"} · Livello {progression.level}
           </h2>
@@ -117,7 +122,7 @@ export function PlayerProfileCard({
         <div className="rounded-lg border border-border bg-surface-2 p-2">
           <FileCheck2 className="mx-auto size-4 text-brand" aria-hidden="true" />
           <dt className="mt-1 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-            Pubblicate
+            {hardcoreCopy(hardcoreMode, "Pubblicate", "Danni pubblicati")}
           </dt>
           <dd className="text-lg font-black text-foreground">{progression.publishedPatches}</dd>
         </div>
@@ -131,14 +136,14 @@ export function PlayerProfileCard({
             aria-hidden="true"
           />
           <dt className="mt-1 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-            Serie
+            {hardcoreCopy(hardcoreMode, "Serie", "Ossessione")}
           </dt>
           <dd className="text-lg font-black text-foreground">{progression.weeklyStreak}</dd>
         </div>
         <div className="rounded-lg border border-border bg-surface-2 p-2">
           <ListChecks className="mx-auto size-4 text-brand" aria-hidden="true" />
           <dt className="mt-1 text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-            Voci
+            {hardcoreCopy(hardcoreMode, "Voci", "Stronzate scritte")}
           </dt>
           <dd className="text-lg font-black text-foreground">{progression.totalItems}</dd>
         </div>
@@ -150,9 +155,15 @@ export function PlayerProfileCard({
       >
         <Palette className="size-5 shrink-0 text-brand" aria-hidden="true" />
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-black">Personalizza profilo</span>
+          <span className="block text-sm font-black">
+            {hardcoreCopy(hardcoreMode, "Personalizza profilo", "Rifatti la faccia")}
+          </span>
           <span className="block text-xs text-muted-foreground">
-            Scegli avatar, cornice, effetto e futuri sfondi
+            {hardcoreCopy(
+              hardcoreMode,
+              "Scegli avatar, cornice, effetto e futuri sfondi",
+              "Avatar, cornici e altra roba inutile ma figa",
+            )}
           </span>
         </span>
       </Link>
@@ -163,9 +174,19 @@ export function PlayerProfileCard({
       >
         <Gamepad2 className="size-5 shrink-0 text-brand" aria-hidden="true" />
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-black">Titoli, missioni e trofei</span>
+          <span className="block text-sm font-black">
+            {hardcoreCopy(
+              hardcoreMode,
+              "Titoli, missioni e trofei",
+              "Missioni per chi non ha un cazzo da fare",
+            )}
+          </span>
           <span className="block text-xs text-muted-foreground">
-            Apri la raccolta senza perdere di vista le patch
+            {hardcoreCopy(
+              hardcoreMode,
+              "Apri la raccolta senza perdere di vista le patch",
+              "Controlla quanto tempo hai già sprecato",
+            )}
           </span>
         </span>
         <span className="shrink-0 text-xs font-black text-brand">
@@ -180,9 +201,15 @@ export function PlayerProfileCard({
       >
         <ShoppingBag className="size-5 shrink-0 text-amber-400" aria-hidden="true" />
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-black">Patchy Shop</span>
+          <span className="block text-sm font-black">
+            {hardcoreCopy(hardcoreMode, "Patchy Shop", "Emporio delle minchiate")}
+          </span>
           <span className="block text-xs text-muted-foreground">
-            Spendi i Bit in cosmetici inutilmente belli
+            {hardcoreCopy(
+              hardcoreMode,
+              "Spendi i Bit in cosmetici inutilmente belli",
+              "Brucia Bit per sembrare meno anonimo",
+            )}
           </span>
         </span>
         <span className="flex shrink-0 items-center gap-1 text-sm font-black text-amber-400">
@@ -192,7 +219,11 @@ export function PlayerProfileCard({
 
       {progression.publishedPatches === 0 ? (
         <p className="mt-3 text-center text-xs text-muted-foreground">
-          Pubblica la prima patch per guadagnare XP e iniziare la tua serie.
+          {hardcoreCopy(
+            hardcoreMode,
+            "Pubblica la prima patch per guadagnare XP e iniziare la tua serie.",
+            "Pubblica qualcosa, scansafatiche: gli XP non si materializzano da soli.",
+          )}
         </p>
       ) : null}
     </section>

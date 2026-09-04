@@ -120,6 +120,7 @@ function ArchivePage() {
           patches={patches}
           avatar={settings.profileAvatar}
           superSaiyanUnlocked={settings.unlockedAvatars.includes("superSaiyan")}
+          hardcoreMode={settings.hardcoreMode}
           onUnlockSuperSaiyan={() =>
             saveSettings({
               ...settings,
@@ -129,14 +130,24 @@ function ArchivePage() {
           }
         />
         <div className="mt-4">
-          <WeeklyPromptCard onCreatePatch={startWeeklyPatch} />
+          <WeeklyPromptCard onCreatePatch={startWeeklyPatch} hardcoreMode={settings.hardcoreMode} />
         </div>
         {patches.length === 0 ? (
           <div className="surface-card mt-4 p-8 text-center">
             <PatchyMascot className="mx-auto mb-2 size-40 object-contain" pose="thinking" />
-            <h2 className="text-lg font-semibold text-foreground">{TEXTS.emptyArchiveTitle}</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                TEXTS.emptyArchiveTitle,
+                "Archivio vuoto. Che sorpresa.",
+              )}
+            </h2>
             <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
-              {TEXTS.emptyArchiveBody}
+              {hardcoreCopy(
+                settings.hardcoreMode,
+                TEXTS.emptyArchiveBody,
+                "Non hai pubblicato un cazzo. Crea almeno una patch e prova a renderti utile.",
+              )}
             </p>
           </div>
         ) : (

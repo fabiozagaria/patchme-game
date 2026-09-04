@@ -6,6 +6,7 @@ import { APP_CONFIG } from "@/config/app-config";
 import { getWeeklyPrompt, type WeeklyPromptSelection } from "@/lib/weekly-prompt";
 import { PatchyMascot } from "@/components/PatchyMascot";
 import { Button } from "@/components/ui/button";
+import { hardcoreCopy } from "@/lib/hardcore-copy";
 import {
   Dialog,
   DialogContent,
@@ -17,9 +18,10 @@ import {
 
 interface WeeklyPromptCardProps {
   onCreatePatch: (selection: WeeklyPromptSelection) => void;
+  hardcoreMode?: boolean;
 }
 
-export function WeeklyPromptCard({ onCreatePatch }: WeeklyPromptCardProps) {
+export function WeeklyPromptCard({ onCreatePatch, hardcoreMode = false }: WeeklyPromptCardProps) {
   const [prompt] = useState(() => getWeeklyPrompt());
   const [open, setOpen] = useState(false);
   const [answer, setAnswer] = useState("");
@@ -47,7 +49,7 @@ export function WeeklyPromptCard({ onCreatePatch }: WeeklyPromptCardProps) {
         <PatchyMascot className="size-24 shrink-0 object-contain" pose="thinking" />
         <div className="min-w-0 flex-1">
           <p className="text-xs font-bold uppercase tracking-wider text-brand">
-            Domanda settimanale
+            {hardcoreCopy(hardcoreMode, "Domanda settimanale", "Interrogatorio settimanale")}
           </p>
           <h2 id="weekly-prompt-title" className="mt-1 text-lg font-bold text-foreground">
             {prompt.question}
@@ -60,10 +62,12 @@ export function WeeklyPromptCard({ onCreatePatch }: WeeklyPromptCardProps) {
           onClick={() => setOpen(true)}
           className="tap-safe bg-brand font-bold text-brand-foreground hover:bg-brand/90"
         >
-          <Sparkles className="mr-1 size-4" /> Rispondi e crea una patch
+          <Sparkles className="mr-1 size-4" />{" "}
+          {hardcoreCopy(hardcoreMode, "Rispondi e crea una patch", "Rispondi, se ne sei capace")}
         </Button>
         <Button variant="outline" onClick={sharePrompt} className="tap-safe">
-          <Share2 className="mr-1 size-4" /> Sfida un amico
+          <Share2 className="mr-1 size-4" />{" "}
+          {hardcoreCopy(hardcoreMode, "Sfida un amico", "Trascina un amico nel disagio")}
         </Button>
       </div>
 
@@ -77,7 +81,7 @@ export function WeeklyPromptCard({ onCreatePatch }: WeeklyPromptCardProps) {
           </DialogHeader>
           <div>
             <label htmlFor="weekly-answer" className="text-sm font-semibold text-foreground">
-              La tua risposta
+              {hardcoreCopy(hardcoreMode, "La tua risposta", "La tua brillante cazzata")}
             </label>
             <textarea
               id="weekly-answer"
@@ -95,14 +99,14 @@ export function WeeklyPromptCard({ onCreatePatch }: WeeklyPromptCardProps) {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>
-              Annulla
+              {hardcoreCopy(hardcoreMode, "Annulla", "Lascia perdere")}
             </Button>
             <Button
               disabled={!cleanAnswer}
               onClick={() => onCreatePatch({ ...prompt, answer: cleanAnswer })}
               className="bg-brand font-bold text-brand-foreground hover:bg-brand/90"
             >
-              Crea la patch
+              {hardcoreCopy(hardcoreMode, "Crea la patch", "Crea 'sta roba")}
             </Button>
           </DialogFooter>
         </DialogContent>
