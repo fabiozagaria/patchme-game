@@ -49,6 +49,7 @@ Il progetto è mobile-first, non richiede registrazione e conserva i dati dirett
 - focus e scorrimento automatici sul primo errore di validazione;
 - condivisione nativa di immagine, messaggio e link con fallback;
 - esportazione e condivisione delle patch disponibili soltanto dopo la pubblicazione;
+- pulsante di condivisione rapida nell'archivio per le patch pubblicate;
 - sezione Novità e collegamento al canale Telegram;
 - PWA installabile con icone dedicate;
 - interfaccia responsive e ottimizzata per smartphone.
