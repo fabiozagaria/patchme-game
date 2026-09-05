@@ -29,7 +29,7 @@ export const SHOP_COSMETICS: readonly ShopCosmetic[] = [
     name: "Patchy Gatto",
     description: "Fa cadere i tuoi trofei dal mobile e poi pretende i croccantini.",
     price: 0,
-    imageSrc: "/assets/patchy-cat.svg",
+    imageSrc: "/assets/patchy-cat.png",
     rarity: "Comune",
   },
   {
@@ -39,7 +39,7 @@ export const SHOP_COSMETICS: readonly ShopCosmetic[] = [
     name: "Patchy Cane",
     description: "Fedele, entusiasta e incapace di capire perché hai perso la serie.",
     price: 0,
-    imageSrc: "/assets/patchy-dog.svg",
+    imageSrc: "/assets/patchy-dog.png",
     rarity: "Comune",
   },
   {
@@ -49,7 +49,7 @@ export const SHOP_COSMETICS: readonly ShopCosmetic[] = [
     name: "Patchy Guardiana Lunare",
     description: "Combatte bug e pessime decisioni nel nome della Luna.",
     price: 0,
-    imageSrc: "/assets/patchy-moon-guardian.svg",
+    imageSrc: "/assets/patchy-moon-guardian.png",
     rarity: "Leggendario",
     requiredMissionId: "moon-guardian",
     requirementLabel: "Punisci il male in nome della Luna",
