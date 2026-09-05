@@ -59,16 +59,18 @@ export function PlayerProfileCard({
           to="/profile"
           hash="avatar"
           aria-label="Cambia avatar"
-          className="tap-safe relative flex size-20 shrink-0 items-center justify-center overflow-visible rounded-2xl transition-transform hover:scale-105"
+          className="tap-safe relative shrink-0 rounded-2xl transition-transform hover:scale-105"
         >
           {equippedAvatar?.imageSrc ? (
             <img
               src={equippedAvatar.imageSrc}
               alt=""
-              className="block h-full w-full max-h-full max-w-full object-contain object-center"
+              className="block size-20 object-contain"
+              decoding="async"
+              fetchPriority="high"
             />
           ) : (
-            <PatchyMascot className="block h-full w-full object-contain object-center" pose={avatar} decorative />
+            <PatchyMascot className="size-20 object-contain" pose={avatar} decorative />
           )}
           <span className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full border-2 border-background bg-brand text-xs font-black text-brand-foreground">
             {progression.level}
