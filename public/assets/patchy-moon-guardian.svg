@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Patchy Guardiana Lunare</title>
+  <defs>
+    <radialGradient id="g" cx="38%" cy="30%" r="70%"><stop offset="0" stop-color="#ddff61"/><stop offset="1" stop-color="#7bd900"/></radialGradient>
+    <linearGradient id="hair" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#ffe96a"/><stop offset="1" stop-color="#f4ad2f"/></linearGradient>
+  </defs>
+  <g stroke="#171717" stroke-width="11" stroke-linejoin="round" stroke-linecap="round">
+    <path fill="url(#hair)" d="M132 190q-55 44-58 137 21 28 56-7-22 73 32 104 20-21 25-74h138q5 53 25 74 54-31 32-104 35 35 56 7-3-93-58-137-19-87-124-87s-105 87-124 87Z"/>
+    <circle cx="170" cy="123" r="42" fill="url(#hair)"/><circle cx="342" cy="123" r="42" fill="url(#hair)"/>
+    <circle cx="170" cy="123" r="18" fill="#ef4d86" stroke-width="8"/><circle cx="342" cy="123" r="18" fill="#ef4d86" stroke-width="8"/>
+    <circle cx="256" cy="265" r="127" fill="url(#g)"/>
+    <path fill="url(#hair)" d="M153 198q103-99 206 0-21 19-44 28-57-40-118 0-23-9-44-28Z"/>
+    <ellipse cx="205" cy="268" rx="24" ry="34" fill="#141414"/><ellipse cx="307" cy="268" rx="24" ry="34" fill="#141414"/>
+    <circle cx="198" cy="256" r="7" fill="#fff" stroke="none"/><circle cx="300" cy="256" r="7" fill="#fff" stroke="none"/>
+    <path d="M241 310q15 17 30 0" fill="none"/><path d="M249 301h14l-7 10Z" fill="#171717" stroke-width="5"/>
+    <path fill="#f7f7ff" d="M188 358h136l22 74H166Z"/>
+    <path fill="#245bd4" d="m177 372 79 51 79-51-17 70H194Z"/>
+    <path fill="#ef4d86" d="m256 382-52-35 13-20 39 24 39-24 13 20Z"/>
+    <circle cx="256" cy="358" r="18" fill="#ffd62d" stroke-width="7"/>
+    <path fill="#ffd62d" d="m256 171 20 25-20 25-20-25Z"/><circle cx="256" cy="195" r="6" fill="#ef4d86" stroke="none"/>
+  </g>
+</svg>
