@@ -1,4 +1,4 @@
-name: Repair PatchMe avatar assets
+name: Build high-resolution PatchMe avatar PNGs
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  repair-avatars:
+  build-avatar-pngs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -22,46 +22,43 @@ jobs:
       - name: Install Pillow
         run: python -m pip install --disable-pip-version-check pillow
 
-      - name: Re-encode original Patchy PNGs without metadata
+      - name: Export current regenerated avatars as 1024px lossless PNGs
         run: |
           python - <<'PY'
           from pathlib import Path
           from PIL import Image
 
-          files = [
-              Path('public/assets/patchy-cat.png'),
-              Path('public/assets/patchy-dog.png'),
-              Path('public/assets/patchy-moon-guardian.png'),
-          ]
-
-          for path in files:
-              with Image.open(path) as source:
-                  image = source.convert('RGBA')
-                  image.save(path, format='PNG', optimize=True)
-                  print(f'{path}: {image.size[0]}x{image.size[1]} re-encoded')
+          names = ['patchy-cat', 'patchy-dog', 'patchy-moon-guardian']
+          for name in names:
+              source = Path(f'public/assets/{name}.webp')
+              target = Path(f'public/assets/{name}-hq.png')
+              with Image.open(source) as opened:
+                  image = opened.convert('RGBA')
+                  image = image.resize((1024, 1024), Image.Resampling.LANCZOS)
+                  image.save(target, format='PNG', optimize=False, compress_level=6)
+                  print(f'{target}: {image.size[0]}x{image.size[1]} RGBA PNG')
           PY
 
-      - name: Restore app references to original artwork
+      - name: Point PatchMe to lossless PNG avatars
         run: |
           python - <<'PY'
           from pathlib import Path
-
           path = Path('src/lib/patchy-shop.ts')
           text = path.read_text()
-          text = text.replace('/assets/patchy-cat-original.svg', '/assets/patchy-cat.png')
-          text = text.replace('/assets/patchy-dog-original.svg', '/assets/patchy-dog.png')
-          text = text.replace('/assets/patchy-moon-guardian-original.svg', '/assets/patchy-moon-guardian.png')
+          text = text.replace('/assets/patchy-cat.webp', '/assets/patchy-cat-hq.png')
+          text = text.replace('/assets/patchy-dog.webp', '/assets/patchy-dog-hq.png')
+          text = text.replace('/assets/patchy-moon-guardian.webp', '/assets/patchy-moon-guardian-hq.png')
           path.write_text(text)
           PY
 
-      - name: Commit repaired originals
+      - name: Commit high-resolution PNG assets
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/assets/patchy-cat.png public/assets/patchy-dog.png public/assets/patchy-moon-guardian.png src/lib/patchy-shop.ts
+          git add public/assets/patchy-cat-hq.png public/assets/patchy-dog-hq.png public/assets/patchy-moon-guardian-hq.png src/lib/patchy-shop.ts
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "fix: re-encode original Patchy avatar artwork"
+          git commit -m "fix: use high-resolution PNG Patchy avatars"
           git push origin HEAD:feature/090-avatar-rewards
