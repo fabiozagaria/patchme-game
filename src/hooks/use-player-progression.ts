@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Patch } from "@/lib/patch-model";
 import { enqueueSuccessNotification } from "@/lib/notification-queue";
-import { calculatePlayerProgression, SUPER_SAIYAN_MISSION } from "@/lib/player-progression";
+import {
+  calculatePlayerProgression,
+  MOON_GUARDIAN_MISSION_ID,
+  SUPER_SAIYAN_MISSION,
+} from "@/lib/player-progression";
 import {
   awardMission,
   claimDailyAccessReward,
@@ -94,10 +98,19 @@ export function usePlayerProgression({
     if (newlyCompleted.length === 0 && missingBitRewards.length === 0) return;
 
     updatePersisted((current) =>
-      missingBitRewards.reduce(
-        (next, mission) => awardMission(next, mission.id, mission.rewardXp, mission.rewardBits),
-        current,
-      ),
+      missingBitRewards.reduce((next, mission) => {
+        const awarded = awardMission(next, mission.id, mission.rewardXp, mission.rewardBits);
+        if (
+          mission.id === MOON_GUARDIAN_MISSION_ID &&
+          !awarded.ownedCosmeticIds.includes("avatar-moon-guardian")
+        ) {
+          return {
+            ...awarded,
+            ownedCosmeticIds: [...awarded.ownedCosmeticIds, "avatar-moon-guardian"],
+          };
+        }
+        return awarded;
+      }, current),
     );
     newlyCompleted.forEach((mission) =>
       enqueueSuccessNotification(`Trofeo sbloccato: ${mission.title}`, {
@@ -106,6 +119,12 @@ export function usePlayerProgression({
         duration: 5000,
       }),
     );
+    if (newlyCompleted.some((mission) => mission.id === MOON_GUARDIAN_MISSION_ID)) {
+      enqueueSuccessNotification("PATCHY GUARDIANA LUNARE SBLOCCATA!", {
+        description: "Il nuovo avatar è già disponibile nel Profilo.",
+        sound: "level-up",
+      });
+    }
     const retroactiveBits = missingBitRewards
       .filter((mission) => saved.has(mission.id))
       .reduce((total, mission) => total + mission.rewardBits, 0);

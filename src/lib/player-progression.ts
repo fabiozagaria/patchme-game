@@ -12,6 +12,8 @@ export const SUPER_SAIYAN_MISSION = {
   rewardXp: 777,
 } as const;
 
+export const MOON_GUARDIAN_MISSION_ID = "moon-guardian";
+
 export interface PlayerMission {
   id: string;
   title: string;
@@ -599,6 +601,13 @@ function missionProgress(
       "Pubblica 25 patch",
       500,
       publishedPatches >= 25,
+    ),
+    mission(
+      MOON_GUARDIAN_MISSION_ID,
+      "Punisci il male in nome della Luna",
+      "Imposta SailorMoon come Nome visualizzato",
+      300,
+      normalizedName === "sailormoon",
     ),
 
     mission(

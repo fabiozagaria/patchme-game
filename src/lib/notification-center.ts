@@ -26,10 +26,15 @@ export interface ReleaseNotification {
 
 export const RELEASE_NOTIFICATIONS: readonly ReleaseNotification[] = [
   {
+    version: "0.9.0",
+    title: "Nuovi avatar, ricompensa Shop e Danger Zone",
+    createdAt: "2026-09-05T01:30:00+02:00",
+    current: true,
+  },
+  {
     version: "0.8.0",
     title: "Patch dedicate, contro-patch e Studio social",
     createdAt: "2026-09-04T19:20:34+02:00",
-    current: true,
   },
   {
     version: "0.7.1",

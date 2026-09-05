@@ -81,9 +81,12 @@ function ArchivePage() {
     <div className="min-h-screen bg-background pb-28">
       <header className="mx-auto flex max-w-3xl items-start justify-between gap-3 px-4 pb-2 pt-8">
         <div className="min-w-0">
-          <p className="display text-xs font-extrabold uppercase tracking-[0.3em] text-brand">
-            {APP_CONFIG.name}
-          </p>
+          <div className="flex items-center gap-2">
+            <img src="/assets/icon-192.png" alt="" className="size-11 rounded-xl" />
+            <p className="display text-3xl font-black tracking-tight text-brand">
+              {APP_CONFIG.name}
+            </p>
+          </div>
           <h1 className="mt-1 truncate text-2xl font-extrabold uppercase text-foreground">
             {hardcoreGreeting(settings.hardcoreMode, settings.displayName)}
           </h1>
