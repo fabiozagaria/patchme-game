@@ -17,6 +17,7 @@ import {
   Sun,
   ShieldAlert,
   Skull,
+  Trash2,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -26,6 +27,7 @@ import { validateDisplayName, validateUsername } from "@/lib/validation";
 import { applyAppearance } from "@/lib/appearance";
 import { focusValidationError } from "@/lib/focus-validation-error";
 import { useAppStore } from "@/state/app-store";
+import { clearAllPatchMeData } from "@/lib/storage";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,6 +92,7 @@ function SettingsPage() {
   const [displayNameError, setDisplayNameError] = useState<string | undefined>(undefined);
   const [newsOpen, setNewsOpen] = useState(false);
   const [hardcoreConfirmOpen, setHardcoreConfirmOpen] = useState(false);
+  const [deleteDataOpen, setDeleteDataOpen] = useState(false);
   const appearanceCommitted = useRef(false);
   const current = draft ?? settings;
 
@@ -385,50 +388,78 @@ function SettingsPage() {
           </div>
         </fieldset>
 
-        <section
-          className="surface-card border-2 border-destructive/70 p-4"
-          aria-labelledby="hardcore-title"
-        >
-          <div className="flex items-start gap-3">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive">
-              <Skull aria-hidden="true" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-[0.65rem] font-black uppercase tracking-widest text-destructive">
-                    Impostazione rischiosa
-                  </p>
-                  <Label
-                    id="hardcore-title"
-                    htmlFor="hardcore-mode"
-                    className="text-base font-black"
-                  >
-                    Modalità Hardcore
-                  </Label>
+        <section className="surface-card overflow-hidden border-2 border-destructive/70">
+          <div className="border-b border-destructive/30 bg-destructive/10 px-4 py-3">
+            <p className="text-[0.68rem] font-black uppercase tracking-[0.22em] text-destructive">
+              Danger Zone
+            </p>
+            <h2 className="font-black text-foreground">Azioni rischiose</h2>
+          </div>
+          <div className="p-4" aria-labelledby="hardcore-title">
+            <div className="flex items-start gap-3">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive">
+                <Skull aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[0.65rem] font-black uppercase tracking-widest text-destructive">
+                      Impostazione rischiosa
+                    </p>
+                    <Label
+                      id="hardcore-title"
+                      htmlFor="hardcore-mode"
+                      className="text-base font-black"
+                    >
+                      Modalità Hardcore
+                    </Label>
+                  </div>
+                  <Switch
+                    id="hardcore-mode"
+                    checked={current.hardcoreMode}
+                    onCheckedChange={(enabled) => {
+                      if (enabled) setHardcoreConfirmOpen(true);
+                      else update({ hardcoreMode: false });
+                    }}
+                    aria-describedby="hardcore-warning"
+                  />
                 </div>
-                <Switch
-                  id="hardcore-mode"
-                  checked={current.hardcoreMode}
-                  onCheckedChange={(enabled) => {
-                    if (enabled) setHardcoreConfirmOpen(true);
-                    else update({ hardcoreMode: false });
-                  }}
-                  aria-describedby="hardcore-warning"
-                />
+                <p
+                  id="hardcore-warning"
+                  className="mt-3 text-sm font-semibold leading-relaxed text-destructive"
+                >
+                  ⚠️ Meglio evitare: sostituisce i testi del sito con un linguaggio volgare, molto
+                  sarcastico e potenzialmente offensivo. Non attivarla davanti a bambini, nonne o
+                  persone dotate di dignità.
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Attivandola sblocchi anche un Patchy fuori controllo. Niente musica continua:
+                  restano soltanto gli effetti sonori degli eventi.
+                </p>
               </div>
-              <p
-                id="hardcore-warning"
-                className="mt-3 text-sm font-semibold leading-relaxed text-destructive"
-              >
-                ⚠️ Meglio evitare: sostituisce i testi del sito con un linguaggio volgare, molto
-                sarcastico e potenzialmente offensivo. Non attivarla davanti a bambini, nonne o
-                persone dotate di dignità.
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Attivandola sblocchi anche un Patchy fuori controllo. Niente musica continua:
-                restano soltanto gli effetti sonori degli eventi.
-              </p>
+            </div>
+          </div>
+          <div className="border-t border-destructive/30 p-4">
+            <div className="flex items-start gap-3">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive">
+                <Trash2 aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-black text-foreground">Elimina tutti i dati</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Cancella patch, profilo, progressione, Bit, cosmetici e impostazioni da questo
+                  dispositivo.
+                </p>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  className="mt-3"
+                  onClick={() => setDeleteDataOpen(true)}
+                >
+                  Elimina e ricomincia
+                </Button>
+              </div>
             </div>
           </div>
         </section>
@@ -601,6 +632,29 @@ function SettingsPage() {
               }
             >
               Attiva Hardcore
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={deleteDataOpen} onOpenChange={setDeleteDataOpen}>
+        <AlertDialogContent className="border-2 border-destructive">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminare davvero tutti i dati di PatchMe?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Questa azione non può essere annullata. Perderai patch, XP, Bit, missioni, avatar e
+              ogni personalizzazione salvata su questo dispositivo.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annulla</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (clearAllPatchMeData()) window.location.assign("/");
+                else toast.error("Non è stato possibile cancellare i dati locali");
+              }}
+            >
+              Elimina tutto
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
