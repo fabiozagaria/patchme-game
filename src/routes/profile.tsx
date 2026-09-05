@@ -126,8 +126,6 @@ function ProfilePage() {
             {equippedAvatar?.imageSrc ? (
               <img
                 src={equippedAvatar.imageSrc}
-                decoding="async"
-                fetchPriority="high"
                 alt=""
                 className="size-24 shrink-0 object-contain"
               />
@@ -216,12 +214,7 @@ function ProfilePage() {
                     className={`tap-safe flex min-h-14 items-center gap-3 rounded-xl border px-3 py-2 text-left ${selectedId === item.id ? "border-brand bg-brand/10" : "border-border"}`}
                   >
                     {item.imageSrc ? (
-                      <img
-                        src={item.imageSrc}
-                        alt=""
-                        className="block size-10 shrink-0 object-contain"
-                        decoding="async"
-                      />
+                      <img src={item.imageSrc} alt="" className="size-10 shrink-0 object-contain" />
                     ) : (
                       <span
                         className={`size-8 shrink-0 rounded-lg border ${item.previewClass ?? ""}`}
