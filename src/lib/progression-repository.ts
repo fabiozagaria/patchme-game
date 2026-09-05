@@ -25,6 +25,7 @@ export interface ProgressionState {
   lastXp: number | null;
   welcomeBitsClaimed: boolean;
   lastDailyRewardDate: string | null;
+  lastShopRewardDate: string | null;
 }
 
 interface StorageAdapter {
@@ -47,9 +48,11 @@ export const EMPTY_PROGRESSION_STATE: ProgressionState = {
   lastXp: null,
   welcomeBitsClaimed: false,
   lastDailyRewardDate: null,
+  lastShopRewardDate: null,
 };
 
 export const DAILY_ACCESS_REWARD = { xp: 25, bits: 3 } as const;
+export const DAILY_SHOP_REWARD_BITS = 2;
 
 function localDayKey(date: Date): string {
   const year = date.getFullYear();
@@ -71,6 +74,22 @@ export function claimDailyAccessReward(
       missionXp: state.missionXp + DAILY_ACCESS_REWARD.xp,
       bits: state.bits + DAILY_ACCESS_REWARD.bits,
       lastDailyRewardDate: today,
+    },
+  };
+}
+
+export function claimDailyShopReward(
+  state: ProgressionState,
+  now = new Date(),
+): { state: ProgressionState; claimed: boolean } {
+  const today = localDayKey(now);
+  if (state.lastShopRewardDate === today) return { state, claimed: false };
+  return {
+    claimed: true,
+    state: {
+      ...state,
+      bits: state.bits + DAILY_SHOP_REWARD_BITS,
+      lastShopRewardDate: today,
     },
   };
 }
@@ -124,6 +143,8 @@ function parseCurrentState(raw: string | null): ProgressionState | null {
       welcomeBitsClaimed: value.welcomeBitsClaimed === true,
       lastDailyRewardDate:
         typeof value.lastDailyRewardDate === "string" ? value.lastDailyRewardDate : null,
+      lastShopRewardDate:
+        typeof value.lastShopRewardDate === "string" ? value.lastShopRewardDate : null,
     };
   } catch {
     return null;

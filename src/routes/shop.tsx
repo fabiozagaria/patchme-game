@@ -7,6 +7,8 @@ import { enqueueSuccessNotification } from "@/lib/notification-queue";
 import { SHOP_COLLECTIONS, SHOP_COSMETICS, type ShopCosmetic } from "@/lib/patchy-shop";
 import {
   EMPTY_PROGRESSION_STATE,
+  claimDailyShopReward,
+  DAILY_SHOP_REWARD_BITS,
   loadProgressionState,
   purchaseCosmetic,
   saveProgressionState,
@@ -33,7 +35,18 @@ function ShopPage() {
   const [progression, setProgression] = useState<ProgressionState>(EMPTY_PROGRESSION_STATE);
   const [message, setMessage] = useState("");
 
-  useEffect(() => setProgression(loadProgressionState()), []);
+  useEffect(() => {
+    const loaded = loadProgressionState();
+    const dailyShopReward = claimDailyShopReward(loaded);
+    if (dailyShopReward.claimed) {
+      saveProgressionState(dailyShopReward.state);
+      enqueueSuccessNotification(`Regalo del negozio: +${DAILY_SHOP_REWARD_BITS} Bit`, {
+        description: "Torna domani per altri 2 Bit.",
+        sound: "xp",
+      });
+    }
+    setProgression(dailyShopReward.state);
+  }, []);
 
   const commit = (next: ProgressionState) => {
     saveProgressionState(next);
@@ -102,6 +115,9 @@ function ShopPage() {
                 Avatar, cornici ed effetti coordinati. I cosmetici non danno vantaggi; alcuni
                 richiedono un trofeo prima dell'acquisto.
               </p>
+              <p className="mt-2 text-xs font-bold text-amber-400">
+                +{DAILY_SHOP_REWARD_BITS} Bit gratis al primo ingresso di ogni giorno.
+              </p>
             </div>
           </div>
           <Button asChild variant="outline" size="sm" className="mt-3">
@@ -163,7 +179,8 @@ function ShopPage() {
                             {KIND_LABELS[item.kind]} · {item.rarity}
                           </p>
                           <span className="flex items-center gap-1 text-sm font-black text-amber-400">
-                            <BitCoin className="size-4" /> {item.price}
+                            <BitCoin className="size-4" />{" "}
+                            {item.price === 0 ? "Gratis" : item.price}
                           </span>
                         </div>
                         <h3 className="mt-1 text-lg font-black text-foreground">{item.name}</h3>
@@ -193,7 +210,7 @@ function ShopPage() {
                             ) : (
                               <Sparkles className="mr-2 size-4" />
                             )}{" "}
-                            Compra
+                            {item.price === 0 ? "Riscatta gratis" : "Compra"}
                           </Button>
                         )}
                       </article>

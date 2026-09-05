@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import {
   awardMission,
   claimDailyAccessReward,
+  claimDailyShopReward,
   DAILY_ACCESS_REWARD,
+  DAILY_SHOP_REWARD_BITS,
   EMPTY_PROGRESSION_STATE,
   equipCosmetic,
   equipProfileFrame,
@@ -37,6 +39,7 @@ assert.equal(migrated.welcomeBitsClaimed, true);
 assert.equal(migrated.highestStreak, 3);
 assert.equal(migrated.lastXp, 150);
 assert.equal(migrated.lastDailyRewardDate, null);
+assert.equal(migrated.lastShopRewardDate, null);
 
 const firstDaily = claimDailyAccessReward(migrated, new Date(2026, 8, 4, 9));
 assert.equal(firstDaily.claimed, true);
@@ -52,6 +55,21 @@ assert.equal(
   claimDailyAccessReward(firstDaily.state, new Date(2026, 8, 5, 0, 1)).claimed,
   true,
   "Il bonus deve tornare disponibile il giorno successivo",
+);
+
+const firstShopReward = claimDailyShopReward(migrated, new Date(2026, 8, 4, 9));
+assert.equal(firstShopReward.claimed, true);
+assert.equal(firstShopReward.state.bits, migrated.bits + DAILY_SHOP_REWARD_BITS);
+assert.equal(firstShopReward.state.lastShopRewardDate, "2026-09-04");
+assert.equal(
+  claimDailyShopReward(firstShopReward.state, new Date(2026, 8, 4, 23, 59)).claimed,
+  false,
+  "Il regalo Shop non deve essere duplicato nello stesso giorno",
+);
+assert.equal(
+  claimDailyShopReward(firstShopReward.state, new Date(2026, 8, 5, 0, 1)).claimed,
+  true,
+  "I 2 Bit dello Shop devono tornare disponibili il giorno successivo",
 );
 
 const retroactive = awardMission(migrated, "first", 50, 10);
@@ -125,4 +143,4 @@ assert.equal(
   "I 44 Bit iniziali devono essere assegnati una volta",
 );
 
-console.log("Repository progressione, shop e bonus giornaliero: 45 controlli superati.");
+console.log("Repository progressione, shop e bonus giornaliero: 51 controlli superati.");

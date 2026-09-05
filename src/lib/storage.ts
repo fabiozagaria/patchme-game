@@ -48,6 +48,26 @@ function writeRaw(key: string, value: unknown): boolean {
 
 export const storageAvailable = (): boolean => safeStorage() !== null;
 
+export function clearAllPatchMeData(): boolean {
+  const store = safeStorage();
+  if (!store) return false;
+  try {
+    for (let index = store.length - 1; index >= 0; index -= 1) {
+      const key = store.key(index);
+      if (key?.startsWith("patchme.")) store.removeItem(key);
+    }
+    if (typeof window !== "undefined") {
+      for (let index = window.sessionStorage.length - 1; index >= 0; index -= 1) {
+        const key = window.sessionStorage.key(index);
+        if (key?.startsWith("patchme.")) window.sessionStorage.removeItem(key);
+      }
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export const settingsRepository = {
   load(): AppSettings {
     const parsed = settingsSchema.safeParse(readRaw(APP_CONFIG.storageKeys.settings));

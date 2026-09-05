@@ -28,6 +28,14 @@ assert.equal(normalizeUsername(" Solid Snake "), "solidsnake");
 assert.equal(usernameHasWhitespace("Solid Snake"), true);
 assert.equal(usernameHasWhitespace("SolidSnake"), false);
 
+const sailorMoon = calculatePlayerProgression([], "SailorMoon", [], 0, now);
+assert.equal(
+  completedIds(sailorMoon).includes("moon-guardian"),
+  true,
+  "SailorMoon deve completare la missione permanente della Guardiana Lunare",
+);
+assert.equal(sailorMoon.totalXp, 300);
+
 const claimedKratos = calculatePlayerProgression([], "Kratos", ["god-of-war"], 500, now);
 assert.equal(claimedKratos.totalXp, 500, "Un easter egg già riscosso non deve duplicare gli XP");
 
@@ -46,4 +54,4 @@ assert.equal(
   "Eliminare tutte le patch non deve cancellare una serie già conquistata",
 );
 
-console.log("Progressione: 12 controlli superati.");
+console.log("Progressione: 14 controlli superati.");
