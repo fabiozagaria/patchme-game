@@ -62,7 +62,13 @@ export function PlayerProfileCard({
           className="tap-safe relative shrink-0 rounded-2xl transition-transform hover:scale-105"
         >
           {equippedAvatar?.imageSrc ? (
-            <img src={equippedAvatar.imageSrc} alt="" className="size-20 object-contain" />
+            <img
+              src={equippedAvatar.imageSrc}
+              alt=""
+              className="block size-20 object-contain"
+              decoding="async"
+              fetchPriority="high"
+            />
           ) : (
             <PatchyMascot className="size-20 object-contain" pose={avatar} decorative />
           )}

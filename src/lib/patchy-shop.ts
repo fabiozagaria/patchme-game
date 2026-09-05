@@ -4,7 +4,13 @@ export interface ShopCosmetic {
   id: string;
   kind: CosmeticSlot;
   collection:
-    "Arcade" | "Guerriero dorato" | "Anime morte male" | "Survival horror" | "Zona contaminata";
+    | "Arcade"
+    | "Guerriero dorato"
+    | "Anime morte male"
+    | "Survival horror"
+    | "Zona contaminata"
+    | "Compagni di Patchy"
+    | "Guardiana lunare";
   name: string;
   description: string;
   price: number;
@@ -16,6 +22,38 @@ export interface ShopCosmetic {
 }
 
 export const SHOP_COSMETICS: readonly ShopCosmetic[] = [
+  {
+    id: "avatar-cat",
+    kind: "avatar",
+    collection: "Compagni di Patchy",
+    name: "Patchy Gatto",
+    description: "Fa cadere i tuoi trofei dal mobile e poi pretende i croccantini.",
+    price: 0,
+    imageSrc: "/assets/patchy-cat-v090.png",
+    rarity: "Comune",
+  },
+  {
+    id: "avatar-dog",
+    kind: "avatar",
+    collection: "Compagni di Patchy",
+    name: "Patchy Cane",
+    description: "Fedele, entusiasta e incapace di capire perché hai perso la serie.",
+    price: 0,
+    imageSrc: "/assets/patchy-dog-v090.png",
+    rarity: "Comune",
+  },
+  {
+    id: "avatar-moon-guardian",
+    kind: "avatar",
+    collection: "Guardiana lunare",
+    name: "Patchy Guardiana Lunare",
+    description: "Combatte bug e pessime decisioni nel nome della Luna.",
+    price: 0,
+    imageSrc: "/assets/patchy-moon-guardian-v090.png",
+    rarity: "Leggendario",
+    requiredMissionId: "moon-guardian",
+    requirementLabel: "Punisci il male in nome della Luna",
+  },
   {
     id: "frame-arcade",
     kind: "frame",
@@ -155,6 +193,8 @@ export const SHOP_COSMETICS: readonly ShopCosmetic[] = [
 ] as const;
 
 export const SHOP_COLLECTIONS = [
+  "Compagni di Patchy",
+  "Guardiana lunare",
   "Guerriero dorato",
   "Anime morte male",
   "Survival horror",
