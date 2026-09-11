@@ -56,7 +56,6 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     return true;
   }, []);
 
-
   const value = useMemo<AppStore>(
     () => ({ ready, canPersist, settings, patches, saveSettings, savePatch, deletePatch }),
     [ready, canPersist, settings, patches, saveSettings, savePatch, deletePatch],

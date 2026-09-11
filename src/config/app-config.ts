@@ -8,18 +8,17 @@ export const APP_CONFIG = {
   name: "PatchMe",
   tagline: "Trasforma le storie del gruppo in patch notes",
   // Incrementare a ogni aggiornamento visibile: attiva automaticamente il popup Novità.
-  version: "0.9.0",
-  releaseChannel: "Alpha",
+  version: "1.0.0",
+  releaseChannel: "Stabile",
   changelog: {
-    date: "5 settembre 2026",
-    title: "Patchy ha nuovi travestimenti e una Danger Zone tutta sua.",
+    date: "11 settembre 2026",
+    title: "PatchMe esce dall'Alpha: tutto resta locale, pronto da usare e da condividere.",
     items: [
-      "Patchy Gatto e Patchy Cane riscattabili gratis nello Shop",
-      "Patchy Guardiana Lunare sbloccata dall'easter egg SailorMoon",
-      "2 Bit gratis ogni giorno entrando nel Patchy Shop",
-      "Danger Zone con Modalità Hardcore ed eliminazione completa dei dati",
-      "Marchio PatchMe più grande e riconoscibile nella home",
-      "Nuova icona con il faccione di Patchy e lettering PatchMe",
+      "Stabilizzati creazione, modifica, pubblicazione e condivisione delle patch",
+      "Progressione, Bit, Shop, missioni e notifiche restano salvati nel browser",
+      "Controlli di validazione e recupero sicuro da dati locali non validi",
+      "Interfaccia mobile-first, PWA e temi pronti per l'uso quotidiano",
+      "Nessun backend, account o sincronizzazione: i dati restano sul dispositivo",
     ],
   },
   links: {

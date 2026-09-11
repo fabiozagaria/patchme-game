@@ -11,8 +11,7 @@ export function ThemeController() {
 
     const apply = () => {
       const prefersDark =
-        typeof window !== "undefined" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches;
+        typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
       const dark = settings.theme === "dark" || (settings.theme === "system" && prefersDark);
       root.classList.toggle("dark", dark);
     };

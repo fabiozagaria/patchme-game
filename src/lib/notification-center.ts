@@ -26,10 +26,15 @@ export interface ReleaseNotification {
 
 export const RELEASE_NOTIFICATIONS: readonly ReleaseNotification[] = [
   {
+    version: "1.0.0",
+    title: "PatchMe 1.0 stabile: creazione, progressione e condivisione locale",
+    createdAt: "2026-09-11T18:00:00+02:00",
+    current: true,
+  },
+  {
     version: "0.9.0",
     title: "Nuovi avatar, ricompensa Shop e Danger Zone",
     createdAt: "2026-09-05T01:30:00+02:00",
-    current: true,
   },
   {
     version: "0.8.0",

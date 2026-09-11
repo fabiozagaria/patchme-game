@@ -1,11 +1,11 @@
 <div align="center">
   <img src="public/assets/patchy-mascot.png" alt="Patchy, la mascotte di PatchMe" width="220" />
 
-# PatchMe — v0.9.0 Alpha
+# PatchMe — v1.0.0
 
 **Trasforma amici, persone e situazioni in patch notes da condividere.**
 
-[![Status](https://img.shields.io/badge/status-0.9.0%20Alpha-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
+[![Status](https://img.shields.io/badge/status-1.0.0%20Stabile-b7ff3c?style=flat-square&labelColor=141414)](https://patchme-fabiozagariadev.vercel.app)
 [![AI assisted](https://img.shields.io/badge/development-AI--assisted-8b5cf6?style=flat-square)](#uso-dellintelligenza-artificiale)
 [![Vercel](https://img.shields.io/badge/live-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=000000)](https://patchme-fabiozagariadev.vercel.app)
 
@@ -91,9 +91,9 @@ Il simbolo `+` rappresenta miglioramenti e nuove funzionalità, mentre i pixel d
 
 ## Stato del progetto
 
-PatchMe è attualmente in **0.9.0 Alpha**.
+PatchMe è attualmente in **1.0.0 Stabile**.
 
-Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono ancora cambiare. In questa fase il progetto viene testato con un gruppo ristretto di persone e sviluppato a partire dal loro utilizzo reale.
+Il flusso locale è pronto per creare, modificare, pubblicare ed esportare patch, con progressione e personalizzazione salvate nel browser. Le evoluzioni successive non cambieranno il principio della versione 1.0: l'app resta utilizzabile anche senza account.
 
 ### Limiti attuali
 
@@ -106,8 +106,8 @@ Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono
 
 ### Prossimi aggiornamenti
 
-- correzioni e piccoli miglioramenti fino alla stabilizzazione della 0.9;
-- valutazione del backend soltanto dopo i test della versione locale.
+- correzioni mirate e miglioramenti basati sull'uso reale della 1.0;
+- valutazione del backend soltanto come fase separata, dopo test della versione locale.
 
 ### Più avanti
 
@@ -119,7 +119,7 @@ Il flusso principale funziona, ma struttura, interfaccia e funzionalità possono
 
 ## Privacy
 
-La versione Alpha non invia le patch a un server. Impostazioni e contenuti restano nel `localStorage` del dispositivo, salvo quando l'utente decide volontariamente di esportare o condividere un'immagine.
+PatchMe 1.0 non invia le patch a un server. Impostazioni e contenuti restano nel `localStorage` del dispositivo, salvo quando l'utente decide volontariamente di esportare o condividere un'immagine.
 
 ## Uso dell'intelligenza artificiale
 
