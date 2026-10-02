@@ -107,7 +107,9 @@ Il flusso locale è pronto per creare, modificare, pubblicare ed esportare patch
 ### Prossimi aggiornamenti
 
 - correzioni mirate e miglioramenti basati sull'uso reale della 1.0;
-- valutazione del backend soltanto come fase separata, dopo test della versione locale.
+- mantenimento della compatibilità dei dati locali e verifica delle regressioni pertinenti.
+
+Backend, account e sincronizzazione non sono attività attive della stabilizzazione 1.0.
 
 ### Più avanti
 
