@@ -28,3 +28,5 @@ Prima di nuove funzionalità verificare se appartengono davvero alla stabilizzaz
 
 ## Tema UI — 2026-10-02
 Pulsante sole/luna accessibile nell’intestazione, tema coerente con i colori esistenti e scelta ricordata nel browser.
+
+Dipendenze TanStack Start aggiornate a 1.168.60 e Router a 1.170.41 per correggere GHSA-qx66-fv34-fjm8 e sbloccare il deploy. Build production verificata.
