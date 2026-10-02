@@ -24,3 +24,7 @@ Correzioni mirate e piccoli miglioramenti della 1.0. Il backend viene valutato s
 
 ## Regola di ripresa
 Prima di nuove funzionalità verificare se appartengono davvero alla stabilizzazione 1.0 o a una fase successiva. Preservare compatibilità/migrazione dei dati locali e mantenere il branch in uno stato funzionante per la sincronizzazione con Lovable.
+
+
+## Tema UI — 2026-10-02
+Pulsante sole/luna accessibile nell’intestazione, tema coerente con i colori esistenti e scelta ricordata nel browser.

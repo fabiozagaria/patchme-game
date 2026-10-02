@@ -189,3 +189,7 @@ PatchMe cresce attraverso utilizzo reale e feedback concreti. Se trovi un bug o 
 <div align="center">
   Creato da <a href="https://github.com/fabiozagaria">fabiozagariadev</a> con l'aiuto di Patchy 💚
 </div>
+
+## Tema della pagina
+
+Il pulsante sole/luna nell’intestazione consente di cambiare tema e ricorda la scelta nel browser.
