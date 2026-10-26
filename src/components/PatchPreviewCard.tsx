@@ -263,7 +263,8 @@ export const PatchPreviewCard = forwardRef<HTMLDivElement, PatchPreviewCardProps
                   <img
                     src={equippedAvatar.imageSrc}
                     alt=""
-                    className={`${orientation === "horizontal" ? "size-20" : "size-14"} object-contain`}
+                    className={`${orientation === "horizontal" ? "size-20" : "size-14"} block object-contain`}
+                    decoding="async"
                   />
                 ) : (
                   <PatchyMascot

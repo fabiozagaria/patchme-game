@@ -169,8 +169,9 @@ function ShopPage() {
                             <img
                               src={item.imageSrc}
                               alt={item.name}
-                              className="h-40 w-full object-contain"
+                              className="block h-40 w-full object-contain"
                               loading="lazy"
+                              decoding="async"
                             />
                           </div>
                         ) : null}
